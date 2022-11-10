@@ -4,6 +4,8 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tiki_sdk_flutter/tiki_sdk_flutter.dart';
 import 'package:tos/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,10 +20,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    TikiSdkFlutter tiki = Provider.of<TikiSdkFlutter>(context, listen: false);
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Terms of Service Example'),
-      ),
+      appBar: AppBar(title: const Text('Terms of Service Example')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -34,8 +36,7 @@ class _LoginPageState extends State<LoginPage> {
                   isAgreed = newValue;
                 });
               },
-              controlAffinity:
-                  ListTileControlAffinity.leading, //  <-- leading Checkbox
+              controlAffinity: ListTileControlAffinity.leading,
             ),
             TextButton(
               style: TextButton.styleFrom(
@@ -44,11 +45,26 @@ class _LoginPageState extends State<LoginPage> {
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue),
               onPressed: isAgreed == true
-                  ? () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()));
+                  ? () async {
+                      String source =
+                          'https://tos.example.mytiki.com/terms/061122';
+                      String oid = await tiki.assignOwnership(
+                          'https://mytiki.com/terms',
+                          TikiSdkDataTypeEnum.pool,
+                          ['email_address']);
+                      await tiki.modifyConsent(
+                          oid, const TikiSdkDestination.all());
+                      await tiki.applyConsent(
+                          source,
+                          const TikiSdkDestination(
+                              ['https://tos.example.mytiki.com/login']), () {
+                        //code to do login w/ server
+                        if (!mounted) return;
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const HomePage()));
+                      });
                     }
                   : null,
               child: const Text('Login'),

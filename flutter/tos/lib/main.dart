@@ -4,11 +4,18 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tiki_sdk_flutter/tiki_sdk_flutter.dart';
 
 import 'login_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  TikiSdkFlutter tiki =
+      await TikiSdkFlutter().init('com.mytiki.example.tos', 'apiKey');
+  runApp(Provider<TikiSdkFlutter>.value(
+    value: tiki,
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
