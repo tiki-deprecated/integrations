@@ -4,10 +4,15 @@
  */
 
 import 'package:flutter/material.dart';
+import 'package:tiki_sdk_flutter/tiki_sdk_flutter.dart';
+import 'package:tiki_sdk_dart/tiki_sdk_data_type_enum.dart';
 import 'package:tos/home_page.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+
+  final TikiSdkFlutter tikiSdkFlutter;
+
+  const LoginPage(this.tikiSdkFlutter, {Key? key}) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -32,6 +37,9 @@ class _LoginPageState extends State<LoginPage> {
               onChanged: (newValue) {
                 setState(() {
                   isAgreed = newValue;
+                  widget.tikiSdkFlutter.assignOwnership(
+                      "tos_id123", TikiSdkDataTypeEnum.point, ["tos_id"]).then(
+                        (String id) => print(id));
                 });
               },
               controlAffinity:

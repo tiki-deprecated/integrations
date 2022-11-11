@@ -363,14 +363,7 @@ packages:
       name: tiki_sdk_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.5"
-  tiki_sdk_flutter_plugin:
-    dependency: transitive
-    description:
-      name: tiki_sdk_flutter_plugin
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.2"
+    version: "0.0.6"
   typed_data:
     dependency: transitive
     description:
