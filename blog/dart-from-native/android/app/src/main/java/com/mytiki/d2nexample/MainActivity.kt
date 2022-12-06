@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
                 .createDefault()
         )
         GeneratedPluginRegister.registerGeneratedPlugins(flutterEngine)
-        flutterEngine.platformChannel
         return flutterEngine
     }
 }
