@@ -4,31 +4,38 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tiki_sdk_flutter/tiki_sdk_flutter.dart';
+import 'package:tiki_sdk_flutter/main.dart';
 
 import 'login_page.dart';
 
 void main() async {
-  TikiSdkFlutter tiki =
-      await TikiSdkFlutter().init('com.mytiki.example.tos', 'apiKey');
-  runApp(Provider<TikiSdkFlutter>.value(
-    value: tiki,
-    child: const MyApp(),
-  ));
+  WidgetsFlutterBinding.ensureInitialized();
+  TikiSdkFlutter tikiSdkFlutter = await buildSdk();
+  runApp(MyApp(tikiSdkFlutter));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+
+  final TikiSdkFlutter tikiSdkFlutter;
+
+  const MyApp(this.tikiSdkFlutter, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const LoginPage(),
+      home: LoginPage(tikiSdkFlutter),
     );
   }
+}
+
+Future<TikiSdkFlutter> buildSdk() {
+  TikiSdkFlutterBuilder sdk = TikiSdkFlutterBuilder();
+  sdk.origin("com.mytiki.example.tos");
+  sdk.apiKey("to be defined");
+  return sdk.build();
 }
