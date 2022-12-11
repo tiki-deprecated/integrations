@@ -9,8 +9,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
-  tiki_sdk_flutter: ^0.0.6
+  tiki_sdk_flutter: ^0.0.18
+  uuid: ^3.0.6
+  url_launcher: ^6.1.7
 
 dev_dependencies:
   flutter_test:

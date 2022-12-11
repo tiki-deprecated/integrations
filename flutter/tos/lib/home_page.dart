@@ -6,53 +6,56 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:tiki_sdk_flutter/tiki_sdk_flutter.dart';
+import 'package:tiki_sdk_flutter/main.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final TikiSdk tiki;
+  final String user;
+
+  const HomePage(this.tiki, this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    TikiSdkFlutter tiki = Provider.of<TikiSdkFlutter>(context, listen: false);
-    ConsentModel? consent =
-        tiki.getConsent('https://tos.example.mytiki.com/terms/061122');
+    OwnershipModel? ownership = tiki.getOwnership(user);
+    ConsentModel? consent = tiki.getConsent(user);
 
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-        ),
-        body: Center(
-            child: Column(
-          children: [
-            namedField(
-                'oid',
-                consent?.ownershipId != null
-                    ? base64Encode(consent!.ownershipId)
-                    : null),
-            namedField('destination', consent?.destination.toString()),
-            namedField('about', consent?.about),
-            namedField('reward', consent?.reward),
-            namedField(
-                'tid',
-                consent?.transactionId != null
-                    ? base64Encode(consent!.transactionId!)
-                    : null),
-            namedField('expiry', consent?.expiry?.toIso8601String()),
-            TextButton(
-                style: TextButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20),
-                    minimumSize: const Size(150, 50),
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.blue),
-                onPressed: null, // () { launchUrl(Uri.parse('uri'));},
-                child: const Text('See Block')),
-          ],
-        )));
+        appBar: AppBar(title: const Text('Home')),
+        body: SingleChildScrollView(
+            child: Column(children: [
+          namedField(
+              'oid',
+              ownership?.transactionId != null
+                  ? base64Encode(ownership!.transactionId!)
+                  : null),
+          namedField('source', ownership?.source),
+          namedField('origin', ownership?.origin),
+          namedField('about', ownership?.about),
+          namedField('contains', ownership?.contains.join(",")),
+          namedField('type', ownership?.type.val),
+          namedField(
+              'cid',
+              consent?.transactionId != null
+                  ? base64Encode(consent!.transactionId!)
+                  : null),
+          namedField('destination', consent?.destination.toString()),
+          namedField('reward', consent?.reward, onNull: 'no reward'),
+          namedField('expiry', consent?.expiry?.toIso8601String(),
+              onNull: 'never')
+        ])));
   }
 
-  Widget namedField(String name, String? value) {
-    return Row(
-        children: [Text(name), const Text(':'), Text(value ?? 'Not Set')]);
-  }
+  Widget namedField(String name, String? value, {String onNull = 'Not Set'}) =>
+      Padding(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(name,
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            const Text(': ',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+            Flexible(
+                child:
+                    Text(value ?? onNull, style: const TextStyle(fontSize: 20)))
+          ]));
 }
