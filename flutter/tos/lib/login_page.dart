@@ -5,8 +5,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:tiki_sdk_flutter/main.dart';
-import 'package:tos/home_page.dart';
 import 'package:uuid/uuid.dart';
+
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   final TikiSdk tiki;
