@@ -11,7 +11,7 @@ import 'login_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   TikiSdk tiki = await (TikiSdkFlutterBuilder()
-        ..apiId("b213d6bd-ccff-45c2-805e-4f0062d4ad5e")
+        ..apiId("YOUR API ID")
         ..origin("com.mytiki.example_flutter_tos"))
       .build();
   runApp(MyApp(tiki));
