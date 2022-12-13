@@ -16,7 +16,7 @@ For most applications, the ToS is the primary (often only) form of gaining user 
 
 Now, let’s get coding. We’re going to do this example in Flutter/Dart, but if you want to follow along in Swift/Kotlin, shoot us a PR, and we’ll add it!
 
-#### [View Source Code →](https://github.com/tiki/examples/tree/main/flutter/tos)
+#### [Source Code →](https://github.com/tiki/examples/tree/main/flutter/tos)
 
 ## Installation
 
@@ -136,6 +136,9 @@ class MyApp extends StatelessWidget {
 ```
 
 Alright, easy. We now have a simple ToS-based login-flow app. It should look roughly like this:
+
+![image](https://user-images.githubusercontent.com/3769672/207441175-07a8a7a8-37f6-463b-9730-df1b45fdcfc7.png)
+
 
 ## Adding TIKI
 First, we need to initialize the SDK and pass it down to our pages —flutter is hierarchical, with context passed from parent to child. Given this is a super simple app, we’ll do it explicitly with constructors. For production apps, use your favorite pattern (we like [provider](https://pub.dev/packages/provider)).
@@ -330,6 +333,8 @@ class HomePage extends StatelessWidget {
 }
 ```
 
-Nice work! Now, help yourself to a tiki-style cocktail 🍹
+![image](https://user-images.githubusercontent.com/3769672/207441337-fe4ce27b-d5a0-4f13-bfbb-c254fd8c3e14.png)
 
-#### [View Source Code →](https://github.com/tiki/examples/tree/main/flutter/tos)
+Nice work! Now, help yourself to a tiki-style cocktail 🍹.
+
+#### [Source Code →](https://github.com/tiki/examples/tree/main/flutter/tos)
