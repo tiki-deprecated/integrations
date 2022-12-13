@@ -1,9 +1,13 @@
-name: Docs
+name: docs
 
 on:
   push:
     branches:
       - main
+
+concurrency:
+  group: "docs"
+  cancel-in-progress: true
 
 jobs:
   publish:
@@ -16,4 +20,4 @@ jobs:
       - name: Flutter TOS Example
         uses: readmeio/rdme@8.3.0
         with:
-          rdme: docs --key=${{ secrets.README_API_KEY }} flutter/tos/README.md flutter/tos/README.md
+          rdme: docs flutter/tos/README.md flutter/tos/README.md --key=${{ secrets.README_API_KEY }}
