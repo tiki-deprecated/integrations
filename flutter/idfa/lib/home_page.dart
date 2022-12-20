@@ -3,24 +3,21 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:flutter/material.dart';
+import 'package:idfa/tiki_idfa.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  final TikiIdfa tikiIdfa;
+
+  const HomePage(this.tikiIdfa, {super.key});
 
   @override
   Widget build(BuildContext context) {
     return Center(
         child: ElevatedButton(
             onPressed: () async {
-              final TrackingStatus status =
-                  await AppTrackingTransparency.requestTrackingAuthorization();
-              if (status == TrackingStatus.authorized) {
-                String idfa =
-                    await AppTrackingTransparency.getAdvertisingIdentifier();
-                print('idfa: $idfa');
-              }
+              String? idfa = await tikiIdfa.request();
+              print('idfa: $idfa');
             },
             child: const Text("Request IDFA")));
   }
