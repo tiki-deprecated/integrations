@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:tiki_sdk_flutter/main.dart';
 
 class TikiIdfa {
-  static const String _idfaDefault = '00000000-0000-0000-0000-000000000000';
+  static const String idfaDefault = '00000000-0000-0000-0000-000000000000';
 
   final String _source;
   final String _backend;
@@ -102,7 +102,7 @@ class TikiIdfa {
 
   Future<bool> _hasIdfaPermission() async {
     String idfa = await AppTrackingTransparency.getAdvertisingIdentifier();
-    return idfa == _idfaDefault ? false : true;
+    return idfa == idfaDefault ? false : true;
   }
 
   bool _hasIdfaConsent(ConsentModel? consent) =>

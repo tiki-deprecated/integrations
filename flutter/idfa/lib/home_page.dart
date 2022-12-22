@@ -32,8 +32,7 @@ class _HomePage extends State<HomePage> {
             },
           ),
           ElevatedButton(
-              onPressed: _idfa == null ||
-                      _idfa == '00000000-0000-0000-0000-000000000000'
+              onPressed: _idfa == null || _idfa == TikiIdfa.idfaDefault
                   ? () async {
                       String idfa = await widget.tikiIdfa.request(
                         (dialog) => showPopup(context, dialog),
