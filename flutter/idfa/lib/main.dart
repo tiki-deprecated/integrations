@@ -12,7 +12,7 @@ void main() async {
   TikiIdfa tikiIdfa = await TikiIdfa(
           'TestUser.dfc4446c-6c70-4504-96bc-853ce0615323',
           Uri.parse('https://example.mytiki.com'))
-      .init('FAyqIORAWigam-BJa7Bu9d07CPLCsMpo0x1mczMkp-4');
+      .init(address: 'FAyqIORAWigam-BJa7Bu9d07CPLCsMpo0x1mczMkp-4');
   runApp(MyApp(tikiIdfa));
 }
 

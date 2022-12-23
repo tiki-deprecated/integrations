@@ -21,12 +21,12 @@ class TikiIdfa {
       : _source = '${userId}_idfa',
         _backend = backend.toString();
 
-  Future<TikiIdfa> init(String address, {bool autoSync = true}) async {
-    tiki = await (TikiSdkFlutterBuilder()
-          ..apiId('b213d6bd-ccff-45c2-805e-4f0062d4ad5e')
-          ..origin('com.mytiki.example_idfa')
-          ..address(address))
-        .build();
+  Future<TikiIdfa> init({String? address, bool autoSync = true}) async {
+    TikiSdkFlutterBuilder builder = TikiSdkFlutterBuilder()
+      ..apiId('b213d6bd-ccff-45c2-805e-4f0062d4ad5e')
+      ..origin('com.mytiki.example_idfa');
+    if (address != null) builder.address(address);
+    tiki = await builder.build();
     String? oid = await _getOid();
     if (oid != null && autoSync) await _sync(oid);
     return this;
@@ -50,7 +50,7 @@ class TikiIdfa {
   Future<String?> get({bool autoSync = true}) async {
     String? oid = await _getOid();
     if (oid != null) {
-      if (autoSync) _sync(oid);
+      if (autoSync) await _sync(oid);
       return await AppTrackingTransparency.getAdvertisingIdentifier();
     }
     return null;
