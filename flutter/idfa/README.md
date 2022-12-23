@@ -111,7 +111,7 @@ class MyApp extends StatelessWidget {
 
 Great, we've got ourselves a simple single-screen app.
 
-[put image here]
+![IDFA:???](https://user-images.githubusercontent.com/3769672/209273898-eab500db-68ac-4d26-a1d7-8182f89132ce.png)
 
 ## IDFA Helper Class
 
@@ -485,7 +485,7 @@ Last but not least, we need to declare our permission in `info.plist` under `ios
 
 That's it. Run it and press some buttons!
 
-[images]
+![IDFA Example](https://user-images.githubusercontent.com/3769672/209273954-f9c1f384-9f77-4285-a316-7a3b9954fad1.png)
 
 ---
 
