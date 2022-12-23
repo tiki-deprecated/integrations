@@ -21,3 +21,8 @@ jobs:
         uses: readmeio/rdme@8.3.0
         with:
           rdme: docs flutter/tos/README.md --key=${{ secrets.README_API_KEY }}
+
+      - name: Flutter IDFA Example
+        uses: readmeio/rdme@8.3.0
+        with:
+          rdme: docs flutter/idfa/README.md --key=${{ secrets.README_API_KEY }}
