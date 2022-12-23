@@ -13,13 +13,13 @@ import hello_tiki_plugin
 class FlutterDependencies: ObservableObject {
     let flutterEngine = FlutterEngine(name: "my flutter engine")
     var helloTikiPlugin: SwiftHelloTikiPlugin
-    
+
     init(){
         flutterEngine.run()
         let registrar = flutterEngine.registrar(forPlugin: "HelloTikiPlugin")
         helloTikiPlugin = SwiftHelloTikiPlugin(registrar: registrar!)
     }
-    
+
     @main
     struct D2N_ExampleApp: App {
         @StateObject var flutterDependencies = FlutterDependencies()

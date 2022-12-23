@@ -11,11 +11,11 @@ import hello_tiki_plugin
 
 struct ContentView: View {
     var helloTikiPlugin: SwiftHelloTikiPlugin
-    
+
     init(plugin: SwiftHelloTikiPlugin){
         helloTikiPlugin = plugin
     }
-    
+
     var body: some View {
         VStack {
             Button("Say Hello in Dart") {
