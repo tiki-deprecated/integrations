@@ -9,21 +9,28 @@
 /* Begin PBXBuildFile section */
 		5DA14B0629E613A800C73FA4 /* MMA_CubicleApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B0529E613A800C73FA4 /* MMA_CubicleApp.swift */; };
 		5DA14B0A29E613A900C73FA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DA14B0929E613A900C73FA4 /* Assets.xcassets */; };
-		5DA14B0D29E613A900C73FA4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DA14B0C29E613A900C73FA4 /* Preview Assets.xcassets */; };
 		5DA14B1629E613F000C73FA4 /* RageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B1329E613F000C73FA4 /* RageView.swift */; };
 		5DA14B1729E613F000C73FA4 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B1429E613F000C73FA4 /* HomeView.swift */; };
 		5DA14B1829E613F000C73FA4 /* RageBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B1529E613F000C73FA4 /* RageBar.swift */; };
 		5DA14B1B29E6145E00C73FA4 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 5DA14B1A29E6145E00C73FA4 /* GoogleMobileAds */; };
+		5DA14B1F29E61DF000C73FA4 /* AdViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B1E29E61DF000C73FA4 /* AdViewController.swift */; };
+		5DA14B2129E626AB00C73FA4 /* AdViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B2029E626AB00C73FA4 /* AdViewRepresentable.swift */; };
+		5DA14B2329E62D1300C73FA4 /* DeferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5DA14B2229E62D1300C73FA4 /* DeferView.swift */; };
+		5DA14B2529E630A000C73FA4 /* NativeAdView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 5DA14B2429E630A000C73FA4 /* NativeAdView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5DA14B0229E613A800C73FA4 /* MMA Cubicle.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "MMA Cubicle.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		5DA14B0529E613A800C73FA4 /* MMA_CubicleApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MMA_CubicleApp.swift; sourceTree = "<group>"; };
 		5DA14B0929E613A900C73FA4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		5DA14B0C29E613A900C73FA4 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		5DA14B1329E613F000C73FA4 /* RageView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RageView.swift; sourceTree = "<group>"; };
 		5DA14B1429E613F000C73FA4 /* HomeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		5DA14B1529E613F000C73FA4 /* RageBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RageBar.swift; sourceTree = "<group>"; };
+		5DA14B1C29E6159000C73FA4 /* MMA-Cubicle-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "MMA-Cubicle-Info.plist"; sourceTree = SOURCE_ROOT; };
+		5DA14B1E29E61DF000C73FA4 /* AdViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdViewController.swift; sourceTree = "<group>"; };
+		5DA14B2029E626AB00C73FA4 /* AdViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdViewRepresentable.swift; sourceTree = "<group>"; };
+		5DA14B2229E62D1300C73FA4 /* DeferView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeferView.swift; sourceTree = "<group>"; };
+		5DA14B2429E630A000C73FA4 /* NativeAdView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NativeAdView.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,20 +64,24 @@
 		5DA14B0429E613A800C73FA4 /* MMA Cubicle */ = {
 			isa = PBXGroup;
 			children = (
+				5DA14B1C29E6159000C73FA4 /* MMA-Cubicle-Info.plist */,
 				5DA14B1429E613F000C73FA4 /* HomeView.swift */,
 				5DA14B1529E613F000C73FA4 /* RageBar.swift */,
 				5DA14B1329E613F000C73FA4 /* RageView.swift */,
 				5DA14B0529E613A800C73FA4 /* MMA_CubicleApp.swift */,
+				5DA14B2229E62D1300C73FA4 /* DeferView.swift */,
+				5DA14B2429E630A000C73FA4 /* NativeAdView.xib */,
 				5DA14B0929E613A900C73FA4 /* Assets.xcassets */,
-				5DA14B0B29E613A900C73FA4 /* Preview Content */,
+				5DA14B1D29E616E000C73FA4 /* Preview Content */,
+				5DA14B1E29E61DF000C73FA4 /* AdViewController.swift */,
+				5DA14B2029E626AB00C73FA4 /* AdViewRepresentable.swift */,
 			);
 			path = "MMA Cubicle";
 			sourceTree = "<group>";
 		};
-		5DA14B0B29E613A900C73FA4 /* Preview Content */ = {
+		5DA14B1D29E616E000C73FA4 /* Preview Content */ = {
 			isa = PBXGroup;
 			children = (
-				5DA14B0C29E613A900C73FA4 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
 			sourceTree = "<group>";
@@ -139,7 +150,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DA14B0D29E613A900C73FA4 /* Preview Assets.xcassets in Resources */,
+				5DA14B2529E630A000C73FA4 /* NativeAdView.xib in Resources */,
 				5DA14B0A29E613A900C73FA4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -151,7 +162,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DA14B2129E626AB00C73FA4 /* AdViewRepresentable.swift in Sources */,
 				5DA14B1829E613F000C73FA4 /* RageBar.swift in Sources */,
+				5DA14B2329E62D1300C73FA4 /* DeferView.swift in Sources */,
+				5DA14B1F29E61DF000C73FA4 /* AdViewController.swift in Sources */,
 				5DA14B1729E613F000C73FA4 /* HomeView.swift in Sources */,
 				5DA14B0629E613A800C73FA4 /* MMA_CubicleApp.swift in Sources */,
 				5DA14B1629E613F000C73FA4 /* RageView.swift in Sources */,
@@ -215,6 +229,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -268,6 +283,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -286,6 +302,7 @@
 				DEVELOPMENT_TEAM = 8B528SGCJW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MMA-Cubicle-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -315,6 +332,7 @@
 				DEVELOPMENT_TEAM = 8B528SGCJW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "MMA-Cubicle-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

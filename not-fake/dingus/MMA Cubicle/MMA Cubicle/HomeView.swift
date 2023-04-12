@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct HomeView: View {
+
     var body: some View {
         NavigationView{
             VStack {
@@ -15,7 +16,9 @@ struct HomeView: View {
                 Text("Marketing Meeting")
                     .padding(.bottom, 30)
                 NavigationLink(
-                    destination: RageView(), label: {
+                    destination: DeferView {
+                        RageView()
+                    }, label: {
                         Image("door")
                     })
                 Text("Don't do it...").padding(.top, 30)
