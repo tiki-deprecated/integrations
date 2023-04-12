@@ -6,22 +6,28 @@
 //
 
 import SwiftUI
+import TikiSdk
 
 struct HomeView: View {
+    @State var showRageView: Bool = false
 
     var body: some View {
         NavigationView{
             VStack {
-                Text("All Hands")
-                Text("Marketing Meeting")
-                    .padding(.bottom, 30)
-                NavigationLink(
-                    destination: DeferView {
-                        RageView()
-                    }, label: {
-                        Image("door")
-                    })
-                Text("Don't do it...").padding(.top, 30)
+                if(!showRageView){
+                    Text("All Hands")
+                    Text("Marketing Meeting")
+                        .padding(.bottom, 30)
+                    Image("door").onTapGesture {
+                        TikiSdk.instance.onAccept({_,_ in
+                            showRageView = true
+                        })
+                        try? TikiSdk.present()
+                    }
+                    Text("Don't do it...").padding(.top, 30)
+                }else if(showRageView){
+                   RageView()
+                }
             }
             .padding()
             .frame(maxWidth: Double.infinity, maxHeight: Double.infinity)
