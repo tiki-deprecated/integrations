@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tiki_sdk_flutter/tiki_sdk.dart';
 
 import 'home_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
+  MobileAds.instance.updateRequestConfiguration(
+      RequestConfiguration(testDeviceIds: ['A9BFA2CD58BFD0F412F9B597C5C5B380']));
+  await TikiSdk.config();
   runApp(const MyApp());
 }
 
