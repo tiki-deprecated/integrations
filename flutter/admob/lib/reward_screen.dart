@@ -15,9 +15,9 @@ class _RewardScreenState extends State<RewardScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            margin: EdgeInsets.all(20),
+            margin: const EdgeInsets.all(20),
             height: 50,
-            child: Center(
+            child: const Center(
               child: Text(
                 'Reward granted!',
                 style: TextStyle(fontSize: 30),
@@ -25,7 +25,7 @@ class _RewardScreenState extends State<RewardScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -35,7 +35,7 @@ class _RewardScreenState extends State<RewardScreen> {
                     child: Container(
                       height: 70,
                       color: Colors.blue,
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Get back to home page! ',
                           style: TextStyle(
