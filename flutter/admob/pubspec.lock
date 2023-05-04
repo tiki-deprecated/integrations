@@ -105,14 +105,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.17.2"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   fake_async:
     dependency: transitive
     description:
@@ -441,7 +433,7 @@ packages:
     source: hosted
     version: "2.1.6"
   permission_handler:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: permission_handler
       sha256: "33c6a1253d1f95fd06fa74b65b7ba907ae9811f9d5c1d3150e51417d04b8d6a8"
@@ -673,10 +665,10 @@ packages:
     dependency: "direct main"
     description:
       name: tiki_sdk_flutter
-      sha256: "36900d6a68b635eb618f0f800143a297082596e1719d0d3b635af911d1ed9dba"
+      sha256: "098ae9a10b7332999052eb2fa31d23284c3a8208a6baed10fdcb5a429ff6b6c2"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.1.7"
   typed_data:
     dependency: transitive
     description:
