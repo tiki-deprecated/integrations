@@ -79,8 +79,6 @@ Before starting, you should have the following:
 
 These callbacks will trigger after the user accepts or declines the license offer presented by the TIKI SDK. The `onAccept` callback will initiate the UMP form flow by calling the `checkUMPConsent()` function. Similarly, the `onDecline` callback will also call the `checkUMPConsent()` function to handle the user's decision.
 
-By default, the `onAccept` and `onDecline` callbacks are optional. If you do not set them, the TIKI SDK will automatically show the ATT prompt and handle the user's response without additional actions. However, if you want to customize the behavior of the app depending on the user's decision, you can define these callbacks to perform additional actions, such as showing the UMP form.
-
 4. Configure and initialize the TIKI SDK with your publishing ID from TIKI Console and your internal user ID. Use the following code snippet:
 
 ```swift
@@ -96,7 +94,7 @@ TikiSdk.config()
         id: <user ID>)
 ```
 
-5. Replace the current ATT prompt with the TIKI SDK `present` method. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and recording the result in the TIKI SDK blockchain. Once the user makes a decision, the `onAccept` or `onDecline` callbacks will be called, and the user will have to go through the UMP form if required. Use the following code snippet:
+5. Replace your current ATT prompt with the TIKI SDK `present` method. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and recording the result in the TIKI SDK blockchain. Once the user makes a decision, the `onAccept` or `onDecline` callbacks will be called, and the user will have to go through the UMP form if required. Use the following code snippet:
 
 ```swift
 TikiSdk.present()
