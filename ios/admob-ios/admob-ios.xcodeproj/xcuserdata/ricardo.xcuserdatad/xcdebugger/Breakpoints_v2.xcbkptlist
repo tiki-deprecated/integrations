@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "B8BA4C95-FCD7-4355-8759-8B66E70B8B8E"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "42088AA1-93E3-42A0-81F9-A17F1121F139"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "admob-ios/admob_iosApp.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "initTikiSdk()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "42088AA1-93E3-42A0-81F9-A17F1121F139 - db24da4d8c5c3e5e"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "admob_ios.admob_iosApp.initTikiSdk() -&gt; ()"
+                  moduleName = "admob-ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ricardo/dev/examples/ios/admob-ios/admob-ios/admob_iosApp.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "52"
+                  endingLineNumber = "52"
+                  offsetFromSymbolStart = "1380">
+               </Location>
+               <Location
+                  uuid = "42088AA1-93E3-42A0-81F9-A17F1121F139 - db24da4d8c5c3ee3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "admob_ios.admob_iosApp.initTikiSdk() -&gt; ()"
+                  moduleName = "admob-ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ricardo/dev/examples/ios/admob-ios/admob-ios/admob_iosApp.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "55"
+                  endingLineNumber = "55"
+                  offsetFromSymbolStart = "1608">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "2D760706-6975-4F7D-8E22-6C11D94BAEA6"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../Library/Developer/Xcode/DerivedData/admob-ios-aasthrsxyfrcqtejotnceiswsokc/SourcePackages/checkouts/tiki-sdk-ios/Sources/TikiSdk/TikiSdk.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "203"
+            endingLineNumber = "203"
+            landmarkName = "initialize(publishingId:id:onComplete:origin:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "57D55CC7-D427-4AF0-B0F1-1E7BC63B7304"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../Library/Developer/Xcode/DerivedData/admob-ios-aasthrsxyfrcqtejotnceiswsokc/SourcePackages/checkouts/tiki-sdk-ios/Sources/TikiSdk/TikiSdk.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "197"
+            endingLineNumber = "197"
+            landmarkName = "initialize(publishingId:id:onComplete:origin:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "55E5E4D8-3342-4CF9-8643-50F6ECDA193B"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../Library/Developer/Xcode/DerivedData/admob-ios-aasthrsxyfrcqtejotnceiswsokc/SourcePackages/checkouts/tiki-sdk-ios/Sources/TikiSdk/Core/CoreChannel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "69"
+            endingLineNumber = "69"
+            landmarkName = "invokeMethod(method:request:continuation:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "7FD450B3-B6C6-4099-835A-8075D3F67E65"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "../../../../Library/Developer/Xcode/DerivedData/admob-ios-aasthrsxyfrcqtejotnceiswsokc/SourcePackages/checkouts/tiki-sdk-ios/Sources/TikiSdk/Core/CoreChannel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "55"
+            endingLineNumber = "55"
+            landmarkName = "initChannel()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
