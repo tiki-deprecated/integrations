@@ -48,10 +48,6 @@ struct admob_iosApp: App {
                 .initialize(
                     publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88",
                     id: "user_123")
-            sleep(20)
-            try TikiSdk.instance.initialize(
-                publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88",
-                id: "user_123")
             try TikiSdk.present()
         }catch{
             print(error)
