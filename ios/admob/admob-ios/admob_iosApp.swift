@@ -42,21 +42,19 @@ struct admob_iosApp: App {
                 .duration(365 * 24 * 60 * 60)
                 .add()
                 .onAccept{ _, _ in
-                    initAdMob()
-                }
-                .onDecline{ _, _ in
-                    initAdMob()
+                    checkUMPConsent()
                 }
                 .initialize(
                     publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88",
-                    id: "user_123")
-            try TikiSdk.present()
+                    id: "user_123", onComplete: {
+                        try? TikiSdk.present()
+                    })
         }catch{
             print(error)
         }
     }
 
-    func initAdMob(){
+    func checkUMPConsent(){
            let parameters = UMPRequestParameters()
            parameters.tagForUnderAgeOfConsent = false
            UMPConsentInformation.sharedInstance.requestConsentInfoUpdate(

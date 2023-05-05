@@ -49,6 +49,21 @@
                   endingLineNumber = "55"
                   offsetFromSymbolStart = "1608">
                </Location>
+               <Location
+                  uuid = "42088AA1-93E3-42A0-81F9-A17F1121F139 - 1fb740405ad7067"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "admob_ios.admob_iosApp.initTikiSdk() -&gt; ()"
+                  moduleName = "admob-ios"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/ricardo/dev/examples/ios/admob/admob-ios/admob_iosApp.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "55"
+                  endingLineNumber = "55"
+                  offsetFromSymbolStart = "1312">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
