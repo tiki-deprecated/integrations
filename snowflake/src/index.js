@@ -11,7 +11,7 @@ exports.handler = async function (event, context) {
 
   const filters = {
     ptrs: [],
-    tags: ["device_id"],
+    // tags: [],
     // usecases: [],
     // destinations: [],
   };

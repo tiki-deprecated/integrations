@@ -1,16 +1,24 @@
 # TIKI <> Snowflake Integration
 
-A Snowflake compatible external function for validating data licenses with TIKI.
+Integrate TIKI with your Snowflake instance for listing zero-party data on Snowflake's Marketplace.
 
-Requires data in Snowflake (ACCOUNTADMIN privileges or a role with the CREATE INTEGRATION privilege.), corresponding license records in TIKI and
-API Keys. Requires an AWS account w/ the ability to create API Gateway + Lambda using CF. Upload function to s3.
+### Requires
+
+- A [Snowflake](https://signup.snowflake.com) account with ACCOUNTADMIN privileges or a role with teh CREATE integration privilege
+- An AWS account with permissions to create IAM roles, an API Gateway, and a Lambda function using CloudFormation.
+- An S3 bucket in the same Region to upload/host the function zip.
+- A [TIKI account](https://console.mytiki.com), with a project and corresponding API keys.
+
 
 ## How it works
-It utilizes ptr records from your snowflake table to filter valid data licenses returning a boolean if that record has a valid license.
+Utilizing [PTR records](https://mytiki.com/docs/license-customization) in your Table, the [Snowflake External Function](https://docs.snowflake.com/en/sql-reference/external-functions-creating-aws-planning) resolves rows against TIKI's [List Licenses API](https://mytiki.com/reference/list-licenses) returning a boolean if there is or is not a corresponding valid license.
 
-Works for millions rows, with pagination handled on the TIKI side. Only limits are Snowflake <> Lambda request payload size and Network Timeout.
+### Limits
+Works for millions of rows, with pagination handled by TIKI. Only limits imposed are your Snowflake <> API Gateway/Lambda payload size limits and network timeouts.
 
-given a table like:
+### Example
+
+Given a Table like:
 
 `SELECT * FROM demo;`
 
@@ -19,48 +27,58 @@ given a table like:
 | 12345 | I'm     | a       |
 | abcde | Little  | Teapot  |
 
-where PTR `abcde` has a valid license and `12345` does not.
+Where PTR `abcde` has a valid data license and `12345` does not. Add the external function to a WHERE clause to return:
 
-Adding the where clause
 ```
 SELECT *
 FROM demo
 WHERE integrationFnName(ptr) = true;
 ```
 
-then returns
-
 | PTRs  | Field 1 | Field N |
 |-------|---------|---------|
 | abcde | Little  | Teapot  |
 
+## Get Started
 
 ### Configure
 
-1. set your api keys in tiki.js (get from console.mytiki.com)
-2. set any static filters to include WITH your ptrs in index.js (comment)
+1. Add your [TIKI API Key](https://console.mytiki.com) to `tiki.js`
+```
+const keyId = "API KEY ID";
+const keySecret = "API KEY SECRET";
+```
+
+2. Add any additional static filters to include WITH your PTR filer in `index.js`. DO NOT comment out the empty ptr array initialization `ptrs: []`.
 ```
 const filters = {
     ptrs: [],
-    tags: ["device_id"],
-    // usecases: [],
+    // tags: [],
+    usecases: ["distribution"],
     // destinations: [],
   };
 ```
 
 ### Deployment
-This part is easy, but requires focus. It's easy to screw up. This is where we deploy the lambda/gateway via cloud formation (that's the easy part) and then create and link our external function in snowflake.
+*Note: This part is easy, but requires focus. It's easy to screw up.*
 
-They've got a great step-by-step guide for you to follow, the only difference is instead of their cloud formation template, you're going to use the on in this repo. `/deploy/cloud-formation.yml`
+Using CloudFormation, you first deploy the API Gateway/Lambda and then **link the function to Snowflake.**
 
-https://docs.snowflake.com/en/sql-reference/external-functions-creating-aws-planning
+They have an excellent step-by-step guide for you to follow, which we **STRONGLY recommend following** —we structured this integration to pair with the instructions.
 
-### Call
+The only difference, is instead of using their example CloudFormation template, **use our template** in `/deploy/cloud-formation.yml`
 
-`WHERE integrationFnName(ptr) = true;`
+[Creating an External Function for AWS Using an AWS CloudFormation Template →](https://docs.snowflake.com/en/sql-reference/external-functions-creating-aws-template)
 
-^ yes it really is that easy.
+### Use
+Add a WHERE clause to your query.
+
+```
+WHERE integrationFnName(ptr) = true;
+```
+
+yes it really is that easy.
 
 ---
 
-Special thanks to the Snowflake team (andrew & kyle) for helping get this up and running.
+*A special thanks to Andrew & Kyle from Snowflake for their help in getting the integration up and running.*
