@@ -10,7 +10,7 @@
     "format": "prettier --write \"src/**/*.{ts,js}\"",
     "test": "jest --config jest.config.json --passWithNoTests",
     "prepack": "npm run lint; npm run format; npm run test",
-    "postpack": "tarball=$(npm list --depth 0 | sed 's/\\//-/g; s/@/-/g; s/^-//g; s/ .*/.tgz/g; 1q;'); tar -tf $tarball | sed 's/^package\\///' | zip -@r package; rm $tarball; mkdir -p deploy; mv package.zip deploy/package.zip",
+    "postpack": "tarball=$(npm list --depth 0 | sed 's/\\//-/g; s/@/-/g; s/^-//g; s/ .*/.tgz/g; 1q;'); tar -tf $tarball | sed 's/^package\\///' | zip -@r package; rm $tarball; mv package.zip deploy/package.zip",
     "preversion": "npm run lint",
     "postversion": "npm run format"
   },

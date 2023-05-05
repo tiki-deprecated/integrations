@@ -128,4 +128,4 @@ dist
 .DS_Store
 
 # Lambda Deployment Zip
-deploy
+deploy/package.zip

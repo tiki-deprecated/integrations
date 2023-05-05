@@ -10,7 +10,9 @@ jest.config.json
 
 # Generated Outputs
 reports
-deploy
 
 # JEST Tests
 src/__tests__/
+
+# Deployment Assets
+deploy
