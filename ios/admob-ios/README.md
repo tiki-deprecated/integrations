@@ -72,9 +72,6 @@ Before starting, you should have the following:
             .onAccept{ _, _ in
                 checkUMPConsent()
             }
-            .onDecline{ _, _ in
-                checkUMPConsent()
-            }
 ```
 
 These callbacks will trigger after the user accepts or declines the license offer presented by the TIKI SDK. The `onAccept` callback will initiate the UMP form flow by calling the `checkUMPConsent()` function. Similarly, the `onDecline` callback will also call the `checkUMPConsent()` function to handle the user's decision.
@@ -82,59 +79,56 @@ These callbacks will trigger after the user accepts or declines the license offe
 4. Configure and initialize the TIKI SDK with your publishing ID from TIKI Console and your internal user ID. Use the following code snippet:
 
 ```swift
-TikiSdk.config()
-    .offer
-        // offer details and onAccept callback
-        // ...
-        .onDecline{ _, _ in
-            showDefaultAds()
-        }
-    .initialize(
-        publishingId: <publishing ID>,
-        id: <user ID>)
+    TikiSdk.config()
+        .offer
+            // offer details and onAccept callback
+            // ...
+            .onDecline{ _, _ in
+                showDefaultAds()
+            }
+        .initialize(
+            publishingId: <publishing ID>,
+            id: <user ID>)
 ```
 
 5. Replace your current ATT prompt with the TIKI SDK `present` method. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and recording the result in the TIKI SDK blockchain. Once the user makes a decision, the `onAccept` or `onDecline` callbacks will be called, and the user will have to go through the UMP form if required. Use the following code snippet:
 
 ```swift
-TikiSdk.present()
+    TikiSdk.present()
 ```
 
 Here's the full code snippet for configuring and initializing the TIKI SDK:
 
 ```swift
-TikiSdk.config()
-    .offer
-        .permission(.tracking) // IMPORTANT
-        .ptr("AdTrackingRewarded")
-        .reward("offerImage") 
-        .bullet(text: "Learn how our ads perform ", isUsed: true)
-        .bullet(text: "Reach you on other platforms", isUsed: false)
-        .bullet(text: "Sold to other companies", isUsed: false)
-        .use(usecases: [LicenseUsecase(LicenseUsecaseEnum.attribution)], destinations: ["mycompany.com/api/tracking"])
-        .tag(.advertisingData)
-        .description("Share your IDFA (kind of like a serial # for your phone) to get better ads.")
-        .terms("terms") 
-        .duration(365 * 24 * 60 * 60)
-        .add()
-    .onAccept{ _, _ in
-        checkUMPConsent()
-    }
-    .onDecline{ _, _ in
-        checkUMPConsent()
-    }
-    .initialize(
-        publishingId: <publishing ID>,
-        id: <user ID>)
+    TikiSdk.config()
+        .offer
+            .permission(.tracking) // IMPORTANT
+            .ptr("AdTrackingRewarded")
+            .reward("offerImage") 
+            .bullet(text: "Learn how our ads perform ", isUsed: true)
+            .bullet(text: "Reach you on other platforms", isUsed: false)
+            .bullet(text: "Sold to other companies", isUsed: false)
+            .use(usecases: [LicenseUsecase(LicenseUsecaseEnum.attribution)], destinations: ["mycompany.com/api/tracking"])
+            .tag(.advertisingData)
+            .description("Share your IDFA (kind of like a serial # for your phone) to get better ads.")
+            .terms("terms") 
+            .duration(365 * 24 * 60 * 60)
+            .add()
+        .onAccept{ _, _ in
+            checkUMPConsent()
+        }
+        .initialize(
+            publishingId: <publishing ID>,
+            id: <user ID>)
 ```
 
 6. **OPTIONAL** You can use the TIKI SDK `guard` method to check if the user still has a valid License before showing ads. If the user doesn't have a valid license, you can prompt them with the TIKI SDK prompt. Use the following code snippet:
 
 ```swift
-await TikiSdk.guard(
-    ptr: "AdTrackingRewarded",
-    usecases: [LicenseUsecase.attribution],
-    destinations: ["mycompany.com/api/tracking"],
-    onPass: showPersonalizedAds,
-    onFail: {_ in TikiSdk.present()})
+    await TikiSdk.guard(
+        ptr: "AdTrackingRewarded",
+        usecases: [LicenseUsecase.attribution],
+        destinations: ["mycompany.com/api/tracking"],
+        onPass: showPersonalizedAds,
+        onFail: {_ in TikiSdk.present()})
 ```

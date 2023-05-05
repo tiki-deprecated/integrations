@@ -19,7 +19,9 @@ struct admob_iosApp: App {
     
     var body: some Scene {
         WindowGroup {
-            Text("Hello TIKI!")
+            Button("Show ad"){
+                loadAd()
+            }
         }
     }
     
@@ -72,8 +74,6 @@ struct admob_iosApp: App {
                                             completionHandler: { form, loadError in
                                             if loadError != nil {
                                                 print(error?.localizedDescription)
-                                            } else {
-                                                loadAd()
                                             }
                                           })
                               }
