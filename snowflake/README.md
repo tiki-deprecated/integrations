@@ -66,9 +66,14 @@ Using CloudFormation, you first deploy the API Gateway/Lambda and then **link th
 
 They have an excellent step-by-step guide for you to follow, which we **STRONGLY recommend following** —we structured this integration to pair with the instructions.
 
-The only difference, is instead of using their example CloudFormation template, **use our template** in `/deploy/cloud-formation.yml`
-
 [Creating an External Function for AWS Using an AWS CloudFormation Template →](https://docs.snowflake.com/en/sql-reference/external-functions-creating-aws-template)
+
+There are only 2 minor differences:
+
+1. Instead of using their example CloudFormation template, **use our template** in `/deploy/cloud-formation.yml`
+2. Instead of inline-code in the CloudFormation template, ours requires the **code to be hosted in an S3 Bucket**.
+   1. Run `npm install; npm pack` to generate the deployment asset (`/deploy/package.zip`).
+   2. Upload `deploy/package.zip` to your S3 Bucket. When you run the CloudFormation template in AWS, it will prompt you for the Bucket Name and Key.
 
 ### Use
 Add a WHERE clause to your query.
