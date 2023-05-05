@@ -81,7 +81,7 @@ Resources:
       ParentId: !GetAtt
         - apiGateway
         - RootResourceId
-      PathPart: echo
+      PathPart: has-license
 
   apiGatewayRootMethod:
     Type: "AWS::ApiGateway::Method"
@@ -112,11 +112,11 @@ Resources:
       Code:
         S3Bucket: !Ref "s3Bucket"
         S3Key: !Ref "s3Key"
-      Description: "Echo Lambda created from CloudFormation template"
+      Description: "TIKI<>Snowflake integration"
       FunctionName: !Ref "lambdaName"
-      Handler: "index.handler"
+      Handler: "src/index.handler"
       Role: !GetAtt "lambdaExecutionIAMRole.Arn"
-      Runtime: "python3.7"
+      Runtime: "nodejs18.x"
       Timeout: 10
 
   lambdaApiGatewayInvoke:
@@ -159,7 +159,7 @@ Resources:
 
 Outputs:
   resourceInvocationUrl:
-    Value: !Sub "https://${apiGateway}.execute-api.${AWS::Region}.amazonaws.com/${apiGatewayStageName}/echo"
+    Value: !Sub "https://${apiGateway}.execute-api.${AWS::Region}.amazonaws.com/${apiGatewayStageName}/has-license"
 
   awsRoleArn:
     Value: !GetAtt "apiIAMRole.Arn"
