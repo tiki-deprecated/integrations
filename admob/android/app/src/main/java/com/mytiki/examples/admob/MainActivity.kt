@@ -33,22 +33,20 @@ class MainActivity : AppCompatActivity() {
 
         TikiSdk
             .offer
-            .ptr("AdTrackingRewarded")
-            .reward(ResourcesCompat.getDrawable(resources, R.drawable.offer_img, null)!!)
-            .bullet("Learn how our ads perform ", true)
-            .bullet("Reach you on other platforms", false)
-            .bullet("Sold to other companies", false)
-            .use(listOf(
-                    LicenseUsecase.ATTRIBUTION), listOf("mycompany.com/api/tracking"))
+            .ptr("YOUR PTR")
+            .reward(ResourcesCompat.getDrawable(resources, R.drawable.reward, null)!!)
+            .bullet("USAGE BULLET 1", true)
+            .bullet("USAGE BULLET 2", false)
+            .bullet("USAGE BULLET 3", false)
+            .use(listOf(LicenseUsecase.PERSONALIZATION))
             .tag(TitleTag.ADVERTISING_DATA)
-            .description("Share your IDFA (kind of like a serial # for your phone) to get better ads.")
+            .description("Replace with a description of your data offer (up to 3 lines).")
             .terms(this, "terms.md")
-            .duration(365, TimeUnit.DAYS)
             .add()
         .onAccept{ _, _ ->
             initAdMob()
         }
-        .init(this, "e12f5b7b-6b48-4503-8b39-28e4995b5f88","AdMobUser", onComplete = {
+        .init(this, "PUBLISHING ID","USER ID", onComplete = {
             TikiSdk.present(this)
         })
 

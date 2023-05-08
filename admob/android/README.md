@@ -1,4 +1,4 @@
-## How to Use TIKI SDK Adnroid to Increase User Acceptance for ad tracking and Show Personalized Ads with AdMob
+## How to Use TIKI SDK Android to Increase User Acceptance for ad tracking and Show Personalized Ads with AdMob
 
 Personalized ads help improve the monetization of an Android app. However, to show personalized ads using AdMob, the user must grant permission for the app to track their activity. If the user denies tracking authorization, the app can still use AdMob but should only show non-personalized ads, which are generally less effective in terms of converting users, negatively impacting the app's monetization.
 
