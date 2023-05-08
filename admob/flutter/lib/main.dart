@@ -10,20 +10,20 @@ void main() async {
 
   await TikiSdk.config()
       .offer
-        .reward(Image.asset("lib/assets/offer_sample.png"))
-        .ptr("test_offer")
-        .bullet("Learn how our ads perform ", true)
-        .bullet("Reach you on other platforms", false)
-        .bullet("Sold to other companies", false)
-        .use([LicenseUsecase.support()])
-        .tag(TitleTag.advertisingData())
-        .description("Trade your IDFA (kind of like a serial # for your phone) for a discount.")
-        .terms("lib/assets/terms.md")
-        .permission(Permission.appTrackingTransparency)
-        .duration(const Duration(days: 365))
+      .reward(Image.asset("lib/assets/images/reward.png"))
+      .ptr("YOUR PTR")
+      .bullet("USAGE BULLET 1", true)
+      .bullet("USAGE BULLET 2", false)
+      .bullet("USAGE BULLET 3", false)
+      .use([LicenseUsecase.personalization()])
+      .tag(TitleTag.advertisingData())
+      .description(
+          "Replace with a description of your data offer (up to 3 lines).")
+      .terms("lib/assets/terms.md")
+      .permission(Permission.appTrackingTransparency)
       .add()
       .onAccept((_, __) => _initAdMob())
-      .initialize("ee88a4a2-26e2-4361-9385-aaf7e988719f", "adMobUser",
+      .initialize("PUBLISHING ID", "USER ID",
           onComplete: () => runApp(const MaterialApp(
               title: 'TIKI AdMob Example',
               home: Scaffold(body: HomeWidget()))));
