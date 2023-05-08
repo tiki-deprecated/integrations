@@ -30,23 +30,22 @@ struct admob_iosApp: App {
             try TikiSdk.config()
                 .offer
                 .permission(.tracking) // IMPORTANT
-                .ptr("AdmobExampleAd")
-                .reward("offerImage")
-                .bullet(text: "Learn how our ads perform ", isUsed: true)
-                .bullet(text: "Reach you on other platforms", isUsed: false)
-                .bullet(text: "Sold to other companies", isUsed: false)
-                .use(usecases: [LicenseUsecase(LicenseUsecaseEnum.attribution)], destinations: ["mycompany.com/api/tracking"])
+                .ptr("YOUR PTR")
+                .reward("Reward")
+                .bullet(text: "USAGE BULLET 1", isUsed: true)
+                .bullet(text: "USAGE BULLET 2", isUsed: false)
+                .bullet(text: "USAGE BULLET 3", isUsed: false)
+                .use(usecases: [.personalization])
                 .tag(.advertisingData)
-                .description("Share your IDFA (kind of like a serial # for your phone) to get better ads.")
+                .description("Replace with a description of your data offer (up to 3 lines).")
                 .terms("terms")
-                .duration(365 * 24 * 60 * 60)
                 .add()
                 .onAccept{ _, _ in
                     checkUMPConsent()
                 }
                 .initialize(
-                    publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88",
-                    id: "user_123", onComplete: {
+                    publishingId: "PUBLISHING ID",
+                    id: "USER ID", onComplete: {
                         try? TikiSdk.present()
                     })
         }catch{
