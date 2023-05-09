@@ -6,8 +6,8 @@
 const { SHA3 } = require("sha3");
 
 const baseUrl = "https://mytiki.com/api";
-const keyId = "API KEY ID";
-const keySecret = "API KEY SECRET";
+const keyId = "7141da38-4bae-4a5f-8f99-1599a17ab8ab";
+const keySecret = "db1GZ+FCpd6rsnYxjXI95I1oPvyBjBXmxns5rMiJqto";
 
 exports.authorize = async () => {
   const url = new URL(`${baseUrl}/authorize`);

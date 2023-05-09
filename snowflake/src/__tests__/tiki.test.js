@@ -39,6 +39,6 @@ describe("Tiki Tests", function () {
 
   test("hash", async () => {
     const sha3 = tiki.hash("31923218-2953-4b70-bfe3-9ab0137eff79");
-    expect(sha3).toBe("DBrZFEPo47vW705RFmKwcyrWXjgV7Pz0GH5-k7do9Ok");
+    expect(sha3).toBe("DBrZFEPo47vW705RFmKwcyrWXjgV7Pz0GH5+k7do9Ok=");
   });
 });

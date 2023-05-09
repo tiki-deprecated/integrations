@@ -18,13 +18,13 @@ exports.licenses = {
   results: [
     {
       id: "8S2LbfokTb5FQj4kxOsgQ7cGusv8EKBds4TtKfW8w24",
-      ptr: "MZE7j4HGUz5-M8gfzydllDpElLhaf8281Hxn4adlTGc",
+      ptr: "MZE7j4HGUz5+M8gfzydllDpElLhaf8281Hxn4adlTGc=",
       tags: ["device_id"],
       uses: [],
     },
     {
       id: "QgaATN2IhhAG5P32x5m2op5waCdVY02gdHD1ckU-RhM",
-      ptr: "aKueM9DwHQTC-NF5N_t40qO_d99IBz7kUERvP9NO_GM",
+      ptr: "aKueM9DwHQTC+NF5N/t40qO/d99IBz7kUERvP9NO/GM=",
       tags: ["device_id"],
       uses: [
         {
@@ -34,7 +34,7 @@ exports.licenses = {
     },
     {
       id: "pUNERNVToqkXPcvIz7NdegSm-y2AxCADTeTSsIxfOsg",
-      ptr: "27GutscXDyUKl6BF0LTeKhBQNzgokXl_B8nFgNPhkQY",
+      ptr: "27GutscXDyUKl6BF0LTeKhBQNzgokXl/B8nFgNPhkQY=",
       tags: ["device_id"],
       uses: [
         {
