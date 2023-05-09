@@ -33,7 +33,17 @@ TIKI for WooCommerce top features:
 
 == Frequently Asked Questions ==
 
-TBD
+=Does TIKI WooCommerce Coupons block cookies?=
+We are planning this feature but for now TIKI WooCommerce Coupouns does not block cookies. 
+Scripts that would set a cookie can be configured in the plugin settings to not load until the user accepts a specific Offer
+
+=TIKI WooCommerce Coupons make my site compliant?
+Kindly note that it is your responsibility to comply with both local and international laws. TIKI WooCommerce can support you in achieving compliance by:
+* Storing user acceptance registry.
+* Increasing user acceptance by displaying a compealing offer.
+* Correctly displaying a cookie notice and providing users with the option to opt-in/out to specified scripts and services. 
+
+Be aware that merely installing and activating the plugin without proper configuration may not be enough to guarantee compliance.
 
 == Screenshots ==
 
