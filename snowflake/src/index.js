@@ -18,9 +18,10 @@ exports.handler = async function (event, context) {
 
   for (let i = 0; i < rows.length; i++) {
     const row = rows[i];
-    const hashedPtr = tiki.hash(row[1]);
+    const ptr = row[1];
+    const hashedPtr = tiki.hash(ptr);
 
-    filters.ptrs.push(hashedPtr);
+    filters.ptrs.push(ptr);
     rowMap.set(hashedPtr, i);
     rows[i] = [row[0], false];
   }

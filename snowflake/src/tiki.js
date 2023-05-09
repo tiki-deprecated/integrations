@@ -64,5 +64,5 @@ exports.list = async (
 exports.hash = (message) => {
   const sha3 = new SHA3(256);
   sha3.update(message);
-  return sha3.digest("base64url");
+  return sha3.digest("base64");
 };
