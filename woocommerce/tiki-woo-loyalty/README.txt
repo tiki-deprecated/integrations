@@ -23,24 +23,21 @@ TIKI for WooCommerce top features:
 * Transparent - TIKI infrastructure and its SDKs are all open source, since the begining and forever.
 * Full user control - Users can revoke the license at anytime. And the plugin will automatically update the status.
 
+We use the [Cookies and Content Security Policy](https://wordpress.org/plugins/cookies-and-content-security-policy/) plugin to block cookies and unwanted external content.
+
 == Installation ==
 
-1. Upload `tiki-woo-loyalty` to the `/wp-content/plugins/` directory.
+1. In Plugins menu, click "Add New" and upload `tiki-woo-loyalty.zip`.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Get a Publishing ID in console.mytiki.com to activate it.
-4. Configure the cookies categories.
-5. Configure your loyalty plugin integration.
-6. Set in which pages show the Offer and/or use the [tiki-offer] shortcode to show an offer.
+3. Configure the cookies categories in the Cookies and Content Security Policy menu.
+4. Get a Publishing ID in console.mytiki.com to activate it in TIKI WooCommerce menu.
+5. Configure the loyalty points offer in the TIKI WooCommerce menu.
 
 == Frequently Asked Questions ==
 
 =Which loyalty plugins does TIKI WooCommerce Loyalty integrates with?=
 The TIKI WooCommerce Loyalty plugin register the user points in the user meta data table. Any plugin can read this information and add or remove the loyalty points. 
 The plugin includes the `TikiWooLoyalty::getUserPoints` method to simplify the integration.
-
-=Does TIKI WooCommerce Loyalty block cookies?=
-We are planning this feature but for now TIKI WooCommerce Loyalty does not block cookies. 
-Scripts that would set a cookie can be configured in the plugin settings to not load until the user accepts a specific Offer.
 
 =TIKI WooCommerce Loyalty make my site compliant?
 Kindly note that it is your responsibility to comply with both local and international laws. TIKI WooCommerce can support you in achieving compliance by:
