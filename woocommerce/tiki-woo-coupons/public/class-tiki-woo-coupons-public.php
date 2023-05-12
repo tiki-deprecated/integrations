@@ -84,11 +84,12 @@ class Tiki_Woo_Coupons_Public {
 	 */
 	public function enqueue_scripts() {
 		if(!wp_script_is('tiki-sdk-js')){
-			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
+			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js', array( 'wp-api' ));
 			if($this->shouldInitializeTikiSdk()){
 				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
 			}
 		}
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery', 'tiki-sdk-js' ), $this->version, false );
 	}
 
 	private function initiliazeTikiSdk(): string{
