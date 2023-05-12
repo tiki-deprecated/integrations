@@ -83,9 +83,13 @@ class Tiki_Woo_Loyalty_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
-		wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
-	}	
+		if(!wp_script_is('tiki-sdk-js')){
+			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
+			if($this->shouldInitializeTikiSdk()){
+				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
+			}
+		}
+	}
 
 	private function initiliazeTikiSdk(): string{
 		$primaryTextColor = '#1C0000';
@@ -133,6 +137,10 @@ class Tiki_Woo_Loyalty_Public {
 				console.log('DECLINE')
 			})
 			.initialize('$publishing_id', '$user_id');";
+	}
+
+	private function shouldInitializeTikiSdk(): bool{
+		return true;
 	}
 
 }

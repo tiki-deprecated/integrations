@@ -83,8 +83,12 @@ class Tiki_Woo_Coupons_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
-		wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
+		if(!wp_script_is('tiki-sdk-js')){
+			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
+			if($this->shouldInitializeTikiSdk()){
+				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
+			}
+		}
 	}
 
 	private function initiliazeTikiSdk(): string{
@@ -108,9 +112,9 @@ class Tiki_Woo_Coupons_Public {
 		$current_user = wp_get_current_user();
 
 		if ( ! ( $current_user instanceof WP_User ) ) {
-			$user_id = $this->getAnonymousUserId();
+			$user_id = $this->defineAnonymousUserId();
 		}else{
-			$user_id = $this->getLoggedInUserId($current_user);
+			$user_id = $this->defineLoggedInUserId($current_user);
 		}
  
 		return "TikiSdk.config()
@@ -150,7 +154,7 @@ class Tiki_Woo_Coupons_Public {
 	}
 
 
-	private function getAnonymousUserId(): string{
+	private function defineAnonymousUserId(): string{
 		if(isset( $_COOKIE['tiki_user_id'] )){
 			return $_COOKIE['tiki_user_id'];
 		}
@@ -159,7 +163,7 @@ class Tiki_Woo_Coupons_Public {
 		return $user_id;
 	}
 
-	private function getLoggedInUserId(WP_User $user): string{
+	private function defineLoggedInUserId(WP_User $user): string{
 		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true);
 		if(!$user_id){
 			if(isset( $_COOKIE['tiki_user_id'] )){
@@ -170,5 +174,9 @@ class Tiki_Woo_Coupons_Public {
 			update_user_meta($user->ID, '_tiki_user_id', $user_id);
 		}
 		return $user_id;
+	}
+
+	private function shouldInitializeTikiSdk(): bool{
+		return true;
 	}
 }
