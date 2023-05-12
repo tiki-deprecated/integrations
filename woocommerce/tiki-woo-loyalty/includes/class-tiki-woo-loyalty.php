@@ -121,7 +121,7 @@ class Tiki_Woo_Loyalty {
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-tiki-woo-loyalty-public.php';
-
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-tiki-woo-loyalty-public-rest-api.php';
 		$this->loader = new Tiki_Woo_Loyalty_Loader();
 
 	}
@@ -169,9 +169,11 @@ class Tiki_Woo_Loyalty {
 	private function define_public_hooks() {
 
 		$plugin_public = new Tiki_Woo_Loyalty_Public( $this->get_plugin_name(), $this->get_version() );
-
+		$plugin_rest = new Tiki_Woo_Loyalty_Public_Rest_Api();
+		
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'rest_api_init', $plugin_rest , 'register_rest_routes');
 
 	}
 

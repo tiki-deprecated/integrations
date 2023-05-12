@@ -108,8 +108,15 @@ class Tiki_Woo_Loyalty_Public {
 		$offer_tag = "TikiSdk.TitleTag.deviceId()";
 		$offer_use = "{ usecases:[TikiSdk.LicenseUsecase.attribution()] }";
 		$publishing_id = 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
-		$user_id = 'test_user';
+		
+		$current_user = wp_get_current_user();
 
+		if ( ! ( $current_user instanceof WP_User ) ) {
+			$user_id = $this->defineAnonymousUserId();
+		}else{
+			$user_id = $this->defineLoggedInUserId($current_user);
+		}
+ 
 		return "TikiSdk.config()
 			.theme
 				.primaryTextColor('$primaryTextColor')
@@ -130,13 +137,38 @@ class Tiki_Woo_Loyalty_Public {
 				.tag($offer_tag)
 				.use($offer_use)
 				.add()
-			.onAccept( () => {
-				console.log('ACCEPT')
-			})
-			.onDecline( () => {
-				console.log('DECLINE')
-			})
-			.initialize('$publishing_id', '$user_id');";
+			.onAccept(() => tikiWoocommerceGrantPoints())
+			.onDecline(() => tikiWoocommerceRemovePoints())
+			.initialize('$publishing_id', '$user_id')
+			.then(() => {
+				let tiki_user_id = TikiSdk.id()
+				let now = new Date()
+				let expireTime = now.setFullYear(now.getFullYear() + 1)
+				now.setTime(expireTime)
+				document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
+			})";
+	}
+
+	private function defineAnonymousUserId(): string{
+		if(isset( $_COOKIE['tiki_user_id'] )){
+			return $_COOKIE['tiki_user_id'];
+		}
+		$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
+		setcookie('tiki_user_id', $random_id, strtotime('+1 year'), COOKIEPATH, COOKIE_DOMAIN);
+		return $user_id;
+	}
+
+	private function defineLoggedInUserId(WP_User $user): string{
+		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true);
+		if(!$user_id){
+			if(isset( $_COOKIE['tiki_user_id'] )){
+				$user_id = $_COOKIE['tiki_user_id'];
+			}else{
+				$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
+			}
+			update_user_meta($user->ID, '_tiki_user_id', $user_id);
+		}
+		return $user_id;
 	}
 
 	private function shouldInitializeTikiSdk(): bool{
