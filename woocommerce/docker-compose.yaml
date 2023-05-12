@@ -2,7 +2,7 @@ version: "3.6"
 services:
  wordpress:
    image: wordpress:latest
-   container_name: wordpress
+   container_name: tiki_woocommerce
    volumes:
      - ./wordpress:/var/www/html
      - ./tiki-woo-coupons:/var/www/html/wp-content/plugins/tiki-woo-coupons

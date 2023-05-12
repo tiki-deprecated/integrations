@@ -83,21 +83,92 @@ class Tiki_Woo_Coupons_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Tiki_Woo_Coupons_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Tiki_Woo_Coupons_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
-
+		wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
+		wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
 	}
 
+	private function initiliazeTikiSdk(): string{
+		$primaryTextColor = '#1C0000';
+		$secondaryTextColor = '#1C000099';
+		$primaryBackgroundColor = '#FFFFFF';
+		$secondaryBackgroundColor = '#F6F6F6';
+		$accentColor = '#00b272';
+		$fontFamily = '"Space Grotesk", sans-serif';
+		$description = 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
+		$offer_reward = 'https://cdn.mytiki.com/assets/demo-reward.png';
+		$offer_bullet1 = "{ text: 'Learn how our ads perform', isUsed: true }";
+		$offer_bullet2 = "{ text: 'Reach you on other platforms', isUsed: false }";
+		$offer_bullet3 = "{ text: 'Sold to other companies', isUsed: false }";
+		$offer_terms = 'terms.md';
+		$offer_ptr = 'db2fd320-aed0-498e-af19-0be1d9630c63';
+		$offer_tag = "TikiSdk.TitleTag.deviceId()";
+		$offer_use = "{ usecases:[TikiSdk.LicenseUsecase.attribution()] }";
+		$publishing_id = 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
+		
+		$current_user = wp_get_current_user();
+
+		if ( ! ( $current_user instanceof WP_User ) ) {
+			$user_id = $this->getAnonymousUserId();
+		}else{
+			$user_id = $this->getLoggedInUserId($current_user);
+		}
+ 
+		return "TikiSdk.config()
+			.theme
+				.primaryTextColor('$primaryTextColor')
+				.secondaryTextColor('$secondaryTextColor')
+				.primaryBackgroundColor('$primaryBackgroundColor')
+				.secondaryBackgroundColor('$secondaryBackgroundColor')
+				.accentColor('$accentColor')
+				.fontFamily('$fontFamily')
+				.and()
+			.offer
+				.description('$description')
+				.reward('$offer_reward')
+				.bullet($offer_bullet1)
+				.bullet($offer_bullet2)
+				.bullet($offer_bullet3)
+				.terms('$offer_terms')
+				.ptr('$offer_ptr')
+				.tag($offer_tag)
+				.use($offer_use)
+				.add()
+			.onAccept( () => {
+				console.log('ACCEPT')
+			})
+			.onDecline( () => {
+				console.log('DECLINE')
+			})
+			.initialize('$publishing_id', '$user_id')
+			.then(() => {
+				let tiki_user_id = TikiSdk.id()
+				let now = new Date()
+				let expireTime = now.setFullYear(now.getFullYear() + 1)
+				now.setTime(expireTime)
+				document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
+			})";
+	}
+
+
+	private function getAnonymousUserId(): string{
+		if(isset( $_COOKIE['tiki_user_id'] )){
+			return $_COOKIE['tiki_user_id'];
+		}
+		$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
+		setcookie('tiki_user_id', $random_id, strtotime('+1 year'), COOKIEPATH, COOKIE_DOMAIN);
+		return $user_id;
+	}
+
+	private function getLoggedInUserId(WP_User $user): string{
+		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true);
+		if(!$user_id){
+			if(isset( $_COOKIE['tiki_user_id'] )){
+				$user_id = $_COOKIE['tiki_user_id'];
+			}else{
+				$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
+			}
+			update_user_meta($user->ID, '_tiki_user_id', $user_id);
+		}
+		return $user_id;
+	}
 }
