@@ -92,6 +92,17 @@ class Tiki_Woo_Coupons_Public {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery', 'tiki-sdk-js' ), $this->version, false );
 	}
 
+	public function apply_coupon_in_cart(){
+		$current_user = wp_get_current_user();
+        $tiki_user_id = get_user_meta( $current_user->ID, '_tiki_user_id', true );
+        $code = substr($tiki_user_id, 0, 10);
+		$coupon = new WC_Coupon($code);
+		if ( empty($coupon->id) || $current_user->ID === 0 || WC()->cart->has_discount( $code ) ) {
+			return;
+		}
+		WC()->cart->apply_coupon( $code );
+	}
+
 	private function initiliazeTikiSdk(): string{
 		$primaryTextColor = '#1C0000';
 		$secondaryTextColor = '#1C000099';
@@ -138,12 +149,8 @@ class Tiki_Woo_Coupons_Public {
 				.tag($offer_tag)
 				.use($offer_use)
 				.add()
-			.onAccept( () => {
-				console.log('ACCEPT')
-			})
-			.onDecline( () => {
-				console.log('DECLINE')
-			})
+			.onAccept(() => createUserCoupon())
+			.onDecline(() => removeUserCoupon())
 			.initialize('$publishing_id', '$user_id')
 			.then(() => {
 				let tiki_user_id = TikiSdk.id()
@@ -153,7 +160,6 @@ class Tiki_Woo_Coupons_Public {
 				document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
 			})";
 	}
-
 
 	private function defineAnonymousUserId(): string{
 		if(isset( $_COOKIE['tiki_user_id'] )){
