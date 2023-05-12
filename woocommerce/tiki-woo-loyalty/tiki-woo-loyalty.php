@@ -74,9 +74,21 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-tiki-woo-loyalty.php';
  * @since    1.0.0
  */
 function run_tiki_woo_loyalty() {
-
-	$plugin = new Tiki_Woo_Loyalty();
-	$plugin->run();
-
+	$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
+	if (
+		in_array( $plugin_path, wp_get_active_and_valid_plugins() )
+		|| (is_multisite() && in_array( $plugin_path, wp_get_active_network_plugins() ))
+	) {
+		$plugin = new Tiki_Woo_Loyalty();
+		$plugin->run();
+	}else{
+		add_action( 'admin_notices', function() {
+			?>
+			<div class="notice notice-error is-dismissible">
+				<p><?php _e( 'Error! TIKI WooCommerce Loyalty needs WooCommerce to work properly.', 'tiki-sdk-js' ); ?></p>
+			</div>
+			<?php
+		});
+	}
 }
 run_tiki_woo_loyalty();
