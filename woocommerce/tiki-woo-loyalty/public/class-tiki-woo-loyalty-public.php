@@ -89,6 +89,8 @@ class Tiki_Woo_Loyalty_Public {
 				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
 			}
 		}
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
+		wp_add_inline_script( 'cookie-law-info', 'tikiCookieYesSetInitial()','before');
 	}
 
 	private function initiliazeTikiSdk(): string{
@@ -137,16 +139,24 @@ class Tiki_Woo_Loyalty_Public {
 				.tag($offer_tag)
 				.use($offer_use)
 				.add()
-			.onAccept(() => tikiWoocommerceGrantPoints())
-			.onDecline(() => tikiWoocommerceRemovePoints())
-			.initialize('$publishing_id', '$user_id')
-			.then(() => {
-				let tiki_user_id = TikiSdk.id()
-				let now = new Date()
-				let expireTime = now.setFullYear(now.getFullYear() + 1)
-				now.setTime(expireTime)
-				document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
-			})";
+				.onAccept(() => {
+					tikiGrantPoints()
+					tikiCookieYesAcceptCallback()
+				})
+				.onDecline(() => {
+					tikiRemovePoints()
+					tikiCookieYesDenyCallback()
+				})
+				.disableOnDeclineEnding(true)
+				.initialize('$publishing_id', '$user_id')
+				.then(() => {
+					let tiki_user_id = TikiSdk.id()
+					let now = new Date()
+					let expireTime = now.setFullYear(now.getFullYear() + 1)
+					now.setTime(expireTime)
+					document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
+					TikiSdk.present()
+				})";
 	}
 
 	private function defineAnonymousUserId(): string{
