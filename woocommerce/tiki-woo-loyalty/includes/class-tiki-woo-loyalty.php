@@ -156,7 +156,7 @@ class Tiki_Woo_Loyalty {
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu');
 	}
 
 	/**
@@ -172,9 +172,9 @@ class Tiki_Woo_Loyalty {
 		$plugin_rest = new Tiki_Woo_Loyalty_Public_Rest_Api();
 		
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts', 999 );
 		$this->loader->add_action( 'rest_api_init', $plugin_rest , 'register_rest_routes');
-
+		
 	}
 
 	/**

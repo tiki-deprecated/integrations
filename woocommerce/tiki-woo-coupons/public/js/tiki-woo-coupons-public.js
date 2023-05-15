@@ -1,4 +1,4 @@
-const createUserCoupon = () => {
+const tikiCreateUserCoupon = () => {
     wp.api.loadPromise.done( function() {
         fetch( `${wpApiSettings.root}tiki/v1/woocommerce/coupon/create`, {
         method : 'post',
@@ -11,7 +11,7 @@ const createUserCoupon = () => {
     } )
 }
 
-const removeUserCoupon= () => {
+const tikiRemoveUserCoupon= () => {
     wp.api.loadPromise.done( function() {
         fetch(`${wpApiSettings.root}tiki/v1/woocommerce/coupon/delete`, {
             method : 'post',
@@ -23,3 +23,10 @@ const removeUserCoupon= () => {
             });
     } )
 }
+
+
+const tikiCookieYesAcceptCallback = () => 
+    document.querySelectorAll('[data-cky-tag="detail-accept-button"]')[0].click()
+
+const tikiCookieYesDenyCallback = () => 
+    document.querySelectorAll('[data-cky-tag="revisit-consent"]')[0].click()

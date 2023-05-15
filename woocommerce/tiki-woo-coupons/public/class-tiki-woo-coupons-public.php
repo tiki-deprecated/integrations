@@ -84,12 +84,19 @@ class Tiki_Woo_Coupons_Public {
 	 */
 	public function enqueue_scripts() {
 		if(!wp_script_is('tiki-sdk-js')){
-			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js', array( 'wp-api' ));
+			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js', array( 'wp-api', $this->plugin_name ));
 			if($this->shouldInitializeTikiSdk()){
 				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
 			}
 		}
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery', 'tiki-sdk-js' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
+		wp_add_inline_script( 'cookie-law-info', '
+			debugger
+			let expire = new Date()
+			let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+			expire.setTime(expireTime)
+			document.cookie = `cookieyes-consent=consentid:,consent:no,action:yes,necessary:yes,functional:no,analytics:no,performance:no,advertisement:no;expires=${expire.toUTCString()};path=/`
+		','before');
 	}
 
 	public function apply_coupon_in_cart(){
@@ -129,7 +136,8 @@ class Tiki_Woo_Coupons_Public {
 			$user_id = $this->defineLoggedInUserId($current_user);
 		}
  
-		return "TikiSdk.config()
+		return "
+		TikiSdk.config()
 			.theme
 				.primaryTextColor('$primaryTextColor')
 				.secondaryTextColor('$secondaryTextColor')
@@ -149,8 +157,14 @@ class Tiki_Woo_Coupons_Public {
 				.tag($offer_tag)
 				.use($offer_use)
 				.add()
-			.onAccept(() => createUserCoupon())
-			.onDecline(() => removeUserCoupon())
+			.onAccept(() => {
+				tikiCreateUserCoupon()
+				tikiCookieYesAcceptCallback()
+			})
+			.onDecline(() => {
+				tikiRemoveUserCoupon()
+				tikiCookieYesDenyCallback()
+			})
 			.initialize('$publishing_id', '$user_id')
 			.then(() => {
 				let tiki_user_id = TikiSdk.id()
@@ -158,6 +172,7 @@ class Tiki_Woo_Coupons_Public {
 				let expireTime = now.setFullYear(now.getFullYear() + 1)
 				now.setTime(expireTime)
 				document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
+				TikiSdk.present()
 			})";
 	}
 

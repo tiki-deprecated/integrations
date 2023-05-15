@@ -12,5 +12,7 @@
  * @subpackage Tiki_Woo_Loyalty/admin/partials
  */
 ?>
+loyalty\\
+	
+<?php
 
-<!-- This file should primarily consist of HTML with a little bit of PHP. -->
