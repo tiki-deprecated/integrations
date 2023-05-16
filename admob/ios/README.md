@@ -1,17 +1,21 @@
-## How to Use TIKI SDK iOS to Increase User Acceptance of App Tracking Transparency Prompt and Show Personalized Ads with AdMob
+# TIKI <> AdMob Integration
 
-Personalized ads help improve the monetization of an iOS app. However, to show personalized ads using AdMob, the user must grant permission for the app to track their activity. If the user denies tracking authorization, the app can still use AdMob but should only show non-personalized ads, which are generally less effective in terms of converting users, negatively impacting the app's monetization.
+Integrate TIKI with AdMob to handle useR activity track permission that enables ads personalization.
 
-The TIKI SDK iOS can be used to increase the user acceptance of the App Tracking Transparency (ATT) prompt in iOS. In this tutorial, we will show how to configure TIKI SDK and use it to show personalized ads in an iOS app using AdMob while complying with local regulatory demands.
-
-### Prerequisites
+### Requires
 
 Before starting, you should have the following:
 - A basic understanding of iOS app development using Swift
-- AdMob account with AdMob SDK integrated into your iOS app, including info.plist entries
-- TIKI SDK credentials
+- An [AdMob account](https://admob.google.com/) with [AdMob iOS SDK](https://developers.google.com/admob/ios/quick-start) integrated into your iOS app.
+- A [TIKI account](https://console.mytiki.com), with a project and corresponding API keys.
 
-### Steps to Follow
+
+### How it works
+
+The TIKI SDK iOS can be used to increase the user acceptance of the mandatory App Tracking Transparency (ATT) prompt in iOS. AdMob uses [UMP](https://developers.google.com/interactive-media-ads/ump/ios/quick-start) to inform the user about activity tracking, and ask their consent.
+In this example, we present a compeling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
+
+## Get Started
 
 1. Configure TIKI SDK with an offer that requires the tracking permission. This ensures that TIKI SDK only creates a License if the user has allowed tracking.
 
@@ -31,7 +35,7 @@ Before starting, you should have the following:
                 .duration(365 * 24 * 60 * 60)
                 .add()
    ```
-   Note: Check [our docs]() for details on the `offer` parameters.
+   Note: Check [TIKI SDK iOS docs](https://mytiki.com/docs/creating-an-offer) for details on the `offer` parameters.
 
 2. Check consent information with the User Messaging Platform (UMP).
 

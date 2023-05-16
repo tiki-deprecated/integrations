@@ -1,18 +1,21 @@
-## How to Use TIKI SDK Android to Increase User Acceptance for ad tracking and Show Personalized Ads with AdMob
+# TIKI <> AdMob Integration
 
-Personalized ads help improve the monetization of an Android app. However, to show personalized ads using AdMob, the user must grant permission for the app to track their activity. If the user denies tracking authorization, the app can still use AdMob but should only show non-personalized ads, which are generally less effective in terms of converting users, negatively impacting the app's monetization.
+Integrate TIKI with AdMob to handle user activity track permission that enables ads personalization.
 
-The TIKI SDK Android can be used to increase the user acceptance for ad personalization. In this tutorial, we will show how to configure TIKI SDK and use it to show personalized ads in an Android app using AdMob while complying with local regulatory demands.
-
-### Prerequisites
+### Requires
 
 Before starting, you should have the following:
-- A basic understanding of Android app development
-- AdMob account with AdMob SDK integrated into your Android app, including manifest entries
-- TIKI SDK credentials
+- A basic understanding of Android app development with Kotlin
+- An [AdMob account](https://admob.google.com/) with [AdMob Android SDK](https://developers.google.com/admob/android/quick-start) integrated into your Android app.
+- A [TIKI account](https://console.mytiki.com), with a project and corresponding API keys.
 
-### Steps to Follow
 
+### How it works
+
+The TIKI SDK Android can be used to increase the user acceptance of the Android Advertising ID usage. AdMob uses [UMP](https://developers.google.com/interactive-media-ads/ump/android/quick-start) to inform the user about activity tracking, and ask their consent.
+In this example, we present a compeling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
+
+## Get Started
 1. Configure TIKI SDK with an offer that describes why the app needs to track ads ID.
 
 ```
@@ -41,7 +44,7 @@ Note: Check [our docs]() for details on the `offer` parameters.
    > "Using alternative ways of checking the consent status—such as checking a cache your app utilizes or looking for a consent string in storage—are strongly discouraged as the set of ad technology partners could have changed since the user last consented."
 
 ```
-       private fun initAdMob(){
+    private fun initAdMob(){
         val params = ConsentRequestParameters
             .Builder()
             .build()

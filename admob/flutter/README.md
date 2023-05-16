@@ -1,17 +1,21 @@
-## How to Use TIKI SDK Flutter to Increase User Acceptance of App Tracking Transparency Prompt and Show Personalized Ads with AdMob
+# TIKI <> AdMob Integration
 
-Personalized ads help improve the monetization of a Flutter app. However, to show personalized ads using AdMob, the user must grant permission for the app to track their activity. If the user denies tracking authorization, the app can still use AdMob but should only show non-personalized ads, which are generally less effective in terms of converting users, negatively impacting the app's monetization.
+Integrate TIKI with AdMob to handle useR activity track permission that enables ads personalization.
 
-The TIKI SDK Flutter can be used to increase the user acceptance for ad personalization. In this tutorial, we will show how to configure TIKI SDK and use it to show personalized ads in a Flutter app using AdMob while complying with local regulatory demands.
-
-### Prerequisites
+### Requires
 
 Before starting, you should have the following:
 - A basic understanding of Flutter app development
-- AdMob account with AdMob SDK integrated into your Flutter app, including manifest and info.plist entries
-- TIKI SDK credentials
+- An [AdMob account](https://admob.google.com/) with [AdMob Flutter SDK](https://developers.google.com/admob/flutter/quick-start) integrated into your Flutter app.
+- A [TIKI account](https://console.mytiki.com), with a project and corresponding API keys.
 
-### Steps to Follow
+
+### How it works
+
+The TIKI SDK Flutter can be used to increase the user acceptance of the mandatory App Tracking Transparency (ATT) prompt in iOS and Android Advertising ID usage. AdMob uses [UMP](https://developers.google.com/interactive-media-ads/ump) to inform the user about activity tracking, and ask their consent.
+In this example, we present a compeling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
+
+## Get Started
 
 1. Configure TIKI SDK with an offer that requires the tracking permission. This ensures that TIKI SDK only creates a License if the user has allowed tracking.
 
@@ -31,7 +35,7 @@ Before starting, you should have the following:
         .duration(const Duration(days: 365))
       .add()
 ```
-   Note: Check [our docs]() for details on the `offer` parameters.
+   Note: Check [TIKI SDK Flutter docs](https://mytiki.com/docs/creating-an-offer) for details on the `offer` parameters.
 
 2. Initialize AdMob and check consent information with the User Messaging Platform (UMP).
 
@@ -116,11 +120,11 @@ Here's the full code snippet for configuring and initializing the TIKI SDK:
 
 6. **OPTIONAL** You can use the TIKI SDK `guard` method to check if the user still has a valid License before showing ads. If the user doesn't have a valid license, you can prompt them with the TIKI SDK prompt. Use the following code snippet:
 
-```swift
+```
 await TikiSdk.guard(
     ptr: "AdTrackingRewarded",
     usecases: [LicenseUsecase.attribution],
     destinations: ["mycompany.com/api/tracking"],
     onPass: showPersonalizedAds,
     onFail: {_ in TikiSdk.present()})
-```Ω
+```
