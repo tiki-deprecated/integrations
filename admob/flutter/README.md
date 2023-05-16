@@ -1,6 +1,6 @@
 # TIKI <> AdMob Integration
 
-Integrate TIKI with AdMob to handle useR activity track permission that enables ads personalization.
+Integrate TIKI with AdMob to handle user activity track permission that enables ads personalization.
 
 ### Requires
 
