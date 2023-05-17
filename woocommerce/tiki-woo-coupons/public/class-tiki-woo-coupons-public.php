@@ -91,7 +91,6 @@ class Tiki_Woo_Coupons_Public {
 		}
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
 		wp_add_inline_script( 'cookie-law-info', '
-		debugger
 		let cookieYesCookie = document.cookie.match(new RegExp("(^| )cookieyes-consent=([^;]+)"));
         if(cookieYesCookie == undefined){
             let expire = new Date()
