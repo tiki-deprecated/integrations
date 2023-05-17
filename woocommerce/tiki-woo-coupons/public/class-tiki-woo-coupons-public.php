@@ -113,22 +113,24 @@ class Tiki_Woo_Coupons_Public {
 	}
 
 	private function initiliazeTikiSdk(): string{
-		$primaryTextColor = '#1C0000';
-		$secondaryTextColor = '#1C000099';
-		$primaryBackgroundColor = '#FFFFFF';
-		$secondaryBackgroundColor = '#F6F6F6';
-		$accentColor = '#00b272';
-		$fontFamily = '"Space Grotesk", sans-serif';
-		$description = 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
-		$offer_reward = 'https://cdn.mytiki.com/assets/demo-reward.png';
-		$offer_bullet1 = "{ text: 'Learn how our ads perform', isUsed: true }";
-		$offer_bullet2 = "{ text: 'Reach you on other platforms', isUsed: false }";
-		$offer_bullet3 = "{ text: 'Sold to other companies', isUsed: false }";
-		$offer_terms = 'terms.md';
-		$offer_ptr = 'db2fd320-aed0-498e-af19-0be1d9630c63';
-		$offer_tag = "TikiSdk.TitleTag.deviceId()";
-		$offer_use = "{ usecases:[TikiSdk.LicenseUsecase.attribution()] }";
-		$publishing_id = 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
+		$options = get_option('tiki_woo_coupons', array() );
+
+		$primaryTextColor = isset($options['primaryTextColor']) ? $options['primaryTextColor'] : '#1C0000';
+		$secondaryTextColor = isset($options['secondaryTextColor']) ? $options['secondaryTextColor'] : '#1C000099';
+		$primaryBackgroundColor = isset($options['primaryBackgroundColor']) ? $options['primaryBackgroundColor'] : '#FFFFFF';
+		$secondaryBackgroundColor = isset($options['secondaryBackgroundColor']) ? $options['secondaryBackgroundColor'] : '#F6F6F6';
+		$accentColor = isset($options['accentColor']) ? $options['accentColor'] : '#00b272';
+		$fontFamily = isset($options['fontFamily']) ? $options['fontFamily'] : '"Space Grotesk", sans-serif';
+		$description = isset($options['description']) ? $options['description'] : 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
+		$offer_reward = isset($options['offer_reward']) ? $options['offer_reward'] : 'https://cdn.mytiki.com/assets/demo-reward.png';
+		$offer_bullet1 = isset($options['offer_bullet1']) ? $options['offer_bullet1'] : "{ text: 'Learn how our ads perform', isUsed: true }";
+		$offer_bullet2 = isset($options['offer_bullet2']) ? $options['offer_bullet2'] : "{ text: 'Reach you on other platforms', isUsed: false }";
+		$offer_bullet3 = isset($options['offer_bullet3']) ? $options['offer_bullet3'] : "{ text: 'Sold to other companies', isUsed: false }";
+		$offer_terms = isset($options['offer_terms']) ? $options['offer_terms'] : 'terms.md';
+		$offer_ptr = isset($options['offer_ptr']) ? $options['offer_ptr'] : get_site_url() . 'TIKI_WOO_COUPOUN';
+		$offer_tag = isset($options['offer_tag']) ? $options['offer_tag'] : "TikiSdk.TitleTag.deviceId()";
+		$offer_use = isset($options['offer_use']) ? $options['offer_use'] : "{ usecases:[TikiSdk.LicenseUsecase.attribution()] }";
+		$publishing_id = isset($options['publishing_id']) ? $options['publishing_id'] : 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
 		
 		$current_user = wp_get_current_user();
 
