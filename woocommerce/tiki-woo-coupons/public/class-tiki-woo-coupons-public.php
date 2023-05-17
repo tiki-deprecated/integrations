@@ -90,7 +90,16 @@ class Tiki_Woo_Coupons_Public {
 			}
 		}
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
-		wp_add_inline_script( 'cookie-law-info', 'tikiCookieYesSetInitial()','before');
+		wp_add_inline_script( 'cookie-law-info', '
+		debugger
+		let cookieYesCookie = document.cookie.match(new RegExp("(^| )cookieyes-consent=([^;]+)"));
+        if(cookieYesCookie == undefined){
+            let expire = new Date()
+            let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+            expire.setTime(expireTime)        
+            document.cookie = `cookieyes-consent=consentid:,consent:no,action:yes,necessary:yes,functional:no,analytics:no,performance:no,advertisement:no;expires=${expire.toUTCString()};path=/`
+        }
+		','before');
 	}
 
 	public function apply_coupon_in_cart(){
@@ -159,7 +168,7 @@ class Tiki_Woo_Coupons_Public {
 				tikiRemoveUserCoupon()
 				tikiCookieYesDenyCallback()
 			})
-			.disableOnDeclineEnding(true)
+			.disableDeclineEnding(true)
 			.initialize('$publishing_id', '$user_id')
 			.then(() => {
 				let tiki_user_id = TikiSdk.id()
