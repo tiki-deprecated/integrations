@@ -124,9 +124,9 @@ class Tiki_Woo_Coupons_Public {
 		$publishing_id              = isset( $options['publishing_id'] ) ? $options['publishing_id'] : 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
 		$current_user               = wp_get_current_user();
 		if ( ! ( $current_user instanceof WP_User ) ) {
-			$user_id = $this->defineAnonymousUserId();
+			$user_id = $this->define_anonymous_user_id();
 		} else {
-			$user_id = $this->defineLoggedInUserId( $current_user );
+			$user_id = $this->define_logged_in_user_id( $current_user );
 		}
 
 		return "

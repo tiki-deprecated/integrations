@@ -71,9 +71,8 @@ class Tiki_Woo_Coupons_Admin {
 	 * Register the stylesheets for the admin area.∏
 	 */
 	public function enqueue_styles() {
-
 		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tiki-woo-coupons-admin.css', array(), $this->version, 'all' );
-
+		wp_enqueue_style( 'wp-color-picker' );
 	}
 
 	/**
@@ -81,6 +80,15 @@ class Tiki_Woo_Coupons_Admin {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-admin.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( 'iris', admin_url( 'js/iris.min.js' ), array( 'jquery-ui-draggable', 'jquery-ui-slider', 'jquery-touch-punch' ), $this->version, 1 );
+		wp_add_inline_script(
+			'iris',
+			'
+				jQuery(".color-picker").iris();
+			',
+			'after'
+		);
+
 	}
 
 	/**
@@ -93,7 +101,7 @@ class Tiki_Woo_Coupons_Admin {
 				'TIKI',
 				'manage_options',
 				'tiki_menu_page',
-				array( $this, 'tiki_menu_page' ),
+				array( $this, 'display_tiki_menu_page' ),
 				$this->menu_icon
 			);
 		}
@@ -103,16 +111,23 @@ class Tiki_Woo_Coupons_Admin {
 			'WooCommerce Coupouns',
 			'manage_options',
 			'tiki_woo_coupouns',
-			array( $this, 'tiki_menu_page' )
+			array( $this, 'display_tiki_coupons_submenu_page' )
 		);
 	}
 
 	/**
 	 * Renders TIKI Menu Page
 	 */
-	public function tiki_menu_page() {
-		$options = get_options( 'tiki_dashboard' );
-		include_once 'partials/tiki-woo-coupons-admin-display.php';
+	public function display_tiki_menu_page() {
+		$options = get_option( 'tiki_woo_coupons' );
+		include_once 'partials/tiki-woo-coupons-admin-sdk-options.php';
 	}
 
+		/**
+	 * Renders TIKI Coupons Sub Menu Page
+	 */
+	public function display_tiki_coupons_submenu_page() {
+		$options = get_option( 'tiki_woo_coupons' );
+		include_once 'partials/tiki-woo-coupons-admin-options.php';
+	}
 }

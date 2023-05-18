@@ -38,7 +38,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'TIKI_WOO_COUPONS_VERSION', '0.0.1' );
 
-define( 'TIKI_JS_SDK_VERSION', '1.0.6' );
+define( 'TIKI_SDK_VERSION', '1.0.6' );
 
 /**
  * The code that runs during plugin activation.
