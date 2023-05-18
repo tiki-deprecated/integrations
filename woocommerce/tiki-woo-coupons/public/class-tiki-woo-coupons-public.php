@@ -59,24 +59,16 @@ class Tiki_Woo_Coupons_Public {
 	 */
 	public function enqueue_scripts() {
 		if ( ! wp_script_is( 'tiki-sdk-js' ) ) {
-			wp_enqueue_script( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@{TIKI_SDK_VERSION}/dist/index.js', array( 'wp-api', $this->plugin_name ), TIKI_SDK_VERSION, true );
+			wp_enqueue_script( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@' . TIKI_SDK_VERSION . '/dist/index.js', array( 'wp-api', $this->plugin_name ), TIKI_SDK_VERSION, true );
 			if ( $this->should_initialize_tiki_sdk() ) {
 				wp_add_inline_script( 'tiki-sdk-js', $this->initialize_tiki_sdk() );
 			}
 		}
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
-		wp_add_inline_script(
-			'cookie-law-info',
-			'
-            let cookieYesCookie = document.cookie.match(new RegExp("(^| )cookieyes-consent=([^;]+)"));
-            if(cookieYesCookie == undefined){
-                let expire = new Date()
-                let expireTime = expire.setFullYear(expire.getFullYear() + 1)
-                expire.setTime(expireTime)        
-                document.cookie = `cookieyes-consent=consentid:,consent:no,action:yes,necessary:yes,functional:no,analytics:no,performance:no,advertisement:no;expires=${expire.toUTCString()};path=/`
-            }',
-			'before'
-		);
+		$options = get_option( 'tiki_sdk_options' );
+		if ( isset( $options['cookie_yes_integration'] ) && $options['cookie_yes_integration'] ) {
+			$this->cookie_yes_js_integration();
+		}
 	}
 
 	/**
@@ -112,6 +104,8 @@ class Tiki_Woo_Coupons_Public {
 		$offer_tag                  = isset( $options['offer_tag'] ) ? $options['offer_tag'] : 'TikiSdk.TitleTag.deviceId()';
 		$offer_use                  = isset( $options['offer_use'] ) ? $options['offer_use'] : '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }';
 		$publishing_id              = isset( $options['publishing_id'] ) ? $options['publishing_id'] : 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
+		$cookie_yes_integration     = isset( $options['cookie_yes_integration'] ) ? $options['cookie_yes_integration'] : false;
+
 		$current_user               = wp_get_current_user();
 		if ( ! ( $current_user instanceof WP_User ) ) {
 			$user_id = $this->define_anonymous_user_id();
@@ -141,23 +135,43 @@ class Tiki_Woo_Coupons_Public {
 				.use($offer_use)
 				.add()
 			.onAccept(() => {
-				tikiCreateUserCoupon()
-				tikiCookieYesAcceptCallback()
+				tikiSetPresentedCookie()
+				tikiCreateUserCoupon() 
+				" . (
+					$cookie_yes_integration ?
+					'tikiCookieYesAcceptCallback()
+					' : ''
+					) . '
 			})
 			.onDecline(() => {
+				tikiSetPresentedCookie()
 				tikiRemoveUserCoupon()
-				tikiCookieYesDenyCallback()
+				' . (
+					$cookie_yes_integration ?
+					'tikiCookieYesDenyCallback()
+					' : ''
+					) . "
 			})
 			.disableDeclineEnding(true)
+			.disableAcceptEnding(true)
 			.initialize('$publishing_id', '$user_id')
 			.then(() => {
 				let tiki_user_id = TikiSdk.id()
-				let now = new Date()
-				let expireTime = now.setFullYear(now.getFullYear() + 1)
-				now.setTime(expireTime)
-				document.cookie = 'tiki_user_id='+tiki_user_id+';expires='+now.toUTCString()+';path=/'
-				TikiSdk.present()
+				tikiSetUserIdCookie(tiki_user_id)
+				let presented = document.cookie.match('tiki_presented')
+				debugger
+				if( !presented ) {
+					TikiSdk.present()
+				}
 			})";
+	}
+
+	public function save_cookie_tiki_id_to_user_meta() {
+		if ( isset( $_COOKIE['tiki_user_id'] ) ) {
+			$current_user = wp_get_current_user();
+			$tiki_user_id = $_COOKIE['tiki_user_id'];
+			update_user_meta( $current_user->ID, '_tiki_user_id', $tiki_user_id );
+		}
 	}
 
 	private function define_anonymous_user_id(): string {
@@ -184,5 +198,20 @@ class Tiki_Woo_Coupons_Public {
 
 	private function should_initialize_tiki_sdk(): bool {
 		return true;
+	}
+
+	private function cookie_yes_js_integration() {
+		wp_add_inline_script(
+			'cookie-law-info',
+			'
+            let cookieYesCookie = document.cookie.match(new RegExp("(^| )cookieyes-consent=([^;]+)"));
+            if(cookieYesCookie == undefined){
+                let expire = new Date()
+                let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+                expire.setTime(expireTime)        
+                document.cookie = `cookieyes-consent=consentid:,consent:no,action:yes,necessary:yes,functional:no,analytics:no,performance:no,advertisement:no;expires=${expire.toUTCString()};path=/`
+            }',
+			'before'
+		);
 	}
 }

@@ -24,7 +24,7 @@ $defaults = array(
 	'fontFamily'               => 'Space Grotesk',
 );
 
-$options = wp_parse_args( get_option( 'tiki_woo_coupons_options' ), $defaults );
+$options = wp_parse_args( get_option( 'tiki_sdk_options' ), $defaults );
 ?>
 
 <div class="wrap">
@@ -55,32 +55,32 @@ $options = wp_parse_args( get_option( 'tiki_woo_coupons_options' ), $defaults );
 				<tbody>
 					<tr>
 						<th scope="row"><label for="primaryTextColor">Primary text color</label></th>
-						<td><input class="color-picker" name="primaryTextColor" type="text" id="primaryTextColor" value="<?php echo $options['primaryTextColor']; ?>" class="regular-text" />
+						<td><input class="color-picker" name="primaryTextColor" type="text" id="primaryTextColor" value="<?php echo esc_html( $options['primaryTextColor'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="secondaryTextColor">Secondary text color</label></th>
-						<td><input class="color-picker" name="secondaryTextColor" type="text" id="secondaryTextColor" value="<?php echo $options['secondaryTextColor']; ?>" class="regular-text" />
+						<td><input class="color-picker" name="secondaryTextColor" type="text" id="secondaryTextColor" value="<?php echo esc_html( $options['secondaryTextColor'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="primaryBackgroundColor">Primary background color</label></th>
-						<td><input class="color-picker" name="primaryBackgroundColor" type="text" id="primaryBackgroundColor" value="<?php echo $options['primaryBackgroundColor']; ?>" class="regular-text" />
+						<td><input class="color-picker" name="primaryBackgroundColor" type="text" id="primaryBackgroundColor" value="<?php echo esc_html( $options['primaryBackgroundColor'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="secondaryBackgroundColor">Secondary background color</label></th>
-						<td><input class="color-picker" name="secondaryBackgroundColor" type="text" id="secondaryBackgroundColor" value="<?php echo $options['secondaryBackgroundColor']; ?>" class="regular-text" />
+						<td><input class="color-picker" name="secondaryBackgroundColor" type="text" id="secondaryBackgroundColor" value="<?php echo esc_html( $options['secondaryBackgroundColor'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="accentColor">Accent color</label></th>
-						<td><input class="color-picker" name="accentColor" type="text" id="accentColor" value="<?php echo $options['accentColor']; ?>" class="regular-text" />
+						<td><input class="color-picker" name="accentColor" type="text" id="accentColor" value="<?php echo esc_html( $options['accentColor'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="fontFamily">Font Family</label></th>
-						<td><input name="fontFamily" type="text" id="fontFamily" value="<?php echo $options['fontFamily']; ?>" class="regular-text" />
+						<td><input name="fontFamily" type="text" id="fontFamily" value="<?php echo esc_html( $options['fontFamily'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 				</tbody>

@@ -123,7 +123,7 @@ class Tiki_Woo_Coupons_Admin {
 		include_once 'partials/tiki-woo-coupons-admin-sdk-options.php';
 	}
 
-		/**
+	/**
 	 * Renders TIKI Coupons Sub Menu Page
 	 */
 	public function display_tiki_coupons_submenu_page() {

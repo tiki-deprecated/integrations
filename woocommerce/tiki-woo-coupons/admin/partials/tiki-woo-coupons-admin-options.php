@@ -18,7 +18,7 @@
 $defaults = array(
 	'discount_type'  => 'percent',
 	'discount_value' => 10,
- 	'description'    => 'Trade your IDFA (kind of like a serial # for your phone) for a discount.',
+	'description'    => 'Trade your IDFA (kind of like a serial # for your phone) for a discount.',
 	'offer_reward'   => 'https://cdn.mytiki.com/assets/demo-reward.png',
 	'offer_bullet1'  => '{ "text": "Learn how our ads perform", "isUsed": true }',
 	'offer_bullet2'  => '{ "text": "Reach you on other platforms", "isUsed": false }',
@@ -41,21 +41,21 @@ $options = wp_parse_args( get_option( 'tiki_woo_coupons_options' ), $defaults );
 							<select name="dicount_type" id="dicount_type" class="regular-text">
 								<option value="fixed_cart"
 								<?php
-								if ( "fixed_cart" === $options['discount_type'] ) {
+								if ( 'fixed_cart' === $options['discount_type'] ) {
 									echo 'selected';
 								}
 								?>
 								>Fixed value in cart</option>
 								<option value="fixed_product"
 								<?php
-								if ( "fixed_product" === $options['discount_type'] ) {
+								if ( 'fixed_product' === $options['discount_type'] ) {
 									echo 'selected';
 								}
 								?>
 								>Fixed value in product</option>
 								<option value="percent"
 								<?php
-								if ( "percent" === $options['discount_type'] ) {
+								if ( 'percent' === $options['discount_type'] ) {
 									echo 'percent';
 								}
 								?>
@@ -65,35 +65,70 @@ $options = wp_parse_args( get_option( 'tiki_woo_coupons_options' ), $defaults );
 					</tr>
 					<tr>
 						<th scope="row"><label for="discount_value">Discount Value</label></th>
-						<td><input name="discount_value" type="number" id="discount_value" value="<?php echo $options['discount_value']; ?>" class="regular-text" />
+						<td><input name="discount_value" type="number" id="discount_value" value="<?php echo esc_html( $options['discount_value'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="description">Description</label></th>
-						<td><input name="description" type="text" id="description" value="<?php echo $options['description']; ?>" class="regular-text" />
+						<td><input name="description" type="text" id="description" value="<?php echo esc_html( $options['description'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="offer_reward">Offer Reward</label></th>
-						<td><input name="offer_reward" type="text" id="offer_reward" value="<?php echo $options['offer_reward']; ?>" class="regular-text" />
+						<td><input name="offer_reward" type="text" id="offer_reward" value="<?php echo esc_html( $options['offer_reward'] ); ?>" class="regular-text" />
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="offer_bullet1">Use case 1</label></th>
-						<td><input name="offer_bullet1" type="text" id="offer_bullet1" value="<?php echo json_decode( $options['offer_bullet1'], true )['text']; ?>" class="regular-text" />
-						<input name="offer_bullet1_is_used" type="checkbox" id="offer_bullet1_is_used" <?php if (json_decode( $options['offer_bullet1'], true )['isUsed']) echo 'checked="checked"'; ?>"/> is Used ?
+						<td><input name="offer_bullet1" type="text" id="offer_bullet1" value="<?php echo esc_html( json_decode( $options['offer_bullet1'], true )['text'] ); ?>" class="regular-text" />
+						<input name="offer_bullet1_is_used" type="checkbox" id="offer_bullet1_is_used" 
+						<?php
+						if ( json_decode( $options['offer_bullet1'], true )['isUsed'] ) {
+							echo 'checked="checked"';
+						}
+						?>
+						"/> is Used ?
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="offer_bullet2">Use case 2</label></th>
-						<td><input name="offer_bullet2" type="text" id="offer_bullet2" value="<?php echo json_decode( $options['offer_bullet2'], true )['text']; ?>" class="regular-text" />
-						<input name="offer_bullet3_is_used" type="checkbox" id="offer_bullet2_is_used" <?php if (json_decode( $options['offer_bullet2'], true )['isUsed']) echo 'checked="checked"'; ?>"/> is Used ?
+						<td><input name="offer_bullet2" type="text" id="offer_bullet2" value="<?php echo esc_html( json_decode( $options['offer_bullet2'], true )['text'] ); ?>" class="regular-text" />
+						<input name="offer_bullet3_is_used" type="checkbox" id="offer_bullet2_is_used" 
+						<?php
+						if ( json_decode( $options['offer_bullet2'], true )['isUsed'] ) {
+							echo 'checked="checked"';
+						}
+						?>
+						"/> is Used ?
 						</td>
 					</tr>
 					<tr>
 						<th scope="row"><label for="offer_bullet3_text">Use case 3</label></th>
-						<td><input name="offer_bullet3_text" type="text" id="offer_bullet3" value="<?php echo json_decode( $options['offer_bullet3'], true )['text']; ?>" class="regular-text" />
-						<input name="offer_bullet3_is_used" type="checkbox" id="offer_bullet3_is_used" <?php if (json_decode( $options['offer_bullet3'], true )['isUsed']) echo 'checked="checked"'; ?>"/> is Used ?
+						<td><input name="offer_bullet3_text" type="text" id="offer_bullet3" value="<?php echo esc_html( json_decode( $options['offer_bullet3'], true )['text'] ); ?>" class="regular-text" />
+						<input name="offer_bullet3_is_used" type="checkbox" id="offer_bullet3_is_used" 
+						<?php
+						if ( json_decode( $options['offer_bullet3'], true )['isUsed'] ) {
+							echo 'checked="checked"';
+						}
+						?>
+						"/> is Used ?
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<h3>Integration</h3>
+			<table class="form-table" role="presentation">
+				<tbody>
+					<tr>
+						<th scope="row"><label for="cookie_yes_integration">Cookie Yes</label></th>
+						<td>
+						<input name="cookie_yes_integration" type="checkbox" id="cookie_yes_integration" 
+						<?php
+						if ( $options['cookie_yes_integration'] ) {
+							echo 'checked="checked"';
+						}
+						?>
+						"/> Activate Cookie Yes integration
 						</td>
 					</tr>
 				</tbody>
