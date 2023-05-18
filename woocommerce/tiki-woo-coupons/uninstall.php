@@ -19,13 +19,15 @@
  * For more information, see the following discussion:
  * https://github.com/tommcfarlin/WordPress-Plugin-Boilerplate/pull/123#issuecomment-28541913
  *
- * @link       https://mytiki.com
- * @since      1.0.0
+ * @author  Ricardo Gonçalves <ricardo@mytiki.com>
+ * @license GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link    https://mytiki.com
+ * @since   1.0.0
  *
- * @package    Tiki_Woo_Coupons
+ * @package Tiki_Woo_Coupons
  */
 
 // If uninstall not called from WordPress, then exit.
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-	exit;
+if (! defined('WP_UNINSTALL_PLUGIN') ) {
+    exit;
 }
