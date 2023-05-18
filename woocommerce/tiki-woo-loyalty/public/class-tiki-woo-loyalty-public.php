@@ -3,8 +3,10 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://mytiki.com
- * @since      1.0.0
+ * @author  Ricardo Gonçalves <ricardo@mytiki.com>
+ * @license GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link    https://mytiki.com
+ * @since   1.0.0
  *
  * @package    Tiki_Woo_Loyalty
  * @subpackage Tiki_Woo_Loyalty/public
@@ -25,39 +27,36 @@ class Tiki_Woo_Loyalty_Public {
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
 
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $version    The current version of this plugin.
 	 */
 	private $version;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param string $plugin_name The name of the plugin.
+	 * @param string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
 	 */
 	public function enqueue_styles() {
 
@@ -83,17 +82,25 @@ class Tiki_Woo_Loyalty_Public {
 	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		if(!wp_script_is('tiki-sdk-js')){
-			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
+		if ( ! wp_script_is( 'tiki-sdk-js' ) ) {
+			wp_enqueue_script( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js');
 			if($this->shouldInitializeTikiSdk()){
 				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
 			}
 		}
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
-		wp_add_inline_script( 'cookie-law-info', 'tikiCookieYesSetInitial()','before');
+		wp_add_inline_script( 'cookie-law-info', '
+		let cookieYesCookie = document.cookie.match(new RegExp("(^| )cookieyes-consent=([^;]+)"));
+		if(cookieYesCookie == undefined){
+			let expire = new Date()
+			let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+			expire.setTime(expireTime)        
+			document.cookie = `cookieyes-consent=consentid:,consent:no,action:yes,necessary:yes,functional:no,analytics:no,performance:no,advertisement:no;expires=${expire.toUTCString()};path=/`
+		}
+		','before');
 	}
 
-	private function initiliazeTikiSdk(): string{
+	private function initiliazeTikiSdk(): string {
 		$primaryTextColor = '#1C0000';
 		$secondaryTextColor = '#1C000099';
 		$primaryBackgroundColor = '#FFFFFF';
@@ -113,20 +120,20 @@ class Tiki_Woo_Loyalty_Public {
 		
 		$current_user = wp_get_current_user();
 
-		if ( ! ( $current_user instanceof WP_User ) ) {
+		if (! ( $current_user instanceof WP_User ) ) {
 			$user_id = $this->defineAnonymousUserId();
 		}else{
 			$user_id = $this->defineLoggedInUserId($current_user);
 		}
- 
+
 		return "TikiSdk.config()
 			.theme
-				.primaryTextColor('$primaryTextColor')
-				.secondaryTextColor('$secondaryTextColor')
-				.primaryBackgroundColor('$primaryBackgroundColor')
-				.secondaryBackgroundColor('$secondaryBackgroundColor')
-				.accentColor('$accentColor')
-				.fontFamily('$fontFamily')
+			.primaryTextColor('$primaryTextColor')
+			.secondaryTextColor('$secondaryTextColor')
+			.primaryBackgroundColor('$primaryBackgroundColor')
+			.secondaryBackgroundColor('$secondaryBackgroundColor')
+			.accentColor('$accentColor')
+			.fontFamily('$fontFamily')
 				.and()
 			.offer
 				.description('$description')
@@ -159,8 +166,9 @@ class Tiki_Woo_Loyalty_Public {
 				})";
 	}
 
-	private function defineAnonymousUserId(): string{
-		if(isset( $_COOKIE['tiki_user_id'] )){
+	private function defineAnonymousUserId(): string
+	{
+		if(isset($_COOKIE['tiki_user_id'])) {
 			return $_COOKIE['tiki_user_id'];
 		}
 		$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
@@ -168,10 +176,11 @@ class Tiki_Woo_Loyalty_Public {
 		return $user_id;
 	}
 
-	private function defineLoggedInUserId(WP_User $user): string{
-		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true);
-		if(!$user_id){
-			if(isset( $_COOKIE['tiki_user_id'] )){
+	private function defineLoggedInUserId(WP_User $user): string
+	{
+		$user_id = get_user_meta($user->ID, '_tiki_user_id', true);
+		if(!$user_id) {
+			if(isset($_COOKIE['tiki_user_id'])) {
 				$user_id = $_COOKIE['tiki_user_id'];
 			}else{
 				$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
@@ -181,7 +190,8 @@ class Tiki_Woo_Loyalty_Public {
 		return $user_id;
 	}
 
-	private function shouldInitializeTikiSdk(): bool{
+	private function shouldInitializeTikiSdk(): bool
+	{
 		return true;
 	}
 

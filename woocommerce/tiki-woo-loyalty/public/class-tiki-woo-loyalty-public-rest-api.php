@@ -3,8 +3,10 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://mytiki.com
- * @since      1.0.0
+ * @author  Ricardo Gonçalves <ricardo@mytiki.com>
+ * @license GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link    https://mytiki.com
+ * @since   1.0.0
  *
  * @package    Tiki_Woo_Loyalty
  * @subpackage Tiki_Woo_Loyalty/public
@@ -20,10 +22,13 @@
  * @subpackage Tiki_Woo_Loyalty/public
  * @author     The TIKI Team <ricardo@myiki.com>
  */
-class Tiki_Woo_Loyalty_Public_Rest_Api {
+class Tiki_Woo_Loyalty_Public_Rest_Api
+{
 
-    public function register_rest_routes(){
-        register_rest_route( 'tiki/v1/woocommerce', 'loyalty/grant', 
+    public function register_rest_routes()
+    {
+        register_rest_route(
+            'tiki/v1/woocommerce', 'loyalty/grant', 
             array(
                 'methods'  => 'post',
                 'callback' => array(
@@ -32,7 +37,8 @@ class Tiki_Woo_Loyalty_Public_Rest_Api {
                 )
             )
         );
-        register_rest_route( 'tiki/v1/woocommerce', 'loyalty/remove',
+        register_rest_route(
+            'tiki/v1/woocommerce', 'loyalty/remove',
             array(
                 'methods'  => 'post',
                 'callback' => array(
@@ -44,18 +50,20 @@ class Tiki_Woo_Loyalty_Public_Rest_Api {
            
     }
 
-    function grant_points( WP_REST_Request $request ){
+    function grant_points( WP_REST_Request $request )
+    {
         $current_user = wp_get_current_user();
-        if($current_user->ID === 0){
+        if($current_user->ID === 0) {
             return new WP_REST_Response(array('error' => 'User not logged in.'), 400);
         }
         update_user_meta($current_user->ID, 'tiki_woocommerce_loyalty_points', 100);
         return new WP_REST_Response(array('message' => "points granted"), 200);
     }
 
-    function remove_points(){
+    function remove_points()
+    {
         $current_user = wp_get_current_user();
-        if(!$current_user){
+        if(!$current_user) {
             return WP_REST_Response(array('error' => 'User not logged in.'), 400);
         }
         update_user_meta($current_user->ID, 'tiki_woocommerce_loyalty_points', 0);

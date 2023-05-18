@@ -1,13 +1,13 @@
 <?php
-
 /**
  * Fired during plugin deactivation
  *
- * @link       https://mytiki.com
- * @since      1.0.0
- *
  * @package    Tiki_Woo_Coupons
  * @subpackage Tiki_Woo_Coupons/includes
+ * @author     Ricardo Gonçalves <ricardo@mytiki.com>
+ * @license    GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link       https://mytiki.com
+ * @since      1.0.0
  */
 
 /**
@@ -15,22 +15,22 @@
  *
  * This class defines all code necessary to run during the plugin's deactivation.
  *
- * @since      1.0.0
  * @package    Tiki_Woo_Coupons
  * @subpackage Tiki_Woo_Coupons/includes
  * @author     The TIKI Team <ricardo@myiki.com>
+ * @license    GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link       https://mytiki.com
+ * @since      1.0.0
  */
 class Tiki_Woo_Coupons_Deactivator {
-
 	/**
 	 * Short Description. (use period)
 	 *
 	 * Long Description.
-	 *
-	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		// TODO delete language files.
+		// TODO remove plugin options.
 	}
 
 }

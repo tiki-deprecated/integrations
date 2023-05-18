@@ -8,7 +8,7 @@ Stable tag: 0.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Boost your opt-in rates with TIKI for WooCommerce! Offer coupons in exchange for cookies consent and improve user experiences and conversions.
+Boost your cookie consent opt-in rates with TIKI for WooCommerce! Offer coupons in exchange for cookies consent and improve user experiences and conversions.
 
 == Description ==
 
@@ -23,15 +23,14 @@ TIKI for WooCommerce top features:
 * Transparent - TIKI infrastructure and its SDKs are all open source, since the begining and forever.
 * Full user control - Users can revoke the license at anytime. And the plugin will automatically update the status.
 
-We use the [Cookies and Content Security Policy](https://wordpress.org/plugins/cookies-and-content-security-policy/) plugin to block cookies and unwanted external content.
+This plugin does not provide the cookie blocking functionalitty to block cookies and unwanted external content. You can enable it optionally through the integration with [Cookies and Content Security Policy](https://wordpress.org/plugins/cookies-and-content-security-policy/) plugin.
 
 == Installation ==
 
 1. In Plugins menu, click "Add New" and upload `tiki-woo-coupons.zip`.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Configure the cookies categories in the Cookies and Content Security Policy menu.
-4. Get a Publishing ID in console.mytiki.com to activate it in TIKI WooCommerce menu.
-5. Configure your coupouns in the TIKI WooCommerce menu.
+3. Get a Publishing ID in console.mytiki.com to activate it in TIKI WooCommerce menu.
+4. Configure your plugin options in the TIKI menu.
 
 == Frequently Asked Questions ==
 
@@ -43,11 +42,7 @@ Kindly note that it is your responsibility to comply with both local and interna
 
 Be aware that merely installing and activating the plugin without proper configuration may not be enough to guarantee compliance.
 
-== Screenshots ==
-
-TBD
-
 == Changelog ==
 
-= 0.1 =
-* Initial commit - boilerplate
+= 1.0.0 =
+* Initial plublic release

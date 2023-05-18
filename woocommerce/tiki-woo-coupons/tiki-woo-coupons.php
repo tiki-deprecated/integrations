@@ -1,5 +1,4 @@
 <?php
-
 /**
  * The plugin bootstrap file
  *
@@ -8,14 +7,16 @@
  * registers the activation and deactivation functions, and defines a function
  * that starts the plugin.
  *
- * @link              https://mytiki.com
- * @since             1.0.0
- * @package           Tiki_Woo_Coupons
+ * @package Tiki_Woo_Coupons
+ * @link    https://mytiki.com
+ * @since   1.0.0
  *
  * @wordpress-plugin
  * Plugin Name:       TIKI for WooCommerce Coupons
  * Plugin URI:        https://mytiki.com
- * Description:       Boost your opt-in rates with TIKI for WooCommerce Coupons! Offer coupons in exchange for cookie consent and data licenses o increase conversions.
+ * Description:       Boost your opt-in rates with TIKI for WooCommerce Coupons!
+ * Offer coupons in exchange for cookie consent and data licenses to increase
+ * conversions.
  * Version:           1.0.0
  * Author:            The TIKI Team
  * Author URI:        https://mytiki.com
@@ -23,6 +24,12 @@
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       tiki-woo-coupons
  * Domain Path:       /languages
+ *
+ * WC requires at least: 2.1.0
+ * WC tested up to: 7.7.0
+ *
+ * License: GNU General Public License v3.0
+ * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
 
 // If this file is called directly, abort.
@@ -36,6 +43,8 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'TIKI_WOO_COUPONS_VERSION', '0.0.1' );
+
+define( 'TIKI_SDK_VERSION', '1.0.6' );
 
 /**
  * The code that runs during plugin activation.
@@ -77,19 +86,22 @@ function run_tiki_woo_coupons() {
 
 	$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
 	if (
-		in_array( $plugin_path, wp_get_active_and_valid_plugins() )
-		|| (is_multisite() && in_array( $plugin_path, wp_get_active_network_plugins() ))
+		in_array( $plugin_path, wp_get_active_and_valid_plugins(), true )
+		|| ( is_multisite() && in_array( $plugin_path, wp_get_active_network_plugins(), true ) )
 	) {
 		$plugin = new Tiki_Woo_Coupons();
 		$plugin->run();
-	}else{
-		add_action( 'admin_notices', function() {
+	} else {
+		add_action(
+			'admin_notices',
+			function() {
 				?>
 				<div class="notice notice-error">
-					<p><?php _e( 'Error! <b>TIKI WooCommerce Coupons</b> needs <b>WooCommerce</b> to work properly. <br /><a href="'. admin_url("/plugin-install.php?s=woocommerce&tab=search&type=term").'">Click here to install <b>WooCommerce</b></a>', 'tiki-sdk-js' ); ?></p>
+					<p><?php _esc_html_e( 'Error! <b>TIKI WooCommerce Coupons</b> needs <b>WooCommerce</b> to work properly. <br /><a href="' . admin_url( '/plugin-install.php?s=woocommerce&tab=search&type=term' ) . '">Click here to install <b>WooCommerce</b></a>', 'tiki-sdk-js' ); ?></p>
 				</div>
 				<?php
-		});
-	}	
+			}
+		);
+	}
 }
 run_tiki_woo_coupons();

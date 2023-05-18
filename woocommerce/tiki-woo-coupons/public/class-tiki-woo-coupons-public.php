@@ -3,142 +3,131 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * @link       https://mytiki.com
- * @since      1.0.0
- *
  * @package    Tiki_Woo_Coupons
  * @subpackage Tiki_Woo_Coupons/public
+ * @since      1.0.0
+ * @author     Ricardo Gonçalves <ricardo@mytiki.com>
+ * @license    GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link       https://mytiki.com
  */
 
 /**
  * The public-facing functionality of the plugin.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
- *
  * @package    Tiki_Woo_Coupons
  * @subpackage Tiki_Woo_Coupons/public
- * @author     The TIKI Team <ricardo@myiki.com>
+ * @author     Ricardo Gonçalves <ricar∏o@mytiki.com>
+ * @license    GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+ * @link       https://mytiki.com
+ * @since      1.0.0
  */
 class Tiki_Woo_Coupons_Public {
+
 
 	/**
 	 * The ID of this plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
 
 	/**
 	 * The version of this plugin.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      string    $version    The current version of this plugin.
+	 * @since  1.0.0
+	 * @access private
+	 * @var    string    $version    The current version of this plugin.
 	 */
 	private $version;
 
 	/**
 	 * Initialize the class and set its properties.
 	 *
-	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of the plugin.
-	 * @param      string    $version    The version of this plugin.
+	 * @param string $plugin_name The name of the plugin.
+	 * @param string $version     The version of this plugin.
 	 */
 	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
-
-	}
-
-	/**
-	 * Register the stylesheets for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-
-		/**
-		 * This function is provided for demonstration purposes only.
-		 *
-		 * An instance of this class should be passed to the run() function
-		 * defined in Tiki_Woo_Coupons_Loader as all of the hooks are defined
-		 * in that particular class.
-		 *
-		 * The Tiki_Woo_Coupons_Loader will then create the relationship
-		 * between the defined hooks and the functions defined in this
-		 * class.
-		 */
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tiki-woo-coupons-public.css', array(), $this->version, 'all' );
-
+		$this->version     = $version;
 	}
 
 	/**
 	 * Register the JavaScript for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
 	 */
 	public function enqueue_scripts() {
-		if(!wp_script_is('tiki-sdk-js')){
-			wp_enqueue_script ( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@1.0.1/dist/index.js', array( 'wp-api', $this->plugin_name ));
-			if($this->shouldInitializeTikiSdk()){
-				wp_add_inline_script( 'tiki-sdk-js', $this->initiliazeTikiSdk());
+		if ( ! wp_script_is( 'tiki-sdk-js' ) ) {
+			wp_enqueue_script( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@{TIKI_SDK_VERSION}/dist/index.js', array( 'wp-api', $this->plugin_name ), TIKI_SDK_VERSION, true );
+			if ( $this->should_initialize_tiki_sdk() ) {
+				wp_add_inline_script( 'tiki-sdk-js', $this->initialize_tiki_sdk() );
 			}
 		}
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
-		wp_add_inline_script( 'cookie-law-info', 'tikiCookieYesSetInitial()','before');
+		wp_add_inline_script(
+			'cookie-law-info',
+			'
+            let cookieYesCookie = document.cookie.match(new RegExp("(^| )cookieyes-consent=([^;]+)"));
+            if(cookieYesCookie == undefined){
+                let expire = new Date()
+                let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+                expire.setTime(expireTime)        
+                document.cookie = `cookieyes-consent=consentid:,consent:no,action:yes,necessary:yes,functional:no,analytics:no,performance:no,advertisement:no;expires=${expire.toUTCString()};path=/`
+            }',
+			'before'
+		);
 	}
 
-	public function apply_coupon_in_cart(){
+	/**
+	 * Applies the coupon in cart if the user has a valid one.
+	 */
+	public function apply_coupon_in_cart() {
 		$current_user = wp_get_current_user();
-        $tiki_user_id = get_user_meta( $current_user->ID, '_tiki_user_id', true );
-        $code = substr($tiki_user_id, 0, 10);
-		$coupon = new WC_Coupon($code);
-		if ( empty($coupon->id) || $current_user->ID === 0 || WC()->cart->has_discount( $code ) ) {
+		$tiki_user_id = get_user_meta( $current_user->ID, '_tiki_user_id', true );
+		$code         = substr( $tiki_user_id, 0, 10 );
+		$coupon       = new WC_Coupon( $code );
+		if ( empty( $coupon->id ) || 0 === $current_user->ID || WC()->cart->has_discount( $code ) ) {
 			return;
 		}
 		WC()->cart->apply_coupon( $code );
 	}
 
-	private function initiliazeTikiSdk(): string{
-		$primaryTextColor = '#1C0000';
-		$secondaryTextColor = '#1C000099';
-		$primaryBackgroundColor = '#FFFFFF';
-		$secondaryBackgroundColor = '#F6F6F6';
-		$accentColor = '#00b272';
-		$fontFamily = '"Space Grotesk", sans-serif';
-		$description = 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
-		$offer_reward = 'https://cdn.mytiki.com/assets/demo-reward.png';
-		$offer_bullet1 = "{ text: 'Learn how our ads perform', isUsed: true }";
-		$offer_bullet2 = "{ text: 'Reach you on other platforms', isUsed: false }";
-		$offer_bullet3 = "{ text: 'Sold to other companies', isUsed: false }";
-		$offer_terms = 'terms.md';
-		$offer_ptr = 'db2fd320-aed0-498e-af19-0be1d9630c63';
-		$offer_tag = "TikiSdk.TitleTag.deviceId()";
-		$offer_use = "{ usecases:[TikiSdk.LicenseUsecase.attribution()] }";
-		$publishing_id = 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
-		
-		$current_user = wp_get_current_user();
+	private function initialize_tiki_sdk(): string {
 
+		$options                    = get_option( 'tiki_woo_coupons', array() );
+		$primary_text_color         = isset( $options['primaryTextColor'] ) ? $options['primaryTextColor'] : '#1C0000';
+		$secondary_text_color       = isset( $options['secondaryTextColor'] ) ? $options['secondaryTextColor'] : '#1C000099';
+		$primary_background_color   = isset( $options['primaryBackgroundColor'] ) ? $options['primaryBackgroundColor'] : '#FFFFFF';
+		$secondary_background_color = isset( $options['secondaryBackgroundColor'] ) ? $options['secondaryBackgroundColor'] : '#F6F6F6';
+		$accent_color               = isset( $options['accentColor'] ) ? $options['accentColor'] : '#00b272';
+		$font_family                = isset( $options['fontFamily'] ) ? $options['fontFamily'] : '"Space Grotesk", sans-serif';
+		$description                = isset( $options['description'] ) ? $options['description'] : 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
+		$offer_reward               = isset( $options['offer_reward'] ) ? $options['offer_reward'] : 'https://cdn.mytiki.com/assets/demo-reward.png';
+		$offer_bullet1              = isset( $options['offer_bullet1'] ) ? $options['offer_bullet1'] : "{ text: 'Learn how our ads perform', isUsed: true }";
+		$offer_bullet2              = isset( $options['offer_bullet2'] ) ? $options['offer_bullet2'] : "{ text: 'Reach you on other platforms', isUsed: false }";
+		$offer_bullet3              = isset( $options['offer_bullet3'] ) ? $options['offer_bullet3'] : "{ text: 'Sold to other companies', isUsed: false }";
+		$offer_terms                = isset( $options['offer_terms'] ) ? $options['offer_terms'] : 'terms.md';
+		$offer_ptr                  = isset( $options['offer_ptr'] ) ? $options['offer_ptr'] : get_site_url() . 'TIKI_WOO_COUPOUN';
+		$offer_tag                  = isset( $options['offer_tag'] ) ? $options['offer_tag'] : 'TikiSdk.TitleTag.deviceId()';
+		$offer_use                  = isset( $options['offer_use'] ) ? $options['offer_use'] : '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }';
+		$publishing_id              = isset( $options['publishing_id'] ) ? $options['publishing_id'] : 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
+		$current_user               = wp_get_current_user();
 		if ( ! ( $current_user instanceof WP_User ) ) {
-			$user_id = $this->defineAnonymousUserId();
-		}else{
-			$user_id = $this->defineLoggedInUserId($current_user);
+			$user_id = $this->define_anonymous_user_id();
+		} else {
+			$user_id = $this->define_logged_in_user_id( $current_user );
 		}
- 
+
 		return "
 		TikiSdk.config()
 			.theme
-				.primaryTextColor('$primaryTextColor')
-				.secondaryTextColor('$secondaryTextColor')
-				.primaryBackgroundColor('$primaryBackgroundColor')
-				.secondaryBackgroundColor('$secondaryBackgroundColor')
-				.accentColor('$accentColor')
-				.fontFamily('$fontFamily')
+				.primaryTextColor('$primary_text_color')
+				.secondaryTextColor('$secondary_text_color')
+				.primaryBackgroundColor('$primary_background_color')
+				.secondaryBackgroundColor('$secondary_background_color')
+				.accentColor('$accent_color')
+				.fontFamily('$font_family')
 				.and()
 			.offer
 				.description('$description')
@@ -159,7 +148,7 @@ class Tiki_Woo_Coupons_Public {
 				tikiRemoveUserCoupon()
 				tikiCookieYesDenyCallback()
 			})
-			.disableOnDeclineEnding(true)
+			.disableDeclineEnding(true)
 			.initialize('$publishing_id', '$user_id')
 			.then(() => {
 				let tiki_user_id = TikiSdk.id()
@@ -171,29 +160,29 @@ class Tiki_Woo_Coupons_Public {
 			})";
 	}
 
-	private function defineAnonymousUserId(): string{
-		if(isset( $_COOKIE['tiki_user_id'] )){
+	private function define_anonymous_user_id(): string {
+		if ( isset( $_COOKIE['tiki_user_id'] ) ) {
 			return $_COOKIE['tiki_user_id'];
 		}
-		$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
-		setcookie('tiki_user_id', $random_id, strtotime('+1 year'), COOKIEPATH, COOKIE_DOMAIN);
+		$user_id = hash( 'sha256', get_site_url() . microtime( true ) . wp_Rand() );
+		setcookie( 'tiki_user_id', $random_id, strtotime( '+1 year' ), COOKIEPATH, COOKIE_DOMAIN );
 		return $user_id;
 	}
 
-	private function defineLoggedInUserId(WP_User $user): string{
-		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true);
-		if(!$user_id){
-			if(isset( $_COOKIE['tiki_user_id'] )){
+	private function define_logged_in_user_id( WP_User $user ): string {
+		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true );
+		if ( ! $user_id ) {
+			if ( isset( $_COOKIE['tiki_user_id'] ) ) {
 				$user_id = $_COOKIE['tiki_user_id'];
-			}else{
-				$user_id = hash('sha256', get_site_url().microtime(true).mt_Rand());
+			} else {
+				$user_id = hash( 'sha256', get_site_url() . microtime( true ) . wp_Rand() );
 			}
-			update_user_meta($user->ID, '_tiki_user_id', $user_id);
+			update_user_meta( $user->ID, '_tiki_user_id', $user_id );
 		}
 		return $user_id;
 	}
 
-	private function shouldInitializeTikiSdk(): bool{
+	private function should_initialize_tiki_sdk(): bool {
 		return true;
 	}
 }
