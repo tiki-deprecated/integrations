@@ -48,19 +48,17 @@ class Tiki_Woo_Loyalty_Public {
 	 * @param string $plugin_name The name of the plugin.
 	 * @param string $version     The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version )
-	{
+	public function __construct( $plugin_name, $version ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+		$this->version     = $version;
 
 	}
 
 	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 */
-	public function enqueue_styles()
-	{
+	public function enqueue_styles() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -74,7 +72,7 @@ class Tiki_Woo_Loyalty_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/tiki-woo-loyalty-public.css', array(), $this->version, 'all');
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tiki-woo-loyalty-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -102,8 +100,7 @@ class Tiki_Woo_Loyalty_Public {
 		','before');
 	}
 
-	private function initiliazeTikiSdk(): string
-	{
+	private function initiliazeTikiSdk(): string {
 		$primaryTextColor = '#1C0000';
 		$secondaryTextColor = '#1C000099';
 		$primaryBackgroundColor = '#FFFFFF';
@@ -131,12 +128,12 @@ class Tiki_Woo_Loyalty_Public {
 
 		return "TikiSdk.config()
 			.theme
-				.primaryTextColor('$primaryTextColor')
-				.secondaryTextColor('$secondaryTextColor')
-				.primaryBackgroundColor('$primaryBackgroundColor')
-				.secondaryBackgroundColor('$secondaryBackgroundColor')
-				.accentColor('$accentColor')
-				.fontFamily('$fontFamily')
+			.primaryTextColor('$primaryTextColor')
+			.secondaryTextColor('$secondaryTextColor')
+			.primaryBackgroundColor('$primaryBackgroundColor')
+			.secondaryBackgroundColor('$secondaryBackgroundColor')
+			.accentColor('$accentColor')
+			.fontFamily('$fontFamily')
 				.and()
 			.offer
 				.description('$description')

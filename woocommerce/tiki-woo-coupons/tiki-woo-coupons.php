@@ -80,19 +80,22 @@ function run_tiki_woo_coupons() {
 
 	$plugin_path = trailingslashit( WP_PLUGIN_DIR ) . 'woocommerce/woocommerce.php';
 	if (
-		in_array( $plugin_path, wp_get_active_and_valid_plugins() )
-		|| (is_multisite() && in_array( $plugin_path, wp_get_active_network_plugins() ))
+		in_array( $plugin_path, wp_get_active_and_valid_plugins(), true )
+		|| ( is_multisite() && in_array( $plugin_path, wp_get_active_network_plugins(), true ) )
 	) {
 		$plugin = new Tiki_Woo_Coupons();
 		$plugin->run();
-	}else{
-		add_action( 'admin_notices', function() {
-			?>
+	} else {
+		add_action(
+			'admin_notices',
+			function() {
+				?>
 				<div class="notice notice-error">
-					<p><?php _e( 'Error! <b>TIKI WooCommerce Coupons</b> needs <b>WooCommerce</b> to work properly. <br /><a href="'. admin_url("/plugin-install.php?s=woocommerce&tab=search&type=term").'">Click here to install <b>WooCommerce</b></a>', 'tiki-sdk-js' ); ?></p>
+					<p><?php _esc_html_e( 'Error! <b>TIKI WooCommerce Coupons</b> needs <b>WooCommerce</b> to work properly. <br /><a href="' . admin_url( '/plugin-install.php?s=woocommerce&tab=search&type=term' ) . '">Click here to install <b>WooCommerce</b></a>', 'tiki-sdk-js' ); ?></p>
 				</div>
 				<?php
-		});
+			}
+		);
 	}
 }
 run_tiki_woo_coupons();
