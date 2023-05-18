@@ -14,11 +14,6 @@
 /**
  * The public-facing functionality of the plugin.
  *
- * Defines the plugin name, version, and two examples hooks for how to
- * enqueue the public-facing stylesheet and JavaScript.
- *
- * PHP version 7
- *
  * @package    Tiki_Woo_Coupons
  * @subpackage Tiki_Woo_Coupons/public
  * @author     Ricardo Gonçalves <ricar∏o@mytiki.com>
@@ -60,14 +55,6 @@ class Tiki_Woo_Coupons_Public {
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
-	 */
-	public function enqueue_styles() {
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tiki-woo-coupons-public.css', array(), $this->version, 'all' );
-	}
-
-	/**
 	 * Register the JavaScript for the public-facing side of the site.
 	 */
 	public function enqueue_scripts() {
@@ -92,6 +79,9 @@ class Tiki_Woo_Coupons_Public {
 		);
 	}
 
+	/**
+	 * Applies the coupon in cart if the user has a valid one.
+	 */
 	public function apply_coupon_in_cart() {
 		$current_user = wp_get_current_user();
 		$tiki_user_id = get_user_meta( $current_user->ID, '_tiki_user_id', true );
