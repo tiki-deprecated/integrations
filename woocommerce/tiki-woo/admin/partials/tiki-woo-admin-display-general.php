@@ -35,17 +35,13 @@ $options = wp_parse_args( get_option( 'tiki_sdk_options' ), $defaults );
 			<table class="form-table" role="presentation">
 				<tbody>
 					<tr>
-						<th scope="row"><label for="tiki_publishing_id">Publishing ID</label></th>
-						<td><input name="tiki_publishing_id" type="text" id="publishing_id" value="e12f5b7b-6b48-4503-8b39-28e4995b5f88" class="regular-text" />
-						<p class="description" id="tiki_publishing_id-description">The Publishing ID from TIKI Console</p>
-						</td>
+						
 					</tr>
 
 					<tr>
 						<th scope="row"><label for="tiki_app_secret">App Secret</label></th>
 						<td>
-							<input name="tiki_app_secret" type="password" id="tiki_app_secret" value="e12f5b7b-6b48-4503-8b39-28e4995b5f88" class="regular-text" />
-							<p class="description" id="tiki_app_secret-description">The App Secret from TIKI Console</p>
+							
 						</td>
 					</tr>
 				</tbody>

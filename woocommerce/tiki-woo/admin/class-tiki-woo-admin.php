@@ -27,9 +27,9 @@ class Tiki_Woo_Admin {
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      string    $plugin_name    The ID of this plugin.
+	 * @var      string    $tiki_woo    The ID of this plugin.
 	 */
-	private $plugin_name;
+	private $tiki_woo;
 
 	/**
 	 * The version of this plugin.
@@ -44,12 +44,12 @@ class Tiki_Woo_Admin {
 	 * Initialize the class and set its properties.
 	 *
 	 * @since    1.0.0
-	 * @param      string    $plugin_name       The name of this plugin.
+	 * @param      string    $tiki_woo       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $tiki_woo, $version ) {
 
-		$this->plugin_name = $plugin_name;
+		$this->tiki_woo = $tiki_woo;
 		$this->version     = $version;
 
 	}
@@ -70,7 +70,7 @@ class Tiki_Woo_Admin {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script(
-			$this->plugin_name,
+			$this->tiki_woo,
 			plugin_dir_url( __FILE__ ) . 'js/tiki-woo-admin.js',
 			array( 'jquery' ),
 			$this->version,
@@ -90,16 +90,178 @@ class Tiki_Woo_Admin {
 	}
 
 	public function display() {
+		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
+		require_once 'partials/tiki-woo-admin-display.php';
+	}
+
+	public function settings_init() {
+		$this->init_general_options();
+		// $this->init_coupons_options();
+		// $this->init_loyalty_options();
+		// $this->init_cookies_options();
+	}
+
+	public function init_general_options() {
+		$options = get_option( 'tiki_woo_general', array() );
+
+		register_setting( 'tiki_woo_general', 'tiki_woo_general' );
+
+		add_settings_section(
+			'tiki_woo_general_sdk',
+			__( 'TIKI SDK Configuration', 'tiki_woo' ),
+			array( $this, 'tiki_woo_general_sdk_desc' ),
+			'tiki_woo_general',
+			array(
+				'show_button' => empty( $options['publishing_id'] ),
+			)
+		);
+
+		add_settings_field(
+			'publishing_id',
+			__( 'Publishing ID', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_sdk',
+			array(
+				'description' => 'The publishing id',
+				'label_for' => 'publishing_id',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'private_key',
+			__( 'Private Key ID', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_sdk',
+			array(
+				'label_for' => 'private_key',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'secret',
+			__( 'Secret', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_sdk',
+			array(
+				'label_for' => 'secret',
+				'options'   => $options,
+				'type'      => 'password',
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+	}
+	// public function init_coupons_options() {
+	// 	register_setting( 'tiki_woo_coupons', 'tiki_woo_coupons_options' );
+
+	// 	// Register a new section in the "wporg" page.
+	// 	add_settings_section(
+	// 		'wporg_section_developers',
+	// 		__( 'The Matrix has you.', 'tiki_woo' ),
+	// 		array($this,'wporg_section_developers_callback'),
+	// 		'tiki_woo'
+	// 	);
+
+	// 	add_settings_field(
+	// 		'wporg_field_pill',
+	// 		__( 'Pill', 'wporg' ),
+	// 		array($this,'wporg_field_pill_cb'),
+	// 		'tiki_woo',
+	// 		'wporg_section_developers',
+	// 		array(
+	// 			'label_for'         => 'wporg_field_pill',
+	// 			'class'             => 'wporg_row',
+	// 			'wporg_custom_data' => 'custom',
+	// 		)
+	// 	);
+	// }
+	// public function init_loyalty_options() {
+	// 	register_setting( 'tiki_woo_loyalty', 'tiki_woo_loyalty_options' );
+
+	// 	// Register a new section in the "wporg" page.
+	// 	add_settings_section(
+	// 		'wporg_section_developers',
+	// 		__( 'The Matrix has you.', 'tiki_woo' ),
+	// 		array($this,'wporg_section_developers_callback'),
+	// 		'tiki_woo'
+	// 	);
+
+	// 	add_settings_field(
+	// 		'wporg_field_pill',
+	// 		__( 'Pill', 'wporg' ),
+	// 		array($this,'wporg_field_pill_cb'),
+	// 		'tiki_woo',
+	// 		'wporg_section_developers',
+	// 		array(
+	// 			'label_for'         => 'wporg_field_pill',
+	// 			'class'             => 'wporg_row',
+	// 			'wporg_custom_data' => 'custom',
+	// 		)
+	// 	);
+	// }
+	// public function init_cookies_options() {
+	// 	register_setting( 'tiki_woo_cookies', 'tiki_woo_cookies_options' );
+
+	// 	// Register a new section in the "wporg" page.
+	// 	add_settings_section(
+	// 		'wporg_section_developers',
+	// 		__( 'The Matrix has you.', 'tiki_woo' ),
+	// 		array($this,'wporg_section_developers_callback'),
+	// 		'tiki_woo'
+	// 	);
+
+	// 	add_settings_field(
+	// 		'wporg_field_pill',
+	// 		__( 'Pill', 'wporg' ),
+	// 		array($this,'wporg_field_pill_cb'),
+	// 		'tiki_woo',
+	// 		'wporg_section_developers',
+	// 		array(
+	// 			'label_for'         => 'wporg_field_pill',
+	// 			'class'             => 'wporg_row',
+	// 			'wporg_custom_data' => 'custom',
+	// 		)
+	// 	);
+	// }
+
+	public function tiki_woo_general_sdk_desc( $args ) {
+		if ( $args['show_button'] ) {
+			?>
+			<div class="button-primary">TIKI Console</div>
+			<?php
+		}
+	}
+
+	public function render_input_field( $args ) {
+		$label       = $args['label_for'];
+		$value       = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
+		$name        = $args['option_name'] . '[' . $label . ']';
+		$type        = isset( $args['type'] ) ? $args['type'] : 'text';
 		?>
-			<div class= "wrapper" >
-				<h2>TIKI For WooCommerce</h2>
-			</div>
-		<?php
+			<input 
+				id="<?php echo esc_attr( $label ); ?>"
+				name="<?php echo esc_attr( $name ); ?>"
+				value="<?php echo esc_attr( $value ); ?>"
+				type="<?php echo esc_attr( $type ); ?>"
+				class="regular-text" >
+			<?php
+			if ( isset( $args['description'] ) ) {
+				?>
+				<p class='description' id='$label-description'><?php echo esc_html( $args['description'] ); ?></p>
+				<?php
+			}
 	}
 
 	public function plugin_links( $links ) {
-		$url     = get_admin_url() . 'admin.php?page=tiki-woo';
+		$url = get_admin_url() . 'admin.php?page=tiki-woo';
 		array_unshift( $links, '<a href="' . $url . '">' . __( 'Settings', 'tiki-woo' ) . '</a>');
 		return $links;
 	}
+
 }
