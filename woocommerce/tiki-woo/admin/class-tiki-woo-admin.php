@@ -108,12 +108,9 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_general_sdk',
-			__( 'TIKI SDK Configuration', 'tiki_woo' ),
+			__( 'SDK Configuration', 'tiki_woo' ),
 			array( $this, 'tiki_woo_general_sdk_desc' ),
 			'tiki_woo_general',
-			array(
-				'show_button' => empty( $options['publishing_id'] ),
-			)
 		);
 
 		add_settings_field(
@@ -156,79 +153,112 @@ class Tiki_Woo_Admin {
 				'option_name' => 'tiki_woo_general',
 			)
 		);
+
+		add_settings_field(
+			'publishing_id',
+			__( 'Publishing ID', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_sdk',
+			array(
+				'description' => 'The publishing id',
+				'label_for' => 'publishing_id',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_section(
+			'tiki_woo_general_ui',
+			__( 'UI Personalization', 'tiki_woo' ),
+			array( $this, 'tiki_woo_general_sdk_desc' ),
+			'tiki_woo_general',
+		);
+
+		add_settings_field(
+			'Primary text color',
+			__( 'Primary text color', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_ui',
+			array(
+				'description' => 'Primary text color',
+				'label_for' => 'Primary text color',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'Secondary text color',
+			__( 'Secondary text color', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_ui',
+			array(
+				'description' => 'Secondary text color',
+				'label_for' => 'Secondary text color',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'Primary background color',
+			__( 'Primary background color', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_ui',
+			array(
+				'description' => 'The Primary background color',
+				'label_for' => 'Primary background color',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'Secondary background color',
+			__( 'Secondary background color', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_ui',
+			array(
+				'description' => 'The Secondary background color',
+				'label_for' => 'Secondary background color',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'Accent color',
+			__( 'Accent color', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_ui',
+			array(
+				'description' => 'Accent color',
+				'label_for' => 'Accent color',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+
+		add_settings_field(
+			'Font Family',
+			__( 'Font Family', 'tiki_woo' ),
+			array( $this, 'render_input_field' ),
+			'tiki_woo_general',
+			'tiki_woo_general_ui',
+			array(
+				'description' => 'Font Family',
+				'label_for' => 'Font Family',
+				'options'   => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
 	}
-	// public function init_coupons_options() {
-	// 	register_setting( 'tiki_woo_coupons', 'tiki_woo_coupons_options' );
-
-	// 	// Register a new section in the "wporg" page.
-	// 	add_settings_section(
-	// 		'wporg_section_developers',
-	// 		__( 'The Matrix has you.', 'tiki_woo' ),
-	// 		array($this,'wporg_section_developers_callback'),
-	// 		'tiki_woo'
-	// 	);
-
-	// 	add_settings_field(
-	// 		'wporg_field_pill',
-	// 		__( 'Pill', 'wporg' ),
-	// 		array($this,'wporg_field_pill_cb'),
-	// 		'tiki_woo',
-	// 		'wporg_section_developers',
-	// 		array(
-	// 			'label_for'         => 'wporg_field_pill',
-	// 			'class'             => 'wporg_row',
-	// 			'wporg_custom_data' => 'custom',
-	// 		)
-	// 	);
-	// }
-	// public function init_loyalty_options() {
-	// 	register_setting( 'tiki_woo_loyalty', 'tiki_woo_loyalty_options' );
-
-	// 	// Register a new section in the "wporg" page.
-	// 	add_settings_section(
-	// 		'wporg_section_developers',
-	// 		__( 'The Matrix has you.', 'tiki_woo' ),
-	// 		array($this,'wporg_section_developers_callback'),
-	// 		'tiki_woo'
-	// 	);
-
-	// 	add_settings_field(
-	// 		'wporg_field_pill',
-	// 		__( 'Pill', 'wporg' ),
-	// 		array($this,'wporg_field_pill_cb'),
-	// 		'tiki_woo',
-	// 		'wporg_section_developers',
-	// 		array(
-	// 			'label_for'         => 'wporg_field_pill',
-	// 			'class'             => 'wporg_row',
-	// 			'wporg_custom_data' => 'custom',
-	// 		)
-	// 	);
-	// }
-	// public function init_cookies_options() {
-	// 	register_setting( 'tiki_woo_cookies', 'tiki_woo_cookies_options' );
-
-	// 	// Register a new section in the "wporg" page.
-	// 	add_settings_section(
-	// 		'wporg_section_developers',
-	// 		__( 'The Matrix has you.', 'tiki_woo' ),
-	// 		array($this,'wporg_section_developers_callback'),
-	// 		'tiki_woo'
-	// 	);
-
-	// 	add_settings_field(
-	// 		'wporg_field_pill',
-	// 		__( 'Pill', 'wporg' ),
-	// 		array($this,'wporg_field_pill_cb'),
-	// 		'tiki_woo',
-	// 		'wporg_section_developers',
-	// 		array(
-	// 			'label_for'         => 'wporg_field_pill',
-	// 			'class'             => 'wporg_row',
-	// 			'wporg_custom_data' => 'custom',
-	// 		)
-	// 	);
-	// }
 
 	public function tiki_woo_general_sdk_desc( $args ) {
 		if ( $args['show_button'] ) {
