@@ -1,3 +1,4 @@
+
 <?php
 /**
  * Provide an admin area view for the plugin

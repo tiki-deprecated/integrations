@@ -1,15 +1,12 @@
-=== TIKI for WooCommerce Coupons ===
-Contributors: mytiki, brgweb
-Donate link: https://mytiki.com
-Tags: cookies, cookies banner, woocommerce, coupons
-Requires at least: 5.0
-Tested up to: 5.8
-Stable tag: 0.0.1
+=== Plugin Name ===
+Contributors: (this should be a list of wordpress.org userid's)
+Donate link: https://myiki.com
+Tags: comments, spam
+Requires at least: 3.0.1
+Tested up to: 3.4
+Stable tag: 4.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
-
-Boost your cookie consent opt-in rates with TIKI for WooCommerce! Offer coupons in exchange for cookies consent and improve user experiences and conversions.
-
 == Description ==
 
 TIKI for WooCommerce Coupons makes it simple to create offers for users that consents the usage of cookies. 
