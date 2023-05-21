@@ -1,32 +1,53 @@
-(function( $ ) {
-	'use strict';
+(function ($) {
+    'use strict';
 
-	/**
-	 * All of the code for your admin-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+    // enable color picker
+    $('.color-picker').wpColorPicker();
 
-})( jQuery );
+
+    // on upload button click
+    $('body').on('click', '.tiki-img-upload', function (event) {
+        event.preventDefault();
+
+        const button = $(this)
+        const imageId = button.next().next().val();
+        const customUploader = wp.media({
+            title: 'Insert image', // modal window title
+            library: {
+                type: 'image'
+            },
+            button: {
+                text: 'Use this image'
+            },
+            multiple: false
+        }).on('select', function () {
+            const attachment = customUploader.state().get('selection').first().toJSON();
+            button.removeClass('button').html('<img style="max-width:150px;max-height:150px" src="' + attachment.url + '"><br />');
+            button.next().next().show();
+            button.next().next().val(attachment.id);
+            button.blur()
+        })
+
+        // already selected images
+        customUploader.on('open', function () {
+
+            if (imageId) {
+                const selection = customUploader.state().get('selection')
+                let attachment = wp.media.attachment(imageId);
+                attachment.fetch();
+                selection.add(attachment ? [attachment] : []);
+            }
+
+        })
+
+        customUploader.open()
+
+    });
+    // on remove button click
+    $('body').on('click', '.tiki-img-remove', function (event) {
+        event.preventDefault();
+        const button = $(this);
+        button.next().val('');
+        button.hide().prev().prev().addClass('button').html('Upload image');
+    });
+})(jQuery);
