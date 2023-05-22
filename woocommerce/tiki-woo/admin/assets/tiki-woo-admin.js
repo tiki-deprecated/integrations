@@ -4,8 +4,7 @@
     // enable color picker
     $('.color-picker').wpColorPicker();
 
-
-    // on upload button click
+    // on upload image button click
     $('body').on('click', '.tiki-img-upload', function (event) {
         event.preventDefault();
 
@@ -43,7 +42,8 @@
         customUploader.open()
 
     });
-    // on remove button click
+
+    // on remove image button click
     $('body').on('click', '.tiki-img-remove', function (event) {
         event.preventDefault();
         const button = $(this);

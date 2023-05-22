@@ -1,32 +1,76 @@
 (function( $ ) {
 	'use strict';
 
-	/**
-	 * All of the code for your public-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
-	 */
+    const tikiSetPresentedCookie = () => {
+        let expire = new Date()
+        let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+        expire.setTime(expireTime)
+        document.cookie = 'tiki_presented=1;expires=' + expire.toUTCString() + ';path=/'
+    }
+    
+    const tikiSetUserIdCookie = (tiki_user_id) => {
+        let expire = new Date()
+        let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+        expire.setTime(expireTime)
+        document.cookie = 'tiki_user_id=' + tiki_user_id + ';expires=' + expire.toUTCString() + ';path=/'
+    }
 
+	const tikiCreateUserCoupon = () => {
+        wp.api.loadPromise.done(function () {
+            fetch(`${wpApiSettings.root}tiki/v1/woocommerce/coupon/create`, {
+                method: 'post',
+                mode: 'cors',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'X-WP-Nonce': wpApiSettings.nonce
+                }
+            });
+        })
+    }
+    
+    const tikiRemoveUserCoupon = () => {
+        wp.api.loadPromise.done(function () {
+            fetch(`${wpApiSettings.root}tiki/v1/woocommerce/coupon/delete`, {
+                method: 'post',
+                mode: 'cors',
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'X-WP-Nonce': wpApiSettings.nonce
+                }
+            });
+        })
+    }
+
+    const tikiGrantPoints = () => {
+        wp.api.loadPromise.done( function() {
+            fetch( `${wpApiSettings.root}tiki/v1/woocommerce/loyalty/grant`, {
+                method : 'post',
+                mode : 'cors',
+                headers : {
+                    'Access-Control-Allow-Origin' : '*',
+                    'X-WP-Nonce' : wpApiSettings.nonce
+                }
+            });
+        } )
+    }
+    
+    const tikiRemovePoints= () => {
+        wp.api.loadPromise.done( function() {
+            fetch(`${wpApiSettings.root}tiki/v1/woocommerce/loyalty/remove`, {
+                method : 'post',
+                mode : 'cors',
+                headers : {
+                    'Access-Control-Allow-Origin' : '*',
+                    'X-WP-Nonce' : wpApiSettings.nonce
+                }
+                });
+        } )
+    }
+    
+    const tikiCookieYesAcceptCallback = () =>
+        document.querySelectorAll('[data-cky-tag="detail-accept-button"]')[0].click()
+    
+    const tikiCookieYesDenyCallback = () =>
+        document.querySelectorAll('[data-cky-tag="revisit-consent"]')[0].click()
+    
 })( jQuery );

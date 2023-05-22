@@ -82,6 +82,11 @@ class Tiki_Woo_Admin {
 		}
 	}
 
+	/**
+	 * Register the admin menu.
+	 *
+	 * @since    1.0.0
+	 */
 	public function admin_menu() {
 		add_submenu_page(
 			'woocommerce-marketing',
@@ -93,11 +98,11 @@ class Tiki_Woo_Admin {
 		);
 	}
 
-	public function display() {
-		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
-		require_once 'partials/tiki-woo-admin-display.php';
-	}
-
+	/**
+	 * Initialize the plugin settings.
+	 *
+	 * @since    1.0.0
+	 */
 	public function settings_init() {
 		$this->init_general_options();
 		$this->init_coupons_options();
@@ -105,10 +110,213 @@ class Tiki_Woo_Admin {
 		$this->init_cookies_options();
 	}
 
-	public function init_coupons_options() {
+	/**
+	 * Display the plugin admin area.
+	 *
+	 * @since    1.0.0
+	 */
+	public function display() {
+		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
+		require_once 'partials/tiki-woo-admin-display.php';
+	}
+
+	/**
+	 * Description of the General SDK sections
+	 *
+	 * @since    1.0.0
+	 */
+	public function tiki_woo_general_sdk_desc() {
+		?>
+		<div class="button-primary">TIKI Console</div>
+		<?php
+	}
+
+	/**
+	 * Description of the General SDK sections
+	 *
+	 * @since    1.0.0
+	 */
+	public function tiki_woo_coupon_desc( $args ) {
+		?>
+		<div>Coupon offer configuration</div>
+		<?php
+	}
+
+	/**
+	 * Helper function to render input field html.
+	 *
+	 * @since    1.0.0
+	 */
+	public function render_input_field( $args ) {
+		$label   = $args['label_for'];
+		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
+		$name    = $args['option_name'] . '[' . $label . ']';
+		$type    = isset( $args['type'] ) ? $args['type'] : 'text';
+		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : 'regular-text';
+		?>
+		<input 
+			id="<?php echo esc_attr( $label ); ?>"
+			name="<?php echo esc_attr( $name ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			type="<?php echo esc_attr( $type ); ?>"
+			class="<?php echo esc_attr( $classes ); ?>" >
+		<?php
+		if ( isset( $args['description'] ) ) {
+			?>
+			<p class='description' id='label-description'><?php echo esc_html( $args['description'] ); ?></p>
+			<?php
+		}
+	}
+
+	/**
+	 * Helper function to render img upload html.
+	 *
+	 * @since    1.0.0
+	 */
+	public function render_img_upload( $args ) {
+		$label   = $args['label_for'];
+		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
+		$name    = $args['option_name'] . '[' . $label . ']';
+		$type    = isset( $args['type'] ) ? $args['type'] : 'text';
+		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : 'regular-text';
+		$image   = wp_get_attachment_image_url( $value, 'small' );
+		if ( $image ) :
+			?>
+			<a href="#" class="tiki-img-upload">
+				<img style="max-width:150px;max-height:150px" src="<?php echo esc_url( $image ); ?>" />
+			</a>
+			<br />
+			<a href="#" class="tiki-img-remove">Remove image</a>
+			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="<?php echo absint( $value ); ?>">
+		<?php else : ?>
+			<a href="#" class="button tiki-img-upload">Upload image</a>
+			<a href="#" class="tiki-img-remove" style="display:none">Remove image</a>
+			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="">
+			<?php
+		endif;
+	}
+
+	/**
+	 * Helper funcion to render select field html.
+	 *
+	 * @since    1.0.0
+	 */
+	public function render_select_field( $args ) {
+		$label   = $args['label_for'];
+		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
+		$name    = $args['option_name'] . '[' . $label . ']';
+		$type    = isset( $args['type'] ) ? $args['type'] : 'text';
+		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : 'regular-text';
+		?>
+		<select
+			id="<?php echo esc_attr( $label ); ?>"
+			name="<?php echo esc_attr( $name ); ?>"
+			type="<?php echo esc_attr( $type ); ?>"
+			class="<?php echo esc_attr( $classes ); ?>" >
+		<?php
+		foreach ( $args['select_options'] as $option ) {
+			?>
+				<option value="<?php echo esc_attr( $option['option_value'] ); ?>" 
+				<?php
+				if ( $value === $option['option_value'] ) {
+					echo ' selected';
+				}
+				?>
+				><?php echo esc_html( $option['option_name'] ); ?></option>
+			<?php
+		}
+		?>
+		<?php
+		if ( isset( $args['description'] ) ) {
+			?>
+			<p class='description' id='$label-description'><?php echo esc_html( $args['description'] ); ?></p>
+			<?php
+		}
+	}
+
+	/**
+	 * Helper function to render the fields that defines the bullets.
+	 *
+	 * @since    1.0.0
+	 */
+	public function render_bullet_filed( $args ) {
+		$label    = $args['label_for'];
+		$value    = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
+		$name     = $args['option_name'] . '[' . $label . ']';
+		$cb_name  = $args['option_name'] . '[' . $label . '_cb]';
+		$cb_value = isset( $args['options'][ $label . '_cb' ] ) ? $args['options'][ $label . '_cb' ] : false;
+		?>
+		<input 
+			id="<?php echo esc_attr( $label ); ?>"
+			name="<?php echo esc_attr( $name ); ?>"
+			value="<?php echo esc_attr( $value ); ?>"
+			type="text" >
+		<select 
+			id="<?php echo esc_attr( $label ); ?>_cb"
+			name="<?php echo esc_attr( $cb_name ); ?>"
+		>
+			<option value='used' 
+			<?php
+			if ( 'used' === $cb_value ) {
+				?>
+				selected
+				<?php
+			}
+			?>
+			> Used </option>
+			<option value='not_used' 
+			<?php
+			if ( 'not_used' === $cb_value ) {
+				?>
+				selected
+				<?php
+			}
+			?>
+			> Not Used </option>>
+		</select>
+		<?php
+		if ( isset( $args['description'] ) ) {
+			?>
+			<p class='description' id='label-description'><?php echo esc_html( $args['description'] ); ?></p>
+			<?php
+		}
+	}
+
+	private function init_coupons_options() {
 		$options = get_option( 'tiki_woo_coupons', array() );
 
 		register_setting( 'tiki_woo_coupons', 'tiki_woo_coupons' );
+
+		add_settings_section(
+			'tiki_woo_coupons_enable',
+			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			array( $this, 'tiki_woo_coupon_desc' ),
+			'tiki_woo_coupons',
+		);
+
+		add_settings_field(
+			'enable_coupons',
+			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			array( $this, 'render_select_field' ),
+			'tiki_woo_coupons',
+			'tiki_woo_coupons_enable',
+			array(
+				'description'    => 'Enable discount coupouns in exchange for cookies consent',
+				'label_for'      => 'enable_settings',
+				'options'        => $options,
+				'option_name'    => 'tiki_woo_coupons_enable',
+				'select_options' => array(
+					array(
+						'option_name'  => 'Enable',
+						'option_value' => 1,
+					),
+					array(
+						'option_name'  => 'Disable',
+						'option_value' => 0,
+					),
+				),
+			)
+		);
 
 		add_settings_section(
 			'tiki_woo_coupons',
@@ -229,17 +437,9 @@ class Tiki_Woo_Admin {
 				'option_name' => 'tiki_woo_coupons',
 			)
 		);
-
-		add_settings_field(
-			'offer_bullet3_cb',
-			__( 'offer_bullet3_cb', 'tiki_woo' ),
-			array( $this, 'render_bullet_filed' ),
-			'tiki_woo_coupons',
-			'',
-		);
 	}
 
-	public function init_cookies_options() {
+	private function init_cookies_options() {
 		$options = get_option( 'tiki_woo_cookies', array() );
 
 		register_setting( 'tiki_woo_cookies', 'tiki_woo_cookies' );
@@ -281,11 +481,41 @@ class Tiki_Woo_Admin {
 
 	}
 
-
-	public function init_loyalty_options() {
+	private function init_loyalty_options() {
 		$options = get_option( 'tiki_woo_loyalty', array() );
 
 		register_setting( 'tiki_woo_loyalty', 'tiki_woo_loyalty' );
+
+		add_settings_section(
+			'tiki_woo_loyalty_enable',
+			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			array( $this, 'tiki_woo_coupon_desc' ),
+			'tiki_woo_loyalty',
+		);
+
+		add_settings_field(
+			'enable_coupons',
+			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			array( $this, 'render_select_field' ),
+			'tiki_woo_loyalty',
+			'tiki_woo_loyalty_enable',
+			array(
+				'description'    => 'Enable discount coupouns in exchange for cookies consent',
+				'label_for'      => 'enable_settings',
+				'options'        => $options,
+				'option_name'    => 'tiki_woo_loyalty_enable',
+				'select_options' => array(
+					array(
+						'option_name'  => 'Enable',
+						'option_value' => 1,
+					),
+					array(
+						'option_name'  => 'Disable',
+						'option_value' => 0,
+					),
+				),
+			)
+		);
 
 		add_settings_section(
 			'tiki_woo_loyalty',
@@ -388,13 +618,13 @@ class Tiki_Woo_Admin {
 		);
 	}
 
-	public function init_general_options() {
+	private function init_general_options() {
 		$options = get_option( 'tiki_woo_general', array() );
 		$this->init_sdk_options( $options );
 		$this->init_ui_options( $options );
 	}
 
-	public function init_sdk_options( $options ) {
+	private function init_sdk_options( $options ) {
 
 		register_setting( 'tiki_woo_general', 'tiki_woo_general' );
 
@@ -462,7 +692,7 @@ class Tiki_Woo_Admin {
 
 	}
 
-	public function init_ui_options( $options ) {
+	private function init_ui_options( $options ) {
 		add_settings_section(
 			'tiki_woo_general_ui',
 			__( 'UI Settigns', 'tiki_woo' ),
@@ -558,139 +788,7 @@ class Tiki_Woo_Admin {
 		);
 	}
 
-	public function tiki_woo_general_sdk_desc( $args ) {
-		?>
-		<div class="button-primary">TIKI Console</div>
-		<?php
-	}
-
-	public function tiki_woo_coupon_desc( $args ) {
-		?>
-		<div>Coupon offer configuration</div>
-		<?php
-	}
-
-	public function render_input_field( $args ) {
-		$label   = $args['label_for'];
-		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
-		$name    = $args['option_name'] . '[' . $label . ']';
-		$type    = isset( $args['type'] ) ? $args['type'] : 'text';
-		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : 'regular-text';
-		?>
-		<input 
-			id="<?php echo esc_attr( $label ); ?>"
-			name="<?php echo esc_attr( $name ); ?>"
-			value="<?php echo esc_attr( $value ); ?>"
-			type="<?php echo esc_attr( $type ); ?>"
-			class="<?php echo esc_attr( $classes ); ?>" >
-		<?php
-		if ( isset( $args['description'] ) ) {
-			?>
-			<p class='description' id='label-description'><?php echo esc_html( $args['description'] ); ?></p>
-			<?php
-		}
-	}
-
-	public function render_img_upload( $args ) {
-		$label   = $args['label_for'];
-		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
-		$name    = $args['option_name'] . '[' . $label . ']';
-		$type    = isset( $args['type'] ) ? $args['type'] : 'text';
-		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : 'regular-text';
-		$image   = wp_get_attachment_image_url( $value, 'small' );
-		if ( $image ) :
-			?>
-			<a href="#" class="tiki-img-upload">
-				<img style="max-width:150px;max-height:150px" src="<?php echo esc_url( $image ); ?>" />
-			</a>
-			<br />
-			<a href="#" class="tiki-img-remove">Remove image</a>
-			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="<?php echo absint( $value ); ?>">
-		<?php else : ?>
-			<a href="#" class="button tiki-img-upload">Upload image</a>
-			<a href="#" class="tiki-img-remove" style="display:none">Remove image</a>
-			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="">
-			<?php
-		endif;
-	}
-
-	public function render_select_field( $args ) {
-		$label   = $args['label_for'];
-		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
-		$name    = $args['option_name'] . '[' . $label . ']';
-		$type    = isset( $args['type'] ) ? $args['type'] : 'text';
-		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : 'regular-text';
-		?>
-		<select
-			id="<?php echo esc_attr( $label ); ?>"
-			name="<?php echo esc_attr( $name ); ?>"
-			type="<?php echo esc_attr( $type ); ?>"
-			class="<?php echo esc_attr( $classes ); ?>" >
-		<?php
-		foreach ( $args['select_options'] as $option ) {
-			?>
-				<option value="<?php echo esc_attr( $option['option_value'] ); ?>" 
-				<?php
-				if ( $value === $option['option_value'] ) {
-					echo ' selected';
-				}
-				?>
-				><?php echo esc_html( $option['option_name'] ); ?></option>
-			<?php
-		}
-		?>
-		<?php
-		if ( isset( $args['description'] ) ) {
-			?>
-			<p class='description' id='$label-description'><?php echo esc_html( $args['description'] ); ?></p>
-			<?php
-		}
-	}
-
-	public function render_bullet_filed( $args ) {
-		$label    = $args['label_for'];
-		$value    = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : '';
-		$name     = $args['option_name'] . '[' . $label . ']';
-		$cb_name  = $args['option_name'] . '[' . $label . '_cb]';
-		$cb_value = isset( $args['options'][ $label . '_cb' ] ) ? $args['options'][ $label . '_cb' ] : false;
-		?>
-		<input 
-			id="<?php echo esc_attr( $label ); ?>"
-			name="<?php echo esc_attr( $name ); ?>"
-			value="<?php echo esc_attr( $value ); ?>"
-			type="text" >
-		<select 
-			id="<?php echo esc_attr( $label ); ?>_cb"
-			name="<?php echo esc_attr( $cb_name ); ?>"
-		>
-			<option value='used' 
-			<?php
-			if ( 'used' === $cb_value ) {
-				?>
-				selected
-				<?php
-			}
-			?>
-			> Used </option>
-			<option value='not_used' 
-			<?php
-			if ( 'not_used' === $cb_value ) {
-				?>
-				selected
-				<?php
-			}
-			?>
-			> Not Used </option>>
-		</select>
-		<?php
-		if ( isset( $args['description'] ) ) {
-			?>
-			<p class='description' id='label-description'><?php echo esc_html( $args['description'] ); ?></p>
-			<?php
-		}
-	}
-
-	public function plugin_links( $links ) {
+	private function plugin_links( $links ) {
 		$url = get_admin_url() . 'admin.php?page=tiki-woo';
 		array_unshift( $links, '<a href="' . $url . '">' . __( 'Settings', 'tiki-woo' ) . '</a>' );
 		return $links;
