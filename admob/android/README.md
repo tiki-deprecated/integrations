@@ -1,6 +1,6 @@
 # TIKI <> AdMob Integration
 
-Integrate TIKI with AdMob to handle user activity track permission that enables ads personalization.
+Integrate TIKI with AdMob to increase your eCPM rates by improving user tracking permission opt-ins (ad personalization).
 
 ### Requires
 
@@ -13,6 +13,7 @@ Before starting, you should have the following:
 ### How it works
 
 The TIKI SDK Android can be used to increase the user acceptance of the Android Advertising ID usage. AdMob uses [UMP](https://developers.google.com/interactive-media-ads/ump/android/quick-start) to inform the user about activity tracking, and ask their consent.
+
 In this example, we present a compeling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
 
 ## Get Started
@@ -34,7 +35,7 @@ In this example, we present a compeling offer to the user before UMP prompt. If 
       .duration(365, TimeUnit.DAYS)
       .add()
 ```
-Note: Check [our docs]() for details on the `offer` parameters.
+Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on the `offer` parameters.
 
 2. Initialize AdMob and check consent information with the User Messaging Platform (UMP).
 
@@ -42,6 +43,7 @@ Note: Check [our docs]() for details on the `offer` parameters.
 
    With the new versions of the Google AdMob SDK, it is not recommended that the app tracks user consent by itself. That means that an active License in TIKI SDK cannot replace the Google UMP framework. As stated in [Google AdMob SDK docs](https://developers.google.com/admob/flutter/privacy?hl=en#display-message):
    > "Using alternative ways of checking the consent status—such as checking a cache your app utilizes or looking for a consent string in storage—are strongly discouraged as the set of ad technology partners could have changed since the user last consented."
+
 
 ```
     private fun initAdMob(){
@@ -86,7 +88,7 @@ Note: Check [our docs]() for details on the `offer` parameters.
     }
 ```
 
-3 - Add the `onAccept` callback to initialize AdMob. It is called after the user decides to opt in.
+3. Add the `onAccept` callback to initialize AdMob. It is called after the user decides to opt in.
 
 ```
     TikiSdk
@@ -98,7 +100,7 @@ Note: Check [our docs]() for details on the `offer` parameters.
       }
 ```
 
-4. Configure and initialize the TIKI SDK with your publishing ID from TIKI Console and your internal user ID. After the initilization is complete, call runApp to build the UI. Use the following code snippet:
+4. Configure and initialize the TIKI SDK with your publishing ID from TIKI Console and your internal user ID. After the initialization is complete, call runApp to build the UI. Use the following code snippet:
 
 ```
     TikiSdk
@@ -108,12 +110,12 @@ Note: Check [our docs]() for details on the `offer` parameters.
       .onAccept{ _, _ ->
          initAdMob()
       }
-      .init(this, <publishing_id>, <user_id>, onComplete = {
+      .init(this, "<PUBLISHING ID>", "<USER ID>", onComplete = {
       TikiSdk.present(this)
    })
 ```
 
-5. Replace your current ad prompt with the TIKI SDK `present` method. In this example we are calling the method after the TIKI SDK initializes. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and recording the result in the TIKI SDK blockchain. Once the user makes a decision, the `onAccept` callback will be called, and the user will have to go through the UMP form if required. Add the `onComplete` callback to call `TikiSdk.present(context)`
+5. Replace your current ad prompt with the TIKI SDK `present` method. In this example we are calling the method after the TIKI SDK initializes. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and record the immutable result with TIKI. Once the user makes a decision, the `onAccept` callback will be called, and the user will have to go through the UMP form if required. Add the `onComplete` callback to call `TikiSdk.present(context)`
 
 ```
     TikiSdk
@@ -123,7 +125,7 @@ Note: Check [our docs]() for details on the `offer` parameters.
       .onAccept{ _, _ ->
          initAdMob()
       }
-      .init(this, "e12f5b7b-6b48-4503-8b39-28e4995b5f88","AdMobUser", onComplete = {
+      .init(this, "<PUBLISHING ID>", "<USER ID>", onComplete = {
       TikiSdk.present(this)
    })
 ```
@@ -148,7 +150,7 @@ Here's the full code snippet for configuring and initializing the TIKI SDK:
      .onAccept{ _, _ ->
          initAdMob()
      }
-     .init(this, "e12f5b7b-6b48-4503-8b39-28e4995b5f88","AdMobUser", onComplete = {
+     .init(this, "<PUBLISHING ID>", "<USER ID>", onComplete = {
          TikiSdk.present(this)
      })
 ```
@@ -168,4 +170,4 @@ Here's the full code snippet for configuring and initializing the TIKI SDK:
        // CALL TikiSdk.present()
       }
    }
-```Ω
+```
