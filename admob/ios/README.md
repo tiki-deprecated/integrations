@@ -1,6 +1,6 @@
 # TIKI <> AdMob Integration
 
-Integrate TIKI with AdMob to handle user activity track permission that enables ads personalization.
+Integrate TIKI with AdMob to increase your eCPM rates by improving user tracking permission opt-ins (ad personalization).
 
 ### Requires
 
@@ -13,7 +13,7 @@ Before starting, you should have the following:
 ### How it works
 
 The TIKI SDK iOS can be used to increase the user acceptance of the mandatory App Tracking Transparency (ATT) prompt in iOS. AdMob uses [UMP](https://developers.google.com/interactive-media-ads/ump/ios/quick-start) to inform the user about activity tracking, and ask their consent.
-In this example, we present a compeling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
+In this example, we present a compiling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
 
 ## Get Started
 
@@ -44,7 +44,8 @@ In this example, we present a compeling offer to the user before UMP prompt. If 
    With the new versions of the Google AdMob SDK, it is not recommended that the app tracks user consent by itself. That means that an active License in TIKI SDK cannot replace the Google UMP framework. As stated in [Google AdMob SDK docs](https://developers.google.com/admob/ios/privacy?hl=en#display-message): 
    > "Using alternative ways of checking the consent status—such as checking a cache your app utilizes or looking for a consent string in storage—are strongly discouraged as the set of ad technology partners could have changed since the user last consented."
 
-   ```swift
+   
+   ```
    func checkUMPConsent(){
         let parameters = UMPRequestParameters()
         parameters.tagForUnderAgeOfConsent = false
@@ -63,10 +64,11 @@ In this example, we present a compeling offer to the user before UMP prompt. If 
             })
     }
    ```
+   Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on the `offer` parameters.
 
-3 - Add the `onAccept` and `onDecline` callbacks. These callbacks are called after the user decides to opt in or not. Either decision the user makes, it needs to go through the UMP consent flow as per AdMob docs.
+3. Add the `onAccept` and `onDecline` callbacks. These callbacks are called after the user decides to opt in or not. Either decision the user makes, it needs to go through the UMP consent flow as per AdMob docs.
 
-```swift
+   ```
        TikiSdk.config()
             .offer
                 // ... 
@@ -76,13 +78,13 @@ In this example, we present a compeling offer to the user before UMP prompt. If 
             .onAccept{ _, _ in
                 checkUMPConsent()
             }
-```
+   ```
 
-These callbacks will trigger after the user accepts or declines the license offer presented by the TIKI SDK. The `onAccept` callback will initiate the UMP form flow by calling the `checkUMPConsent()` function. Similarly, the `onDecline` callback will also call the `checkUMPConsent()` function to handle the user's decision.
+   These callbacks will trigger after the user accepts or declines the license offer presented by the TIKI SDK. The `onAccept` callback will initiate the UMP form flow by calling the `checkUMPConsent()` function. Similarly, the `onDecline` callback will also call the `checkUMPConsent()` function to handle the user's decision.
 
 4. Configure and initialize the TIKI SDK with your publishing ID from TIKI Console and your internal user ID. Use the following code snippet:
 
-```swift
+   ```
     TikiSdk.config()
         .offer
             // offer details and onAccept callback
@@ -91,19 +93,19 @@ These callbacks will trigger after the user accepts or declines the license offe
                 showDefaultAds()
             }
         .initialize(
-            publishingId: <publishing ID>,
-            id: <user ID>)
-```
+            publishingId: "<PUBLISHING ID>",
+            id: "<USER ID>")
+   ```
 
-5. Replace your current ATT prompt with the TIKI SDK `present` method. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and recording the result in the TIKI SDK blockchain. Once the user makes a decision, the `onAccept` or `onDecline` callbacks will be called, and the user will have to go through the UMP form if required. Use the following code snippet:
+5. Replace your current ATT prompt with the TIKI SDK `present` method. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and record the immutable result with TIKI. Once the user makes a decision, the `onAccept` or `onDecline` callbacks will be called, and the user will have to go through the UMP form if required. Use the following code snippet:
 
-```swift
+   ```
     TikiSdk.present()
-```
+   ```
 
-Here's the full code snippet for configuring and initializing the TIKI SDK:
+   Here's the full code snippet for configuring and initializing the TIKI SDK:
 
-```swift
+   ```
     TikiSdk.config()
         .offer
             .permission(.tracking) // IMPORTANT
@@ -122,17 +124,17 @@ Here's the full code snippet for configuring and initializing the TIKI SDK:
             checkUMPConsent()
         }
         .initialize(
-            publishingId: <publishing ID>,
-            id: <user ID>)
-```
+            publishingId: "<PUBLISHING ID>",
+            id: "<USER ID>")
+   ```
 
 6. **OPTIONAL** You can use the TIKI SDK `guard` method to check if the user still has a valid License before showing ads. If the user doesn't have a valid license, you can prompt them with the TIKI SDK prompt. Use the following code snippet:
 
-```swift
+   ```
     await TikiSdk.guard(
         ptr: "AdTrackingRewarded",
         usecases: [LicenseUsecase.attribution],
         destinations: ["mycompany.com/api/tracking"],
         onPass: showPersonalizedAds,
         onFail: {_ in TikiSdk.present()})
-```
+   ```

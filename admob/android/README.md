@@ -14,12 +14,12 @@ Before starting, you should have the following:
 
 The TIKI SDK Android can be used to increase the user acceptance of the Android Advertising ID usage. AdMob uses [UMP](https://developers.google.com/interactive-media-ads/ump/android/quick-start) to inform the user about activity tracking, and ask their consent.
 
-In this example, we present a compeling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
+In this example, we present a compiling offer to the user before UMP prompt. If the user accepts the offer, TIKI creates a licence and shows the user the required UMP prompt. 
 
 ## Get Started
 1. Configure TIKI SDK with an offer that describes why the app needs to track ads ID.
 
-```
+   ```
     TikiSdk
       .offer
       .ptr("AdTrackingRewarded")
@@ -34,8 +34,8 @@ In this example, we present a compeling offer to the user before UMP prompt. If 
       .terms(this, "terms.md")
       .duration(365, TimeUnit.DAYS)
       .add()
-```
-Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on the `offer` parameters.
+   ```
+   Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on the `offer` parameters.
 
 2. Initialize AdMob and check consent information with the User Messaging Platform (UMP).
 
@@ -45,7 +45,7 @@ Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on
    > "Using alternative ways of checking the consent status—such as checking a cache your app utilizes or looking for a consent string in storage—are strongly discouraged as the set of ad technology partners could have changed since the user last consented."
 
 
-```
+   ```
     private fun initAdMob(){
         val params = ConsentRequestParameters
             .Builder()
@@ -86,11 +86,11 @@ Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on
             }
         )
     }
-```
+   ```
 
 3. Add the `onAccept` callback to initialize AdMob. It is called after the user decides to opt in.
 
-```
+   ```
     TikiSdk
       .offer
       // ... offer config
@@ -98,11 +98,11 @@ Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on
       .onAccept{ _, _ ->
          initAdMob()
       }
-```
+   ```
 
 4. Configure and initialize the TIKI SDK with your publishing ID from TIKI Console and your internal user ID. After the initialization is complete, call runApp to build the UI. Use the following code snippet:
 
-```
+   ```
     TikiSdk
       .offer
       // ... offer config
@@ -113,11 +113,11 @@ Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on
       .init(this, "<PUBLISHING ID>", "<USER ID>", onComplete = {
       TikiSdk.present(this)
    })
-```
+   ```
 
 5. Replace your current ad prompt with the TIKI SDK `present` method. In this example we are calling the method after the TIKI SDK initializes. This method will display the TIKI SDK pre-built UI, letting the user decide whether to license their tracking ID and record the immutable result with TIKI. Once the user makes a decision, the `onAccept` callback will be called, and the user will have to go through the UMP form if required. Add the `onComplete` callback to call `TikiSdk.present(context)`
 
-```
+   ```
     TikiSdk
       .offer
       // ... offer config
@@ -128,11 +128,11 @@ Note: Check [our docs](https://mytiki.com/docs/creating-an-offer) for details on
       .init(this, "<PUBLISHING ID>", "<USER ID>", onComplete = {
       TikiSdk.present(this)
    })
-```
+   ```
 
-Here's the full code snippet for configuring and initializing the TIKI SDK:
+   Here's the full code snippet for configuring and initializing the TIKI SDK:
 
-```
+   ```
      TikiSdk
          .offer
          .ptr("AdTrackingRewarded")
@@ -153,7 +153,7 @@ Here's the full code snippet for configuring and initializing the TIKI SDK:
      .init(this, "<PUBLISHING ID>", "<USER ID>", onComplete = {
          TikiSdk.present(this)
      })
-```
+   ```
 
 6. **OPTIONAL** You can use the TIKI SDK `guard` method to check if the user still has a valid License before showing ads. If the user doesn't have a valid license, you can prompt them with the TIKI SDK prompt. Use the following code snippet:
 
