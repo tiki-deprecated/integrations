@@ -344,9 +344,9 @@ class Tiki_Woo_Admin {
 			'tiki_woo_coupons',
 			'tiki_woo_coupons_enable',
 			array(
-				'label_for'      => 'enable_settings',
+				'label_for'      => 'enable_coupons',
 				'options'        => $options,
-				'option_name'    => 'tiki_woo_coupons_enable',
+				'option_name'    => 'tiki_woo_coupons',
 				'select_options' => array(
 					array(
 						'option_name'  => 'Enable',
@@ -522,7 +522,7 @@ class Tiki_Woo_Admin {
 						'option_value' => '',
 					),
 					array(
-						'option_name'  => 'CookieYes Integration',
+						'option_name'  => 'Cookie Yes Integration',
 						'option_value' => 'cookie_yes',
 					),
 				),
@@ -551,9 +551,9 @@ class Tiki_Woo_Admin {
 			'tiki_woo_loyalty_enable',
 			array(
 				'description'    => 'Enable discount coupouns in exchange for cookies consent',
-				'label_for'      => 'enable_settings',
+				'label_for'      => 'enable_points',
 				'options'        => $options,
-				'option_name'    => 'tiki_woo_loyalty_enable',
+				'option_name'    => 'tiki_woo_loyalty',
 				'select_options' => array(
 					array(
 						'option_name'  => 'Enable',
@@ -751,7 +751,7 @@ class Tiki_Woo_Admin {
 				'description'    => 'Sets the default offer for Cookies consent. If the default option is disabled, the other will be used instead.',
 				'label_for'      => 'default_offer',
 				'options'        => $options,
-				'option_name'    => 'default_offer',
+				'option_name'    => 'tiki_woo_general',
 				'select_options' => array(
 					array(
 						'option_name'  => 'Coupons',
