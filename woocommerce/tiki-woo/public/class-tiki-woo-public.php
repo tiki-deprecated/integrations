@@ -87,14 +87,17 @@ class Tiki_Woo_Public {
 
 	private function initialize_tiki_sdk(): string {
 
-		$coupon_options = get_option( 'tiki_woo_coupons', array() );
-
-		$primary_text_color         = isset( $options['primaryTextColor'] ) ? $options['primaryTextColor'] : '#1C0000';
-		$secondary_text_color       = isset( $options['secondaryTextColor'] ) ? $options['secondaryTextColor'] : '#1C000099';
-		$primary_background_color   = isset( $options['primaryBackgroundColor'] ) ? $options['primaryBackgroundColor'] : '#FFFFFF';
-		$secondary_background_color = isset( $options['secondaryBackgroundColor'] ) ? $options['secondaryBackgroundColor'] : '#F6F6F6';
-		$accent_color               = isset( $options['accentColor'] ) ? $options['accentColor'] : '#00b272';
-		$font_family                = isset( $options['fontFamily'] ) ? $options['fontFamily'] : '"Space Grotesk", sans-serif';
+		$general_options = get_option( 'tiki_woo_general', array() );
+		$cookies_options = get_option( 'tiki_woo_cookies', array() );
+		$coupon_options  = get_option( 'tiki_woo_coupons', array() );
+		$loyalty_options = get_option( 'tiki_woo_loyalty', array() );
+	
+		$primary_text_color         = isset( $options['primary_text_color'] ) ? $options['primary_text_color'] : '#1C0000';
+		$secondary_text_color       = isset( $options['secondary_text_color'] ) ? $options['secondary_text_color'] : '#1C000099';
+		$primary_background_color   = isset( $options['primary_background_color'] ) ? $options['primary_background_color'] : '#FFFFFF';
+		$secondary_background_color = isset( $options['secondary_background_color'] ) ? $options['secondary_background_color'] : '#F6F6F6';
+		$accent_color               = isset( $options['accent_color'] ) ? $options['accent_color'] : '#00b272';
+		$font_family                = isset( $options['font_family'] ) ? $options['font_family'] : '"Space Grotesk", sans-serif';
 		$description                = isset( $options['description'] ) ? $options['description'] : 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
 		$offer_reward               = isset( $options['offer_reward'] ) ? $options['offer_reward'] : 'https://cdn.mytiki.com/assets/demo-reward.png';
 		$offer_bullet1              = isset( $options['offer_bullet1'] ) ? '{ text: "' . $options['offer_bullet1'] . '", isUsed: ' . ( 'used' === $options['offer_bullet1_cb'] ) . ' }' : "{ text: 'Learn how our ads perform', isUsed: true }";
@@ -104,8 +107,8 @@ class Tiki_Woo_Public {
 		$offer_ptr                  = isset( $options['offer_ptr'] ) ? $options['offer_ptr'] : get_site_url() . '_TIKI_WOO_COUPON';
 		$offer_tag                  = isset( $options['offer_tag'] ) ? $options['offer_tag'] : 'TikiSdk.TitleTag.deviceId()';
 		$offer_use                  = isset( $options['offer_use'] ) ? $options['offer_use'] : '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }';
-		$publishing_id              = isset( $options['publishing_id'] ) ? $options['publishing_id'] : '';
-		$cookie_yes_integration     = isset( $options['cookie_yes_integration'] ) ? $options['cookie_yes_integration'] : false;
+		$publishing_id              = isset( $general_options['publishing_id'] ) ? $general_options['publishing_id'] : '';
+		$cookie_yes_integration     = isset( $cookies_options['cookie_yes_integration'] ) ? $cookies_options['cookie_yes_integration'] : false;
 
 		$current_user = wp_get_current_user();
 		if ( ! ( $current_user instanceof WP_User ) ) {
