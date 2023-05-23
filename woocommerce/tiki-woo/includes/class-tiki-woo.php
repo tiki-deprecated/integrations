@@ -84,13 +84,6 @@ class Tiki_Woo {
 	/**
 	 * Load the required dependencies for this plugin.
 	 *
-	 * Include the following files that make up the plugin:
-	 *
-	 * - Tiki_Woo_Loader. Orchestrates the hooks of the plugin.
-	 * - Tiki_Woo_i18n. Defines internationalization functionality.
-	 * - Tiki_Woo_Admin. Defines all hooks for the admin area.
-	 * - Tiki_Woo_Public. Defines all hooks for the public side of the site.
-	 *
 	 * Create an instance of the loader which will be used to register the hooks
 	 * with WordPress.
 	 *
@@ -98,29 +91,11 @@ class Tiki_Woo {
 	 * @access   private
 	 */
 	private function load_dependencies() {
-
-		/**
-		 * The class responsible for orchestrating the actions and filters of the
-		 * core plugin.
-		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tiki-woo-loader.php';
-
-		/**
-		 * The class responsible for defining internationalization functionality
-		 * of the plugin.
-		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tiki-woo-i18n.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the admin area.
-		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-tiki-woo-admin.php';
-
-		/**
-		 * The class responsible for defining all actions that occur in the public-facing
-		 * side of the site.
-		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-tiki-woo-public.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-tiki-woo-rest-api.php';
 
 		$this->loader = new Tiki_Woo_Loader();
 
@@ -178,10 +153,7 @@ class Tiki_Woo {
 	private function define_public_hooks() {
 
 		$plugin_public = new Tiki_Woo_Public( $this->get_plugin_name(), $this->get_version() );
-		$plugin_rest   = new Tiki_Woos_Public_Rest_Api();
-
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$plugin_rest   = new Tiki_Woo_Rest_Api();
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts', 999 );
 		$this->loader->add_action( 'rest_api_init', $plugin_rest, 'register_rest_routes' );

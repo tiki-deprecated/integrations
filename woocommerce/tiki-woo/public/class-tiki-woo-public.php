@@ -55,29 +55,18 @@ class Tiki_Woo_Public {
 	}
 
 	/**
-	 * Register the stylesheets for the public-facing side of the site.
-	 *
-	 * @since    1.0.0
-	 */
-	public function enqueue_styles() {
-
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/tiki-woo-public.css', array(), $this->version, 'all' );
-
-	}
-
-	/**
 	 * Register the JavaScript for the public-facing side of the site.
 	 */
 	public function enqueue_scripts() {
 		if ( ! wp_script_is( 'tiki-sdk-js' ) ) {
-			wp_enqueue_script( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@' . TIKI_SDK_VERSION . '/dist/index.js', array( 'wp-api', $this->plugin_name ), TIKI_SDK_VERSION, true );
+			wp_enqueue_script( 'tiki-sdk-js', 'https://unpkg.com/@mytiki/tiki-sdk-js@' . TIKI_SDK_VERSION . '/dist/index.js', array( 'wp-api', $this->plugin_name ), TIKI_SDK_VERSION, false );
 			if ( $this->should_initialize_tiki_sdk() ) {
 				wp_add_inline_script( 'tiki-sdk-js', $this->initialize_tiki_sdk() );
 			}
 		}
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-coupons-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/tiki-woo-public.js', array( 'jquery' ), $this->version, false );
 		$options = get_option( 'tiki_sdk_options' );
-		if ( isset( $options['cookie_yes_integration'] ) && $options['cookie_yes_integration'] ) {
+		if ( $this->should_load_cookie_yes() ) {
 			$this->cookie_yes_js_integration();
 		}
 	}
@@ -96,28 +85,87 @@ class Tiki_Woo_Public {
 		WC()->cart->apply_coupon( $code );
 	}
 
-	private function initialize_tiki_sdk(): string {
+	private function get_default_options( $default ) {
+		if ( 'coupons' === $default ) {
+			$coupon_options  = get_option( 'tiki_woo_coupons', array() );
+			if ( $coupon_options['enable_coupons'] ) {
+				return $coupon_options;
+			} else {
+				$loyalty_options = get_option( 'tiki_woo_loyalty', array() );
+				if ( $loyalty_options['enable_points'] ) {
+					return $loyalty_options;
+				} else {
+					return null;
+				}
+			}
+		}
+	}
 
-		$options                    = get_option( 'tiki_woo_coupons', array() );
-		$primary_text_color         = isset( $options['primaryTextColor'] ) ? $options['primaryTextColor'] : '#1C0000';
-		$secondary_text_color       = isset( $options['secondaryTextColor'] ) ? $options['secondaryTextColor'] : '#1C000099';
-		$primary_background_color   = isset( $options['primaryBackgroundColor'] ) ? $options['primaryBackgroundColor'] : '#FFFFFF';
-		$secondary_background_color = isset( $options['secondaryBackgroundColor'] ) ? $options['secondaryBackgroundColor'] : '#F6F6F6';
-		$accent_color               = isset( $options['accentColor'] ) ? $options['accentColor'] : '#00b272';
-		$font_family                = isset( $options['fontFamily'] ) ? $options['fontFamily'] : '"Space Grotesk", sans-serif';
-		$description                = isset( $options['description'] ) ? $options['description'] : 'Trade your IDFA (kind of like a serial # for your phone) for a discount.';
-		$offer_reward               = isset( $options['offer_reward'] ) ? $options['offer_reward'] : 'https://cdn.mytiki.com/assets/demo-reward.png';
-		$offer_bullet1              = isset( $options['offer_bullet1'] ) ? $options['offer_bullet1'] : "{ text: 'Learn how our ads perform', isUsed: true }";
-		$offer_bullet2              = isset( $options['offer_bullet2'] ) ? $options['offer_bullet2'] : "{ text: 'Reach you on other platforms', isUsed: false }";
-		$offer_bullet3              = isset( $options['offer_bullet3'] ) ? $options['offer_bullet3'] : "{ text: 'Sold to other companies', isUsed: false }";
-		$offer_terms                = isset( $options['offer_terms'] ) ? $options['offer_terms'] : 'terms.md';
-		$offer_ptr                  = isset( $options['offer_ptr'] ) ? $options['offer_ptr'] : get_site_url() . 'TIKI_WOO_COUPOUN';
-		$offer_tag                  = isset( $options['offer_tag'] ) ? $options['offer_tag'] : 'TikiSdk.TitleTag.deviceId()';
-		$offer_use                  = isset( $options['offer_use'] ) ? $options['offer_use'] : '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }';
-		$publishing_id              = isset( $options['publishing_id'] ) ? $options['publishing_id'] : 'e12f5b7b-6b48-4503-8b39-28e4995b5f88';
-		$cookie_yes_integration     = isset( $options['cookie_yes_integration'] ) ? $options['cookie_yes_integration'] : false;
+	private function should_load_cookie_yes() {
+		$cookies_options = get_option( 'tiki_woo_cookies', array() );
+		$plugin_path     = trailingslashit( WP_PLUGIN_DIR ) . 'cookie-law-info/cookie-law-info.php';
+		if ( 'cookie_yes' === $cookies_options['cookies_integration'] ) {
+			$is_enabled = in_array( $plugin_path, wp_get_active_and_valid_plugins(), true )
+			|| ( is_multisite() && in_array( $plugin_path, wp_get_active_network_plugins(), true ) );
+			return $is_enabled;
+		}
+		return false;
+	}
+
+	private function initialize_tiki_sdk() {
+
+		$default = array(
+			'primary_text_color'         => '#1C0000',
+			'secondary_text_color'       => '#1C000099',
+			'primary_background_color'   => '#FFFFFF',
+			'secondary_background_color' => '#F6F6F6',
+			'accent_color'               => '#00b272',
+			'font_family'                => '"Space Grotesk", sans-serif',
+			'description'                => 'Trade your IDFA (kind of like a serial # for your phone) for a discount.',
+			'offer_reward'               => 'https://cdn.mytiki.com/assets/demo-reward.png',
+			'offer_bullet1'              => "{ text: 'Learn how our ads perform', isUsed: true }",
+			'offer_bullet2'              => "{ text: 'Reach you on other platforms', isUsed: false }",
+			'offer_bullet3'              => "{ text: 'Sold to other companies', isUsed: false }",
+			'offer_terms'                => wp_remote_get( 'https://cdn.mytiki.com/assets/udla/template-1-0-0.md' ),
+			'offer_ptr'                  => get_site_url() . '_TIKI_WOO_COUPON',
+			'offer_tag'                  => 'TikiSdk.TitleTag.deviceId()',
+			'offer_use'                  => '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }',
+		);
+
+		$general_options = get_option( 'tiki_woo_general', array() );
+		$offer_options   = $this->get_default_options( $general_options['default_offer'] );
+
+		if ( is_null( $offer_options ) ) {
+			return '';
+		}
+
+		$options = array_merge(
+			$default,
+			$general_options,
+			$offer_options,
+		);
+
+		$primary_text_color         = $options['primary_text_color'];
+		$secondary_text_color       = $options['secondary_text_color'];
+		$primary_background_color   = $options['primary_background_color'];
+		$secondary_background_color = $options['secondary_background_color'];
+		$accent_color               = $options['accent_color'];
+		$font_family                = $options['font_family'];
+		$description                = $options['description'];
+		$offer_reward               = $options['offer_reward'];
+		$offer_bullet1              = $this->get_offer_bullet_js( $options['offer_bullet1'], $options['offer_bullet1_cb'] );
+		$offer_bullet2              = $this->get_offer_bullet_js( $options['offer_bullet2'], $options['offer_bullet2_cb'] );
+		$offer_bullet3              = $this->get_offer_bullet_js( $options['offer_bullet3'], $options['offer_bullet3_cb'] );
+		$offer_terms                = $options['offer_terms'];
+		$offer_ptr                  = $options['offer_ptr'];
+		$offer_tag                  = $options['offer_tag'];
+		$offer_use                  = $options['offer_use'];
+		$publishing_id              = $general_options['publishing_id'];
+
+		$cookie_yes_integration = $this->should_load_cookie_yes();
 
 		$current_user = wp_get_current_user();
+
 		if ( ! ( $current_user instanceof WP_User ) ) {
 			$user_id = $this->define_anonymous_user_id();
 		} else {
@@ -226,4 +274,11 @@ class Tiki_Woo_Public {
 		);
 	}
 
+	private function get_offer_bullet_js( $text, $is_used ) {
+		$offer_bullet_arr = array(
+			'text'   => $text,
+			'isUsed' => $is_used,
+		);
+		return wp_json_encode( $offer_bullet_arr );
+	}
 }

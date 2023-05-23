@@ -24,8 +24,7 @@
  * @subpackage Tiki_Woo/includes
  * @author     TIKI Team <ricardo@mytiki.com>
  */
-class Tiki_Woo_i18n {
-
+class Tiki_Woo_I18n {
 
 	/**
 	 * Load the plugin text domain for translation.

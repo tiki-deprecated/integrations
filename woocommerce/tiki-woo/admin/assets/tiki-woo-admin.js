@@ -1,10 +1,8 @@
 (function ($) {
     'use strict';
 
-    // enable color picker
     $('.color-picker').wpColorPicker();
 
-    // on upload image button click
     $('body').on('click', '.tiki-img-upload', function (event) {
         event.preventDefault();
 
@@ -43,7 +41,6 @@
 
     });
 
-    // on remove image button click
     $('body').on('click', '.tiki-img-remove', function (event) {
         event.preventDefault();
         const button = $(this);

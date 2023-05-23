@@ -73,7 +73,7 @@ class Tiki_Woo_Rest_Api {
 	public function grant_points( WP_REST_Request $request ) {
 		$current_user = wp_get_current_user();
 		if ( 0 === $current_user->ID ) {
-			return new WP_REST_Response( array('error' => 'User not logged in.'), 400);
+			return new WP_REST_Response( array( 'error' => 'User not logged in.' ), 400 );
 		}
 		$points = 100;
 		update_user_meta( $current_user->ID, 'tiki_woocommerce_loyalty_points', $points );

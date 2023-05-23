@@ -41,7 +41,7 @@ define( 'TIKI_WOO_VERSION', '1.0.0' );
 /**
  * Current TIKI SDK JS version.
  */
-define( 'TIKI_SDK_JS_VERSION', '1.0.6' );
+define( 'TIKI_SDK_VERSION', '1.0.6' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -77,7 +77,7 @@ function run_tiki_woo() {
 			function() {
 				?>
 				<div class="notice notice-error">
-					<p>Error! <b>TIKI for WooCommerce</b> depends on <b>WooCommerce</b> to work properly. Plugin deactivated. <a href="<?php echo admin_url( '/plugin-install.php?s=woocommerce&tab=search&type=term' ); ?>">Click here to install <b>WooCommerce</b></a></p>
+					<p>Error! <b>TIKI for WooCommerce</b> depends on <b>WooCommerce</b> to work properly. Plugin deactivated. <a href="<?php echo esc_attr( admin_url( '/plugin-install.php?s=woocommerce&tab=search&type=term' ) ); ?>">Click here to install <b>WooCommerce</b></a></p>
 				</div>
 				<?php
 			}
