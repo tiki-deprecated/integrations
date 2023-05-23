@@ -91,7 +91,7 @@ class Tiki_Woo_Admin {
 	public function admin_menu() {
 		add_submenu_page(
 			'woocommerce-marketing',
-			'TIKI For WooCommerce',
+			__( 'TIKI For WooCommerce', 'tiki-woo' ),
 			'TIKI',
 			'manage_options',
 			'tiki-woo',
@@ -126,12 +126,11 @@ class Tiki_Woo_Admin {
 	 *
 	 * @since    1.0.0
 	 */
+	//wpcs:ignore
 	public function tiki_woo_general_sdk_desc() {
 		$options = get_option( 'tiki_woo_general', array() );
 		if ( empty( $options['publishing_id'] ) || empty( $options['private_key'] ) || empty( $options['secret'] ) ) {
-			?>
-			<p>Get your free credentials in the <a href="https://console.mytiki.com">TIKI Console</a>
-			<?php
+			echo __( '<p>Get your credentials in the "<a href="https://console.mytiki.com">TIKI Console</a>' ); // WPCS: XSS ok.
 		} else {
 			?>
 			<p>
@@ -192,11 +191,11 @@ class Tiki_Woo_Admin {
 				<img style="max-width:150px;max-height:150px" src="<?php echo esc_url( $image ); ?>" />
 			</a>
 			<br />
-			<a href="#" class="tiki-img-remove">Remove image</a>
+			<a href="#" class="tiki-img-remove"><?php echo esc_html__( 'Remove image', 'tiki-woo' ); ?></a> 
 			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="<?php echo absint( $value ); ?>">
 		<?php else : ?>
-			<a href="#" class="button tiki-img-upload">Upload image</a>
-			<a href="#" class="tiki-img-remove" style="display:none">Remove image</a>
+			<a href="#" class="button tiki-img-upload"><?php echo esc_html__( 'Upload image', 'tiki-woo' ); ?></a>
+			<a href="#" class="tiki-img-remove" style="display:none"><?php echo esc_html__( 'Remove image', 'tiki-woo' ); ?></a>
 			<input type="hidden" name="<?php echo esc_attr( $name ); ?>" value="">
 			<?php
 		endif;
@@ -332,14 +331,14 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_coupons_enable',
-			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			__( 'Enable Discount Coupons', 'tiki-woo' ),
 			null,
 			'tiki_woo_coupons',
 		);
 
 		add_settings_field(
 			'enable_coupons',
-			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			__( 'Enable Discount Coupons', 'tiki-woo' ),
 			array( $this, 'render_select_field' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons_enable',
@@ -349,11 +348,11 @@ class Tiki_Woo_Admin {
 				'option_name'    => 'tiki_woo_coupons',
 				'select_options' => array(
 					array(
-						'option_name'  => 'Enable',
+						'option_name'  => __( 'Enable' ),
 						'option_value' => 1,
 					),
 					array(
-						'option_name'  => 'Disable',
+						'option_name'  => __( 'Disable' ),
 						'option_value' => 0,
 					),
 				),
@@ -362,14 +361,14 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_coupons',
-			__( 'Coupons Settings', 'tiki_woo' ),
+			__( 'Coupons Settings', 'tiki-woo' ),
 			null,
 			'tiki_woo_coupons',
 		);
 
 		add_settings_field(
 			'discount_type',
-			__( 'Discount Type', 'tiki_woo' ),
+			__( 'Discount Type', 'tiki-woo' ),
 			array( $this, 'render_select_field' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -379,15 +378,15 @@ class Tiki_Woo_Admin {
 				'option_name'    => 'tiki_woo_coupons',
 				'select_options' => array(
 					array(
-						'option_name'  => 'Percentage discount',
+						'option_name'  => __( 'Percentage discount' ),
 						'option_value' => 'percent',
 					),
 					array(
-						'option_name'  => 'Fixed cart discount',
+						'option_name'  => __( 'Fixed cart discount' ),
 						'option_value' => 'fixed_cart',
 					),
 					array(
-						'option_name'  => 'Fixed product discount',
+						'option_name'  => __( 'Fixed product discount' ),
 						'option_value' => 'fixed_product',
 					),
 				),
@@ -396,7 +395,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'discount_value',
-			__( 'Discount Value', 'tiki_woo' ),
+			__( 'Discount Value', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -411,7 +410,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'description',
-			__( 'Description', 'tiki_woo' ),
+			__( 'Description', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -425,7 +424,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_reward',
-			__( 'Offer image', 'tiki_woo' ),
+			__( 'Offer image', 'tiki-woo' ),
 			array( $this, 'render_img_upload' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -439,7 +438,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_bullet1',
-			__( 'Offer use case 1', 'tiki_woo' ),
+			__( 'Offer use case 1', 'tiki-woo' ),
 			array( $this, 'render_bullet_filed' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -452,7 +451,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_bullet2',
-			__( 'Offer use case 2', 'tiki_woo' ),
+			__( 'Offer use case 2', 'tiki-woo' ),
 			array( $this, 'render_bullet_filed' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -466,7 +465,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_bullet3',
-			__( 'Offer use case 3', 'tiki_woo' ),
+			__( 'Offer use case 3', 'tiki-woo' ),
 			array( $this, 'render_bullet_filed' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
@@ -480,12 +479,11 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_terms',
-			__( 'Offer terms', 'tiki_woo' ),
+			__( 'Offer terms', 'tiki-woo' ),
 			array( $this, 'render_textarea' ),
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
 			array(
-				'description' => 'Accepts html and markdown',
 				'label_for'   => 'offer_terms',
 				'options'     => $options,
 				'option_name' => 'tiki_woo_coupons',
@@ -500,29 +498,29 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_cookies',
-			__( 'Coupons Settings', 'tiki_woo' ),
+			__( 'Coupons Settings', 'tiki-woo' ),
 			null,
 			'tiki_woo_cookies',
 		);
 
 		add_settings_field(
 			'cookies_integration',
-			__( 'Cookies integration', 'tiki_woo' ),
+			__( 'Cookies integration', 'tiki-woo' ),
 			array( $this, 'render_select_field' ),
 			'tiki_woo_cookies',
 			'tiki_woo_cookies',
 			array(
-				'description'    => 'The Cookies Integration',
+				'description'    => __( 'The Cookies Integration' ),
 				'label_for'      => 'cookies_integration',
 				'options'        => $options,
 				'option_name'    => 'tiki_woo_cookies',
 				'select_options' => array(
 					array(
-						'option_name'  => 'No integration',
+						'option_name'  => __( 'No integration' ),
 						'option_value' => '',
 					),
 					array(
-						'option_name'  => 'Cookie Yes Integration',
+						'option_name'  => __( 'Cookie Yes Integration' ),
 						'option_value' => 'cookie_yes',
 					),
 				),
@@ -538,29 +536,29 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_loyalty_enable',
-			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			__( 'Enable Loyalty Points', 'tiki-woo' ),
 			null,
 			'tiki_woo_loyalty',
 		);
 
 		add_settings_field(
 			'enable_coupons',
-			__( 'Enable Discount Coupons', 'tiki_woo' ),
+			__( 'Enable Loyalty Points', 'tiki-woo' ),
 			array( $this, 'render_select_field' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty_enable',
 			array(
-				'description'    => 'Enable discount coupouns in exchange for cookies consent',
+				'description'    => __( 'Enable loyalty points in exchange for cookies consent' ),
 				'label_for'      => 'enable_points',
 				'options'        => $options,
 				'option_name'    => 'tiki_woo_loyalty',
 				'select_options' => array(
 					array(
-						'option_name'  => 'Enable',
+						'option_name'  => __( 'Enable' ),
 						'option_value' => 1,
 					),
 					array(
-						'option_name'  => 'Disable',
+						'option_name'  => __( 'Disable' ),
 						'option_value' => 0,
 					),
 				),
@@ -569,14 +567,14 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_loyalty',
-			__( 'loyalty Settings', 'tiki_woo' ),
+			__( 'loyalty Settings', 'tiki-woo' ),
 			null,
 			'tiki_woo_loyalty',
 		);
 
 		add_settings_field(
 			'reward_points',
-			__( 'Reward points', 'tiki_woo' ),
+			__( 'Reward points', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
@@ -591,7 +589,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'description',
-			__( 'Description', 'tiki_woo' ),
+			__( 'Description', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
@@ -604,8 +602,8 @@ class Tiki_Woo_Admin {
 		);
 
 		add_settings_field(
-			'Reward Image',
-			__( 'offer_reward', 'tiki_woo' ),
+			'offer_reward',
+			__( 'Offer Image', 'tiki-woo' ),
 			array( $this, 'render_img_upload' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
@@ -619,7 +617,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_bullet1',
-			__( 'offer_bullet1', 'tiki_woo' ),
+			__( 'Offer use case 1', 'tiki-woo' ),
 			array( $this, 'render_bullet_filed' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
@@ -633,7 +631,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_bullet2',
-			__( 'offer_bullet2', 'tiki_woo' ),
+			__( 'Offer use case 2', 'tiki-woo' ),
 			array( $this, 'render_bullet_filed' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
@@ -647,7 +645,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_bullet3',
-			__( 'offer_bullet3', 'tiki_woo' ),
+			__( 'Offer use case 3', 'tiki-woo' ),
 			array( $this, 'render_bullet_filed' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
@@ -661,12 +659,12 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'offer_terms',
-			__( 'Offer terms', 'tiki_woo' ),
+			__( 'Offer terms', 'tiki-woo' ),
 			array( $this, 'render_textarea' ),
 			'tiki_woo_loyalty',
 			'tiki_woo_loyalty',
 			array(
-				'description' => 'Accepts html and markdown',
+				'description' => __( 'Accepts html and markdown' ),
 				'label_for'   => 'offer_terms',
 				'options'     => $options,
 				'option_name' => 'tiki_woo_coupons',
@@ -686,14 +684,14 @@ class Tiki_Woo_Admin {
 
 		add_settings_section(
 			'tiki_woo_general_sdk',
-			__( 'Settings', 'tiki_woo' ),
+			__( 'Settings', 'tiki-woo' ),
 			array( $this, 'tiki_woo_general_sdk_desc' ),
 			'tiki_woo_general',
 		);
 
 		add_settings_field(
 			'publishing_id',
-			__( 'Publishing ID', 'tiki_woo' ),
+			__( 'Publishing ID', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_sdk',
@@ -706,7 +704,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'private_key',
-			__( 'Private Key ID', 'tiki_woo' ),
+			__( 'Private Key ID', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_sdk',
@@ -719,7 +717,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'secret',
-			__( 'Secret', 'tiki_woo' ),
+			__( 'Secret', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_sdk',
@@ -736,29 +734,29 @@ class Tiki_Woo_Admin {
 	private function init_ui_options( $options ) {
 		add_settings_section(
 			'tiki_woo_general_ui',
-			__( 'UI Settigns', 'tiki_woo' ),
+			__( 'UI Settigns', 'tiki-woo' ),
 			null,
 			'tiki_woo_general',
 		);
 
 		add_settings_field(
 			'default_offer',
-			__( 'Default Offer', 'tiki_woo' ),
+			__( 'Default Offer', 'tiki-woo' ),
 			array( $this, 'render_select_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
 			array(
-				'description'    => 'Sets the default offer for Cookies consent. If the default option is disabled, the other will be used instead.',
+				'description'    => __( 'Sets the default offer for Cookies consent. If the default option is disabled, the other will be used instead.' ),
 				'label_for'      => 'default_offer',
 				'options'        => $options,
 				'option_name'    => 'tiki_woo_general',
 				'select_options' => array(
 					array(
-						'option_name'  => 'Coupons',
+						'option_name'  => __( 'Coupons' ),
 						'option_value' => 'coupons',
 					),
 					array(
-						'option_name'  => 'Loyaly points',
+						'option_name'  => __( 'Loyaly points' ),
 						'option_value' => 'points',
 					),
 				),
@@ -767,7 +765,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'Primary text color',
-			__( 'Primary text color', 'tiki_woo' ),
+			__( 'Primary text color', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
@@ -781,7 +779,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'Secondary text color',
-			__( 'Secondary text color', 'tiki_woo' ),
+			__( 'Secondary text color', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
@@ -795,7 +793,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'Primary background color',
-			__( 'Primary background color', 'tiki_woo' ),
+			__( 'Primary background color', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
@@ -809,7 +807,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'Secondary background color',
-			__( 'Secondary background color', 'tiki_woo' ),
+			__( 'Secondary background color', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
@@ -823,7 +821,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'Accent color',
-			__( 'Accent color', 'tiki_woo' ),
+			__( 'Accent color', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
@@ -837,7 +835,7 @@ class Tiki_Woo_Admin {
 
 		add_settings_field(
 			'Font Family',
-			__( 'Font Family', 'tiki_woo' ),
+			__( 'Font Family', 'tiki-woo' ),
 			array( $this, 'render_input_field' ),
 			'tiki_woo_general',
 			'tiki_woo_general_ui',
@@ -856,7 +854,7 @@ class Tiki_Woo_Admin {
 		return $links;
 	}
 
-	private function tiki_authentication(){
+	private function tiki_authentication() {
 		$url     = 'https://mytiki.com/api/authorize';
 		$headers = array(
 			'Content-Type' => 'application/x-www-form-urlencoded',
@@ -867,11 +865,11 @@ class Tiki_Woo_Admin {
 			'scope'      => 'index',
 		);
 
-		$response = wp_remote_post( 
+		$response = wp_remote_post(
 			$url,
 			array(
 				'headers' => $headers,
-				'body' => $body,
+				'body'    => $body,
 			)
 		);
 
