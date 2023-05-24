@@ -1,7 +1,4 @@
-<?php // exit if uninstall constant is not defined
-if ( ! defined( 'WP_UNINSTALL_PLUGIN ' ) ) {
-	exit;
-}
+<?php
 
 $options = get_option( 'tiki_woo_general', array() );
 if ( 1 === absint( $options['delete_settings'] ) ) {
