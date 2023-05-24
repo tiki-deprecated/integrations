@@ -11,7 +11,7 @@
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/admin/partials
  */
-$active_tab = $_GET['tab'];
+$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : null ;
 ?>
 
 <div class="wrap">
