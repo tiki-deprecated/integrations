@@ -280,10 +280,7 @@ class Tiki_Woo_Public {
 	}
 
 	private function get_offer_bullet_js( $text, $is_used ) {
-		$offer_bullet_arr = array(
-			'text'   => $text,
-			'isUsed' => $is_used,
-		);
-		return wp_json_encode( $offer_bullet_arr );
+		$is_used_txt = 'used' === $is_used ? 'true' : 'false';
+		return '{ text: "' . $text . '", isUsed : ' . $is_used_txt . '}';
 	}
 }
