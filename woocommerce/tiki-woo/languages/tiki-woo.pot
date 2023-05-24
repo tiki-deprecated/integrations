@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-05-23T18:38:11+00:00\n"
+"POT-Creation-Date: 2023-05-24T17:46:12+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.7.1\n"
 "X-Domain: tiki-woo\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid "https://myiki.com"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:94
+#: admin/class-tiki-woo-admin.php:91
 msgid "TIKI For WooCommerce"
 msgstr ""
 
@@ -49,8 +49,6 @@ msgstr ""
 
 #: admin/class-tiki-woo-admin.php:334
 #: admin/class-tiki-woo-admin.php:341
-#: admin/class-tiki-woo-admin.php:539
-#: admin/class-tiki-woo-admin.php:546
 msgid "Enable Discount Coupons"
 msgstr ""
 
@@ -77,14 +75,17 @@ msgid "Offer image"
 msgstr ""
 
 #: admin/class-tiki-woo-admin.php:441
+#: admin/class-tiki-woo-admin.php:620
 msgid "Offer use case 1"
 msgstr ""
 
 #: admin/class-tiki-woo-admin.php:454
+#: admin/class-tiki-woo-admin.php:634
 msgid "Offer use case 2"
 msgstr ""
 
 #: admin/class-tiki-woo-admin.php:468
+#: admin/class-tiki-woo-admin.php:648
 msgid "Offer use case 3"
 msgstr ""
 
@@ -97,6 +98,11 @@ msgstr ""
 msgid "Cookies integration"
 msgstr ""
 
+#: admin/class-tiki-woo-admin.php:539
+#: admin/class-tiki-woo-admin.php:546
+msgid "Enable Loyalty Points"
+msgstr ""
+
 #: admin/class-tiki-woo-admin.php:570
 msgid "loyalty Settings"
 msgstr ""
@@ -106,23 +112,11 @@ msgid "Reward points"
 msgstr ""
 
 #: admin/class-tiki-woo-admin.php:606
-msgid "offer_reward"
-msgstr ""
-
-#: admin/class-tiki-woo-admin.php:620
-msgid "offer_bullet1"
-msgstr ""
-
-#: admin/class-tiki-woo-admin.php:634
-msgid "offer_bullet2"
-msgstr ""
-
-#: admin/class-tiki-woo-admin.php:648
-msgid "offer_bullet3"
+msgid "Offer Image"
 msgstr ""
 
 #: admin/class-tiki-woo-admin.php:687
-#: admin/class-tiki-woo-admin.php:853
+#: admin/class-tiki-woo-admin.php:887
 msgid "Settings"
 msgstr ""
 
@@ -138,35 +132,35 @@ msgstr ""
 msgid "Secret"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:737
-msgid "UI Settigns"
+#: admin/class-tiki-woo-admin.php:771
+msgid "UI Settings"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:744
+#: admin/class-tiki-woo-admin.php:778
 msgid "Default Offer"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:768
+#: admin/class-tiki-woo-admin.php:802
 msgid "Primary text color"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:782
+#: admin/class-tiki-woo-admin.php:816
 msgid "Secondary text color"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:796
+#: admin/class-tiki-woo-admin.php:830
 msgid "Primary background color"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:810
+#: admin/class-tiki-woo-admin.php:844
 msgid "Secondary background color"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:824
+#: admin/class-tiki-woo-admin.php:858
 msgid "Accent color"
 msgstr ""
 
-#: admin/class-tiki-woo-admin.php:838
+#: admin/class-tiki-woo-admin.php:872
 msgid "Font Family"
 msgstr ""
 

@@ -25,7 +25,6 @@
  * @since      1.0.0
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/includes
- * @author     TIKI Team <ricardo@mytiki.com>
  */
 class Tiki_Woo {
 
@@ -34,7 +33,6 @@ class Tiki_Woo {
 	 * the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
 	 * @var      Tiki_Woo_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;
@@ -43,7 +41,6 @@ class Tiki_Woo {
 	 * The unique identifier of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
 	 * @var      string    $plugin_name    The string used to uniquely identify this plugin.
 	 */
 	protected $plugin_name;
@@ -52,7 +49,6 @@ class Tiki_Woo {
 	 * The current version of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   protected
 	 * @var      string    $version    The current version of the plugin.
 	 */
 	protected $version;
@@ -88,7 +84,6 @@ class Tiki_Woo {
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function load_dependencies() {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-tiki-woo-loader.php';
@@ -108,7 +103,6 @@ class Tiki_Woo {
 	 * with WordPress.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function set_locale() {
 
@@ -123,7 +117,6 @@ class Tiki_Woo {
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function define_admin_hooks() {
 
@@ -148,7 +141,6 @@ class Tiki_Woo {
 	 * of the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 */
 	private function define_public_hooks() {
 

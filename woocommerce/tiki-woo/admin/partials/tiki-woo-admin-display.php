@@ -11,7 +11,7 @@
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/admin/partials
  */
-$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : null ;
+$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : null ;
 ?>
 
 <div class="wrap">
@@ -19,13 +19,13 @@ $active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : null ;
 	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<nav class="nav-tab-wrapper">
 		<a href="?page=tiki-woo" class="nav-tab <?php if ( null === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('General', 'tiki-woo' ); ?></a>
+			nav-tab-active<?php endif; ?>"><?php echo esc_html( __('General', 'tiki-woo' ) ); ?></a>
 		<a href="?page=tiki-woo&tab=coupons" class="nav-tab <?php if ( 'coupons' === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('Coupons', 'tiki-woo' ); ?></a>
+			nav-tab-active<?php endif; ?>"><?php echo esc_html( __('Coupons', 'tiki-woo' ) ); ?></a>
 		<a href="?page=tiki-woo&tab=loyalty" class="nav-tab <?php if ( 'loyalty' === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('Loyalty', 'tiki-woo' ); ?></a>
+			nav-tab-active<?php endif; ?>"><?php echo esc_html( __('Loyalty', 'tiki-woo' ) ); ?></a>
 		<a href="?page=tiki-woo&tab=cookies" class="nav-tab <?php if ( 'cookies' === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('Cookies', 'tiki-woo' ); ?></a>
+			nav-tab-active<?php endif; ?>"><?php echo esc_html( __('Cookies', 'tiki-woo' ) ); ?></a>
 	</nav>
 
 	<form method="POST" action="options.php"> 

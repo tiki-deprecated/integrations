@@ -18,7 +18,6 @@
  *
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/public
- * @author     TIKI Team <ricardo@mytiki.com>
  */
 class Tiki_Woo_Public {
 
@@ -26,7 +25,6 @@ class Tiki_Woo_Public {
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $plugin_name    The ID of this plugin.
 	 */
 	private $plugin_name;
@@ -35,7 +33,6 @@ class Tiki_Woo_Public {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
@@ -148,7 +145,7 @@ class Tiki_Woo_Public {
 			array_filter(
 				array_merge(
 					$general_options,
-					$offer_options,
+					$offer_options
 				)
 			)
 		);
@@ -237,25 +234,25 @@ class Tiki_Woo_Public {
 	public function save_cookie_tiki_id_to_user_meta() {
 		if ( isset( $_COOKIE['tiki_user_id'] ) ) {
 			$current_user = wp_get_current_user();
-			$tiki_user_id = $_COOKIE['tiki_user_id'];
+			$tiki_user_id = sanitize_text_field( $_COOKIE['tiki_user_id'] );
 			update_user_meta( $current_user->ID, '_tiki_user_id', $tiki_user_id );
 		}
 	}
 
-	private function define_anonymous_user_id(): string {
+	private function define_anonymous_user_id() {
 		if ( isset( $_COOKIE['tiki_user_id'] ) ) {
-			return $_COOKIE['tiki_user_id'];
+			return sanitize_text_field( $_COOKIE['tiki_user_id'] );
 		}
 		$user_id = hash( 'sha256', get_site_url() . microtime( true ) . wp_Rand() );
 		setcookie( 'tiki_user_id', $random_id, strtotime( '+1 year' ), COOKIEPATH, COOKIE_DOMAIN );
 		return $user_id;
 	}
 
-	private function define_logged_in_user_id( WP_User $user ): string {
+	private function define_logged_in_user_id( WP_User $user ) {
 		$user_id = get_user_meta( $user->ID, '_tiki_user_id', true );
 		if ( ! $user_id ) {
 			if ( isset( $_COOKIE['tiki_user_id'] ) ) {
-				$user_id = $_COOKIE['tiki_user_id'];
+				$user_id = sanitize_text_field( $_COOKIE['tiki_user_id'] );
 			} else {
 				$user_id = hash( 'sha256', get_site_url() . microtime( true ) . wp_Rand() );
 			}
@@ -264,7 +261,7 @@ class Tiki_Woo_Public {
 		return $user_id;
 	}
 
-	private function should_initialize_tiki_sdk(): bool {
+	private function should_initialize_tiki_sdk() {
 		return true;
 	}
 

@@ -2,8 +2,6 @@
 /**
  * The public-facing REST API for the plugin.
  *
- * @author  Ricardo Gonçalves <ricardo@mytiki.com>
- * @license GPL2 https://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
  * @link    https://mytiki.com
  * @since   1.0.0
  *
@@ -19,7 +17,6 @@
  *
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/public
- * @author     The TIKI Team <ricardo@myiki.com>
  */
 class Tiki_Woo_Rest_Api {
 
