@@ -88,7 +88,7 @@ class Tiki_Woo_Public {
 	private function get_default_options( $default ) {
 		if ( 'coupons' === $default ) {
 			$coupon_options  = get_option( 'tiki_woo_coupons', array() );
-			if ( $coupon_options['enable_coupons'] ) {
+			if ( ( ! isset( $coupon_options['enable_coupons'] ) || 1 === $coupon_options['enable_coupons'] ) ) {
 				return $coupon_options;
 			} else {
 				$loyalty_options = get_option( 'tiki_woo_loyalty', array() );
@@ -126,13 +126,14 @@ class Tiki_Woo_Public {
 			'offer_bullet1'              => 'Learn how our ads perform',
 			'offer_bullet2'              => 'Reach you on other platforms',
 			'offer_bullet3'              => 'Sold to other companies',
-			'offer_bullet1_cb'           => '1',
-			'offer_bullet2_cb'           => '0',
-			'offer_bullet3_cb'           => '0',
+			'offer_bullet1_cb'           => 'used',
+			'offer_bullet2_cb'           => 'not_used',
+			'offer_bullet3_cb'           => 'not_used',
 			'offer_terms'                => 'https://cdn.mytiki.com/assets/udla/template-1-0-0.md',
 			'offer_ptr'                  => get_site_url() . '_TIKI_WOO_COUPON',
 			'offer_tag'                  => 'TikiSdk.TitleTag.deviceId()',
 			'offer_use'                  => '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }',
+			'enable_coupons'             => '1',
 		);
 
 		$general_options = get_option( 'tiki_woo_general', array() );
