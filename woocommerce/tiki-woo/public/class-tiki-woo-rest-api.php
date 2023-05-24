@@ -75,7 +75,7 @@ class Tiki_Woo_Rest_Api {
 		$options = wp_parse_args(
 			get_option( 'tiki_woo_loyalty' ),
 			array(
-				'reward_points'  => '10',
+				'reward_points' => '10',
 			)
 		);
 

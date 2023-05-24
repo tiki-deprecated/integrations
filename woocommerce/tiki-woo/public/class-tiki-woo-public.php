@@ -87,7 +87,7 @@ class Tiki_Woo_Public {
 
 	private function get_default_options( $default ) {
 		if ( 'coupons' === $default ) {
-			$coupon_options  = get_option( 'tiki_woo_coupons', array() );
+			$coupon_options = get_option( 'tiki_woo_coupons', array() );
 			if ( ( ! isset( $coupon_options['enable_coupons'] ) || 1 === $coupon_options['enable_coupons'] ) ) {
 				return $coupon_options;
 			} else {

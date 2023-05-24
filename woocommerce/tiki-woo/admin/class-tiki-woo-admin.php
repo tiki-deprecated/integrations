@@ -50,7 +50,7 @@ class Tiki_Woo_Admin {
 	public function __construct( $tiki_woo, $version ) {
 
 		$this->tiki_woo = $tiki_woo;
-		$this->version     = $version;
+		$this->version  = $version;
 
 	}
 
@@ -709,8 +709,8 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general',
 			'tiki_woo_general_sdk',
 			array(
-				'label_for' => 'private_key',
-				'options'   => $options,
+				'label_for'   => 'private_key',
+				'options'     => $options,
 				'option_name' => 'tiki_woo_general',
 			)
 		);
@@ -861,8 +861,8 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_ui',
 			array(
 				'classes'     => array( 'color-picker' ),
-				'label_for' => 'accent_color',
-				'options'   => $options,
+				'label_for'   => 'accent_color',
+				'options'     => $options,
 				'option_name' => 'tiki_woo_general',
 			)
 		);
