@@ -728,20 +728,6 @@ class Tiki_Woo_Admin {
 				'option_name' => 'tiki_woo_general',
 			)
 		);
-
-		add_settings_field(
-			'delete_settings',
-			__( 'Remove Settings' ),
-			array( $this, 'render_checkbox' ),
-			'tiki_woo_general',
-			'tiki_woo_general_sdk',
-			array(
-				'description' => 'Remove all plugin settings on uninstall',
-				'label_for'   => 'delete_settings',
-				'options'     => $options,
-				'option_name' => 'tiki_woo_general',
-			)
-		);
 	}
 
 	public function render_checkbox( $args ) {
