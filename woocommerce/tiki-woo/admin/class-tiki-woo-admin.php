@@ -130,7 +130,7 @@ class Tiki_Woo_Admin {
 	public function tiki_woo_general_sdk_desc() {
 		$options = get_option( 'tiki_woo_general', array() );
 		if ( empty( $options['publishing_id'] ) || empty( $options['private_key'] ) || empty( $options['secret'] ) ) {
-			echo __( '<p>Get your credentials in the "<a href="https://console.mytiki.com">TIKI Console</a>' ); // WPCS: XSS ok.
+			echo __( '<p>Get your credentials in the <a href="https://console.mytiki.com" target="_blank">TIKI Console</a>' ); // WPCS: XSS ok.
 		} else {
 			?>
 			<p>
@@ -581,7 +581,7 @@ class Tiki_Woo_Admin {
 			array(
 
 				'type'        => 'number',
-				'label_for'   => 'discount_value',
+				'label_for'   => 'reward_points',
 				'options'     => $options,
 				'option_name' => 'tiki_woo_loyalty',
 			)
@@ -728,13 +728,47 @@ class Tiki_Woo_Admin {
 				'option_name' => 'tiki_woo_general',
 			)
 		);
+		add_settings_field(
+			'delete_settings',
+			__( 'Remove Settings' ),
+			array( $this, 'render_checkbox' ),
+			'tiki_woo_general',
+			'tiki_woo_general_sdk',
+			array(
+				'description' => 'Remove all plugin settings on uninstall',
+				'label_for'   => 'delete_settings',
+				'options'     => $options,
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+	}
 
+	public function render_checkbox( $args ) {
+		$label   = $args['label_for'];
+		$value   = isset( $args['options'][ $label ] ) ? $args['options'][ $label ] : 0;
+		$name    = $args['option_name'] . '[' . $label . ']';
+		$classes = isset( $args['classes'] ) ? implode( ' ', $args['classes'] ) : '';
+		$checked = 1 === absint( $value ) ? 'checked' : '';
+		?>
+		<input
+			type="checkbox"	
+			id="<?php echo esc_attr( $label ); ?>"
+			name="<?php echo esc_attr( $name ); ?>"
+			value="1"
+			class="<?php echo esc_attr( $classes ); ?>" 
+			<?php echo esc_attr( $checked ); ?> />
+		<?php
+		if ( isset( $args['description'] ) ) {
+			?>
+			<span class='description' id='label-description'><?php echo esc_html( $args['description'] ); ?></span>
+			<?php
+		}
 	}
 
 	private function init_ui_options( $options ) {
 		add_settings_section(
 			'tiki_woo_general_ui',
-			__( 'UI Settigns', 'tiki-woo' ),
+			__( 'UI Settings', 'tiki-woo' ),
 			null,
 			'tiki_woo_general',
 		);
@@ -848,7 +882,7 @@ class Tiki_Woo_Admin {
 		);
 	}
 
-	private function plugin_links( $links ) {
+	public function plugin_links( $links ) {
 		$url = get_admin_url() . 'admin.php?page=tiki-woo';
 		array_unshift( $links, '<a href="' . $url . '">' . __( 'Settings', 'tiki-woo' ) . '</a>' );
 		return $links;

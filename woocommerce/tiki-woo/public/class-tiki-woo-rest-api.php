@@ -71,11 +71,19 @@ class Tiki_Woo_Rest_Api {
 	}
 
 	public function grant_points( WP_REST_Request $request ) {
+
+		$options = wp_parse_args(
+			get_option( 'tiki_woo_loyalty' ),
+			array(
+				'reward_points'  => '10',
+			)
+		);
+
 		$current_user = wp_get_current_user();
 		if ( 0 === $current_user->ID ) {
 			return new WP_REST_Response( array( 'error' => 'User not logged in.' ), 400 );
 		}
-		$points = 100;
+		$points = $options['reward_points'];
 		update_user_meta( $current_user->ID, 'tiki_woocommerce_loyalty_points', $points );
 		return new WP_REST_Response( array( 'message' => "$points points granted" ), 200 );
 	}
@@ -95,13 +103,12 @@ class Tiki_Woo_Rest_Api {
 	 * @param WP_REST_Request $request The WP REST API request.
 	 */
 	public function create_coupon( WP_REST_Request $request ) {
-		$options = wp_parse_args( get_option( 'tiki_woo_coupons_options' ), $defaults );
-
-		$discount_type  = 'fixed';
-		$discount_value = 10;
-		$defaults       = array(
-			'discount_type'  => $discount_type,
-			'discount_value' => $discount_value,
+		$options = wp_parse_args(
+			get_option( 'tiki_woo_coupons' ),
+			array(
+				'discount_type'  => 'percent',
+				'discount_value' => '10',
+			)
 		);
 
 		$current_user = wp_get_current_user();

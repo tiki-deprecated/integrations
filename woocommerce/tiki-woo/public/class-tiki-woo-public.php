@@ -88,7 +88,7 @@ class Tiki_Woo_Public {
 	private function get_default_options( $default ) {
 		if ( 'coupons' === $default ) {
 			$coupon_options  = get_option( 'tiki_woo_coupons', array() );
-			if ( $coupon_options['enable_coupons'] ) {
+			if ( ( ! isset( $coupon_options['enable_coupons'] ) || 1 === $coupon_options['enable_coupons'] ) ) {
 				return $coupon_options;
 			} else {
 				$loyalty_options = get_option( 'tiki_woo_loyalty', array() );
@@ -123,13 +123,17 @@ class Tiki_Woo_Public {
 			'font_family'                => '"Space Grotesk", sans-serif',
 			'description'                => 'Trade your IDFA (kind of like a serial # for your phone) for a discount.',
 			'offer_reward'               => 'https://cdn.mytiki.com/assets/demo-reward.png',
-			'offer_bullet1'              => "{ text: 'Learn how our ads perform', isUsed: true }",
-			'offer_bullet2'              => "{ text: 'Reach you on other platforms', isUsed: false }",
-			'offer_bullet3'              => "{ text: 'Sold to other companies', isUsed: false }",
-			'offer_terms'                => wp_remote_get( 'https://cdn.mytiki.com/assets/udla/template-1-0-0.md' ),
+			'offer_bullet1'              => 'Learn how our ads perform',
+			'offer_bullet2'              => 'Reach you on other platforms',
+			'offer_bullet3'              => 'Sold to other companies',
+			'offer_bullet1_cb'           => 'used',
+			'offer_bullet2_cb'           => 'not_used',
+			'offer_bullet3_cb'           => 'not_used',
+			'offer_terms'                => 'https://cdn.mytiki.com/assets/udla/template-1-0-0.md',
 			'offer_ptr'                  => get_site_url() . '_TIKI_WOO_COUPON',
 			'offer_tag'                  => 'TikiSdk.TitleTag.deviceId()',
 			'offer_use'                  => '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }',
+			'enable_coupons'             => '1',
 		);
 
 		$general_options = get_option( 'tiki_woo_general', array() );
@@ -141,8 +145,12 @@ class Tiki_Woo_Public {
 
 		$options = array_merge(
 			$default,
-			$general_options,
-			$offer_options,
+			array_filter(
+				array_merge(
+					$general_options,
+					$offer_options,
+				)
+			)
 		);
 
 		$primary_text_color         = $options['primary_text_color'];
@@ -161,8 +169,7 @@ class Tiki_Woo_Public {
 		$offer_tag                  = $options['offer_tag'];
 		$offer_use                  = $options['offer_use'];
 		$publishing_id              = $general_options['publishing_id'];
-
-		$cookie_yes_integration = $this->should_load_cookie_yes();
+		$cookie_yes_integration     = $this->should_load_cookie_yes();
 
 		$current_user = wp_get_current_user();
 
@@ -194,6 +201,7 @@ class Tiki_Woo_Public {
 				.use($offer_use)
 				.add()
 			.onAccept(() => {
+				debugger
 				tikiSetPresentedCookie()
 				tikiCreateUserCoupon() 
 				" . (
@@ -203,6 +211,7 @@ class Tiki_Woo_Public {
 					) . '
 			})
 			.onDecline(() => {
+				debugger
 				tikiSetPresentedCookie()
 				tikiRemoveUserCoupon()
 				' . (
@@ -275,10 +284,7 @@ class Tiki_Woo_Public {
 	}
 
 	private function get_offer_bullet_js( $text, $is_used ) {
-		$offer_bullet_arr = array(
-			'text'   => $text,
-			'isUsed' => $is_used,
-		);
-		return wp_json_encode( $offer_bullet_arr );
+		$is_used_txt = 'used' === $is_used ? 'true' : 'false';
+		return '{ text: "' . $text . '", isUsed : ' . $is_used_txt . '}';
 	}
 }
