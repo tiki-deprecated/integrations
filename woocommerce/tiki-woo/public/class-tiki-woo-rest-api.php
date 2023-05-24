@@ -95,7 +95,13 @@ class Tiki_Woo_Rest_Api {
 	 * @param WP_REST_Request $request The WP REST API request.
 	 */
 	public function create_coupon( WP_REST_Request $request ) {
-		$options = wp_parse_args( get_option( 'tiki_woo_coupons_options' ), $defaults );
+		$options = wp_parse_args(
+			get_option( 'tiki_woo_coupons_options' ),
+			array(
+				'discount_type'  => 'percent',
+				'discount_value' => '10',
+			)
+		);
 
 		$discount_type  = 'fixed';
 		$discount_value = 10;

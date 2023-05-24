@@ -126,7 +126,7 @@ class Tiki_Woo_Public {
 			'offer_bullet1'              => "{ text: 'Learn how our ads perform', isUsed: true }",
 			'offer_bullet2'              => "{ text: 'Reach you on other platforms', isUsed: false }",
 			'offer_bullet3'              => "{ text: 'Sold to other companies', isUsed: false }",
-			'offer_terms'                => wp_remote_get( 'https://cdn.mytiki.com/assets/udla/template-1-0-0.md' )['body'],
+			'offer_terms'                => 'https://cdn.mytiki.com/assets/udla/template-1-0-0.md',
 			'offer_ptr'                  => get_site_url() . '_TIKI_WOO_COUPON',
 			'offer_tag'                  => 'TikiSdk.TitleTag.deviceId()',
 			'offer_use'                  => '{ usecases:[TikiSdk.LicenseUsecase.attribution()] }',
@@ -165,7 +165,7 @@ class Tiki_Woo_Public {
 		$offer_tag                  = $options['offer_tag'];
 		$offer_use                  = $options['offer_use'];
 		$publishing_id              = $general_options['publishing_id'];
-		$cookie_yes_integration = $this->should_load_cookie_yes();
+		$cookie_yes_integration     = $this->should_load_cookie_yes();
 
 		$current_user = wp_get_current_user();
 
@@ -197,6 +197,7 @@ class Tiki_Woo_Public {
 				.use($offer_use)
 				.add()
 			.onAccept(() => {
+				debugger
 				tikiSetPresentedCookie()
 				tikiCreateUserCoupon() 
 				" . (
@@ -206,6 +207,7 @@ class Tiki_Woo_Public {
 					) . '
 			})
 			.onDecline(() => {
+				debugger
 				tikiSetPresentedCookie()
 				tikiRemoveUserCoupon()
 				' . (
