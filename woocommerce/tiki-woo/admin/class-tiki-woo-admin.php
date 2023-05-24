@@ -581,7 +581,7 @@ class Tiki_Woo_Admin {
 			array(
 
 				'type'        => 'number',
-				'label_for'   => 'discount_value',
+				'label_for'   => 'reward_points',
 				'options'     => $options,
 				'option_name' => 'tiki_woo_loyalty',
 			)
