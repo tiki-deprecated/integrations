@@ -130,7 +130,7 @@ class Tiki_Woo_Admin {
 	public function tiki_woo_general_sdk_desc() {
 		$options = get_option( 'tiki_woo_general', array() );
 		if ( empty( $options['publishing_id'] ) || empty( $options['private_key'] ) || empty( $options['secret'] ) ) {
-			echo __( '<p>Get your credentials in the "<a href="https://console.mytiki.com">TIKI Console</a>' ); // WPCS: XSS ok.
+			echo __( '<p>Get your credentials in the <a href="https://console.mytiki.com" target="_blank">TIKI Console</a>' ); // WPCS: XSS ok.
 		} else {
 			?>
 			<p>
@@ -725,6 +725,19 @@ class Tiki_Woo_Admin {
 				'label_for'   => 'secret',
 				'options'     => $options,
 				'type'        => 'password',
+				'option_name' => 'tiki_woo_general',
+			)
+		);
+		add_settings_field(
+			'delete_settings',
+			__( 'Remove Settings' ),
+			array( $this, 'render_checkbox' ),
+			'tiki_woo_general',
+			'tiki_woo_general_sdk',
+			array(
+				'description' => 'Remove all plugin settings on uninstall',
+				'label_for'   => 'delete_settings',
+				'options'     => $options,
 				'option_name' => 'tiki_woo_general',
 			)
 		);
