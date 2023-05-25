@@ -22,6 +22,7 @@
  * @since      1.0.0
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/includes
+ * @author     TIKI Team <ricardo@mytiki.com>
  */
 class Tiki_Woo_I18n {
 
@@ -39,4 +40,7 @@ class Tiki_Woo_I18n {
 		);
 
 	}
+
+
+
 }

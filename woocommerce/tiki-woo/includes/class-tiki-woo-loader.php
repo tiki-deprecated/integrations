@@ -19,6 +19,7 @@
  *
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/includes
+ * @author     TIKI Team <ricardo@mytiki.com>
  */
 class Tiki_Woo_Loader {
 
@@ -26,6 +27,7 @@ class Tiki_Woo_Loader {
 	 * The array of actions registered with WordPress.
 	 *
 	 * @since    1.0.0
+	 * @access   protected
 	 * @var      array    $actions    The actions registered with WordPress to fire when the plugin loads.
 	 */
 	protected $actions;
@@ -34,6 +36,7 @@ class Tiki_Woo_Loader {
 	 * The array of filters registered with WordPress.
 	 *
 	 * @since    1.0.0
+	 * @access   protected
 	 * @var      array    $filters    The filters registered with WordPress to fire when the plugin loads.
 	 */
 	protected $filters;
@@ -83,6 +86,7 @@ class Tiki_Woo_Loader {
 	 * collection.
 	 *
 	 * @since    1.0.0
+	 * @access   private
 	 * @param    array                $hooks            The collection of hooks that is being registered (that is, actions or filters).
 	 * @param    string               $hook             The name of the WordPress filter that is being registered.
 	 * @param    object               $component        A reference to the instance of the object on which the filter is defined.

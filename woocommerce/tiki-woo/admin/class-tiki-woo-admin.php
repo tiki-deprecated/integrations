@@ -18,6 +18,7 @@
  *
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/admin
+ * @author     TIKI Team <ricardo@mytiki.com>
  */
 class Tiki_Woo_Admin {
 
@@ -25,6 +26,7 @@ class Tiki_Woo_Admin {
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
+	 * @access   private
 	 * @var      string    $tiki_woo    The ID of this plugin.
 	 */
 	private $tiki_woo;
@@ -33,6 +35,7 @@ class Tiki_Woo_Admin {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
+	 * @access   private
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
@@ -47,7 +50,7 @@ class Tiki_Woo_Admin {
 	public function __construct( $tiki_woo, $version ) {
 
 		$this->tiki_woo = $tiki_woo;
-		$this->version  = $version;
+		$this->version     = $version;
 
 	}
 
@@ -92,7 +95,7 @@ class Tiki_Woo_Admin {
 			'TIKI',
 			'manage_options',
 			'tiki-woo',
-			array( $this, 'display' )
+			array( $this, 'display' ),
 		);
 	}
 
@@ -114,7 +117,7 @@ class Tiki_Woo_Admin {
 	 * @since    1.0.0
 	 */
 	public function display() {
-		$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
+		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
 		require_once 'partials/tiki-woo-admin-display.php';
 	}
 
@@ -127,13 +130,10 @@ class Tiki_Woo_Admin {
 	public function tiki_woo_general_sdk_desc() {
 		$options = get_option( 'tiki_woo_general', array() );
 		if ( empty( $options['publishing_id'] ) || empty( $options['private_key'] ) || empty( $options['secret'] ) ) {
+			echo __( '<p>Get your credentials in the <a href="https://console.mytiki.com" target="_blank">TIKI Console</a>' ); // WPCS: XSS ok.
+		} else {
 			?>
 			<p>
-			<?php
-			/* translators: %s is replaced by the opening a tag for TIKI Console link */
-			echo '<p> ' . sprintf( esc_html( __( 'Get your credentials in %s the TIKI Console' ) ), '<a href="https://console.mytiki.com" target="_blank">', 'tiki-woo' );
-			?>
-			</a>.</p>
 			<?php
 		}
 	}
@@ -333,7 +333,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_coupons_enable',
 			__( 'Enable Discount Coupons', 'tiki-woo' ),
 			null,
-			'tiki_woo_coupons'
+			'tiki_woo_coupons',
 		);
 
 		add_settings_field(
@@ -363,7 +363,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_coupons',
 			__( 'Coupons Settings', 'tiki-woo' ),
 			null,
-			'tiki_woo_coupons'
+			'tiki_woo_coupons',
 		);
 
 		add_settings_field(
@@ -500,7 +500,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_cookies',
 			__( 'Coupons Settings', 'tiki-woo' ),
 			null,
-			'tiki_woo_cookies'
+			'tiki_woo_cookies',
 		);
 
 		add_settings_field(
@@ -538,7 +538,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_loyalty_enable',
 			__( 'Enable Loyalty Points', 'tiki-woo' ),
 			null,
-			'tiki_woo_loyalty'
+			'tiki_woo_loyalty',
 		);
 
 		add_settings_field(
@@ -569,7 +569,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_loyalty',
 			__( 'loyalty Settings', 'tiki-woo' ),
 			null,
-			'tiki_woo_loyalty'
+			'tiki_woo_loyalty',
 		);
 
 		add_settings_field(
@@ -686,7 +686,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_sdk',
 			__( 'Settings', 'tiki-woo' ),
 			array( $this, 'tiki_woo_general_sdk_desc' ),
-			'tiki_woo_general'
+			'tiki_woo_general',
 		);
 
 		add_settings_field(
@@ -709,8 +709,8 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general',
 			'tiki_woo_general_sdk',
 			array(
-				'label_for'   => 'private_key',
-				'options'     => $options,
+				'label_for' => 'private_key',
+				'options'   => $options,
 				'option_name' => 'tiki_woo_general',
 			)
 		);
@@ -770,7 +770,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_ui',
 			__( 'UI Settings', 'tiki-woo' ),
 			null,
-			'tiki_woo_general'
+			'tiki_woo_general',
 		);
 
 		add_settings_field(
@@ -861,8 +861,8 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_ui',
 			array(
 				'classes'     => array( 'color-picker' ),
-				'label_for'   => 'accent_color',
-				'options'     => $options,
+				'label_for' => 'accent_color',
+				'options'   => $options,
 				'option_name' => 'tiki_woo_general',
 			)
 		);
