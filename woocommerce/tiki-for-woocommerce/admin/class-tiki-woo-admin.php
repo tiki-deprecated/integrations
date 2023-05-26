@@ -18,7 +18,6 @@
  *
  * @package    Tiki_Woo
  * @subpackage Tiki_Woo/admin
- * @author     TIKI Team <ricardo@mytiki.com>
  */
 class Tiki_Woo_Admin {
 
@@ -26,7 +25,7 @@ class Tiki_Woo_Admin {
 	 * The ID of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
+
 	 * @var      string    $tiki_woo    The ID of this plugin.
 	 */
 	private $tiki_woo;
@@ -35,7 +34,7 @@ class Tiki_Woo_Admin {
 	 * The version of this plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   private
+
 	 * @var      string    $version    The current version of this plugin.
 	 */
 	private $version;
@@ -50,7 +49,7 @@ class Tiki_Woo_Admin {
 	public function __construct( $tiki_woo, $version ) {
 
 		$this->tiki_woo = $tiki_woo;
-		$this->version     = $version;
+		$this->version  = $version;
 
 	}
 
@@ -117,7 +116,7 @@ class Tiki_Woo_Admin {
 	 * @since    1.0.0
 	 */
 	public function display() {
-		$active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : 'general';
+		$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'general';
 		require_once 'partials/tiki-woo-admin-display.php';
 	}
 
@@ -347,7 +346,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_coupons_enable',
 			__( 'Enable Discount Coupons', 'tiki-for-woocommerce' ),
 			null,
-			'tiki_woo_coupons',
+			'tiki_woo_coupons'
 		);
 
 		add_settings_field(
@@ -378,7 +377,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_coupons',
 			__( 'Coupons Settings', 'tiki-for-woocommerce' ),
 			null,
-			'tiki_woo_coupons',
+			'tiki_woo_coupons'
 		);
 
 		add_settings_field(
@@ -416,7 +415,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_coupons',
 			'tiki_woo_coupons',
 			array(
-				'description'    => __( 'The numeric value of the discount. It can be a percentage or a fixed value, depending on the discount type. Accepts up to 2 decimal numbers.', 'tiki-for-woocommerce' ),
+				'description' => __( 'The numeric value of the discount. It can be a percentage or a fixed value, depending on the discount type. Accepts up to 2 decimal numbers.', 'tiki-for-woocommerce' ),
 				'type'        => 'number',
 				'step'        => '0.01',
 				'label_for'   => 'discount_value',
@@ -519,7 +518,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_cookies',
 			__( 'Cookies Settings', 'tiki-for-woocommerce' ),
 			array( $this, 'tiki_woo_cookies_desc' ),
-			'tiki_woo_cookies',
+			'tiki_woo_cookies'
 		);
 
 		add_settings_field(
@@ -556,7 +555,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_loyalty_enable',
 			__( 'Enable Loyalty Points', 'tiki-for-woocommerce' ),
 			null,
-			'tiki_woo_loyalty',
+			'tiki_woo_loyalty'
 		);
 
 		add_settings_field(
@@ -587,7 +586,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_loyalty',
 			__( 'loyalty Settings', 'tiki-for-woocommerce' ),
 			null,
-			'tiki_woo_loyalty',
+			'tiki_woo_loyalty'
 		);
 
 		add_settings_field(
@@ -698,7 +697,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_remove',
 			__( 'Remove Settings', 'tiki-for-woocommerce' ),
 			null,
-			'tiki_woo_general',
+			'tiki_woo_general'
 		);
 
 		add_settings_field(
@@ -724,7 +723,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_sdk',
 			__( 'API Settings', 'tiki-for-woocommerce' ),
 			array( $this, 'tiki_woo_general_sdk_desc' ),
-			'tiki_woo_general',
+			'tiki_woo_general'
 		);
 
 		add_settings_field(
@@ -798,7 +797,7 @@ class Tiki_Woo_Admin {
 			'tiki_woo_general_ui',
 			__( 'UI Settings', 'tiki-for-woocommerce' ),
 			null,
-			'tiki_woo_general',
+			'tiki_woo_general'
 		);
 
 		add_settings_field(
@@ -894,8 +893,8 @@ class Tiki_Woo_Admin {
 			array(
 				'description' => __( 'Default ' ) . '#00b272',
 				'classes'     => array( 'color-picker' ),
-				'label_for' => 'accent_color',
-				'options'   => $options,
+				'label_for'   => 'accent_color',
+				'options'     => $options,
 				'option_name' => 'tiki_woo_general',
 			)
 		);

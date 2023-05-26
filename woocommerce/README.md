@@ -51,7 +51,7 @@ To enable communication between the plugin and the TIKI infrastructure, you need
 4. Take note of the Private Key ID, Secret, and Publishing ID.
 
 ### Installation
-1. In the WordPress plugins menu, click "Add New" and upload the `tiki-woo.zip` file.
+1. In the WordPress plugins menu, click "Add New" and upload the `tiki-for-woocommerce.zip` file.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Open the plugin settings by navigating to Marketing -> TIKI in the admin menu.
 4. In the General tab, enter the Publishing ID, Private Key ID, and Secret.
