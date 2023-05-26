@@ -34,7 +34,7 @@ class Tiki_Woo_I18n {
 	public function load_plugin_textdomain() {
 
 		load_plugin_textdomain(
-			'tiki-woo',
+			'tiki-for-woocommerce',
 			false,
 			dirname( dirname( plugin_basename( __FILE__ ) ) ) . '/languages/'
 		);

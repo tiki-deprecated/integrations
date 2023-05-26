@@ -1,48 +1,27 @@
-# TIKI for WooCommerce Integration
+=== Plugin Name ===
+Contributors: mytiki
+Donate link: https://myiki.com
+Tags: comments, spam
+Requires at least: 3.0.1
+Tested up to: 6.2
+Stable tag: 4.3
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+== Description ==
 
 TIKI for WooCommerce Coupons makes it simple to create offers for users that consents the usage of cookies. 
 
 Instead of prompting the users with boring traditional cookies consent banners, you can create compealing offer banners that will encourage users to accept cookies in exchange of special discounts.
 
+TIKI for WooCommerce top features:
+* Customizable - Customize the banners using our models or creating your own HTML models.
+* Reliable - Uses TIKI's infrastructure for long term storage of the user consents.
+* Privacy - All consents are cryptographically stored in TIKI's blockchain. No user data is stored!
+* Transparent - TIKI infrastructure and its SDKs are all open source, since the begining and forever.
+* Full user control - Users can revoke the license at anytime. And the plugin will automatically update the status.
 
-### Requires
+This plugin does not provide the cookie blocking functionalitty to block cookies and unwanted external content. You can enable it optionally through the integration with [Cookies and Content Security Policy](https://wordpress.org/plugins/cookies-and-content-security-policy/) plugin.
 
-- A [WordPress](https://wordpress.org) site.
-- [WooCommerce Plugin](https://br.wordpress.org/plugins/woocommerce/) installed and active.
-- A [TIKI account](https://console.mytiki.com), with a project and corresponding API keys.
-
-## How it works
-TIKI for WooCommerce offers website users a coupon discount or loyalty points in exchange for consenting to the use of cookies.
-
-Upon a user's first visit, the plugin presents the offer through a banner. If the user accepts the offer, a license is created in the TIKI infrastructure, and the offered reward is processed for the user.
-
-In the case of a coupon discount, the plugin generates an exclusive coupon for that user. If the user is not logged in, their TIKI ID is saved in the browser's cookies, and the coupon is created upon their first login. The coupon is automatically applied during checkout.
-
-For loyalty points, the plugin records the points in the user's metadata table. If the user is not logged in, this record is made upon their first login. Loyalty plugins can utilize this record to credit points to the user.
-
-### Cookie Yes Integration
-To integrate with Cookie Yes, our plugin instructs Cookie Yes to block all cookies and suppress their banner. Instead, TIKI's banner is displayed. If the user accepts the offer, our plugin informs Cookie Yes to unblock all cookies. If the user declines, the Cookie Yes banner is shown, allowing the user to select which cookies they wish to allow.
-
-### Limits
-**Cookies**
-Our plugin does not block cookies based on user consent. Instead, we focus on seamless integration with specialized plugins that handle this feature. Currently, we offer integration with the Cookie Yes plugin, and we continue to explore further integrations for enhanced functionality.
-
-**Loyalty Points**
-Currently, we do not have integration with loyalty plugins. However, we are actively working on integrating with [WooCommerce Points and Rewards](https://woocommerce.com/pt-br/products/woocommerce-points-and-rewards/). For manual integration please refer to the example section for guidance.
-
-Feel free to [open an issue](https://github.com/tiki/integrations/issues/new) in our repository asking for specific integrations. 
-
-### Example
-**How to get reward points?**
-The reward points are recorded in the `user_metadata` table and can be retrieved with the following code snippet. 
-```
-    function tiki_get_reward_points( $user_id ) {
-        $tiki_points = get_user_meta( 'tiki_woocommerce_loyalty_points', true );
-        // use the points
-    }
-```
-
-## Get Started
 ### TIKI API Keys
 To enable communication between the plugin and the TIKI infrastructure, you need to obtain API keys.
 1. Visit the [TIKI Console](https://console.mytiki.com) to acquire the API keys.
@@ -50,7 +29,7 @@ To enable communication between the plugin and the TIKI infrastructure, you need
 3. Generate a Private Key for the project.
 4. Take note of the Private Key ID, Secret, and Publishing ID.
 
-### Installation
+== Installation ==
 1. In the WordPress plugins menu, click "Add New" and upload the `tiki-woo.zip` file.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Open the plugin settings by navigating to Marketing -> TIKI in the admin menu.

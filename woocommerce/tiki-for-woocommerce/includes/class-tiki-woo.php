@@ -72,7 +72,7 @@ class Tiki_Woo {
 		} else {
 			$this->version = '1.0.0';
 		}
-		$this->plugin_name = 'tiki-woo';
+		$this->plugin_name = 'tiki-for-woocommerce';
 
 		$this->load_dependencies();
 		$this->set_locale();
