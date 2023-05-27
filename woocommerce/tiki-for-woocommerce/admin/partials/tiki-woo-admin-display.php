@@ -18,14 +18,14 @@ $active_tab = isset( $_GET['tab'] ) ? $_GET['tab'] : null ;
 	<div id="icon-themes" class="icon32"></div>  
 	<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 	<nav class="nav-tab-wrapper">
-		<a href="?page=tiki-woo" class="nav-tab <?php if ( null === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('General', 'tiki-woo' ); ?></a>
-		<a href="?page=tiki-woo&tab=coupons" class="nav-tab <?php if ( 'coupons' === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('Coupons', 'tiki-woo' ); ?></a>
-		<a href="?page=tiki-woo&tab=loyalty" class="nav-tab <?php if ( 'loyalty' === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('Loyalty', 'tiki-woo' ); ?></a>
-		<a href="?page=tiki-woo&tab=cookies" class="nav-tab <?php if ( 'cookies' === $active_tab ) : ?>
-			nav-tab-active<?php endif; ?>"><?php echo __('Cookies', 'tiki-woo' ); ?></a>
+		<a href="?page=tiki-for-woocommerce" class="nav-tab <?php if ( null === $active_tab ) : ?>
+			nav-tab-active<?php endif; ?>"><?php echo __('General', 'tiki-for-woocommerce' ); ?></a>
+		<a href="?page=tiki-for-woocommerce&tab=coupons" class="nav-tab <?php if ( 'coupons' === $active_tab ) : ?>
+			nav-tab-active<?php endif; ?>"><?php echo __('Coupons', 'tiki-for-woocommerce' ); ?></a>
+		<a href="?page=tiki-for-woocommerce&tab=loyalty" class="nav-tab <?php if ( 'loyalty' === $active_tab ) : ?>
+			nav-tab-active<?php endif; ?>"><?php echo __('Loyalty', 'tiki-for-woocommerce' ); ?></a>
+		<a href="?page=tiki-for-woocommerce&tab=cookies" class="nav-tab <?php if ( 'cookies' === $active_tab ) : ?>
+			nav-tab-active<?php endif; ?>"><?php echo __('Cookies', 'tiki-for-woocommerce' ); ?></a>
 	</nav>
 
 	<form method="POST" action="options.php"> 
