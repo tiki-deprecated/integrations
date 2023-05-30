@@ -21,7 +21,7 @@ If the user is already registered in the store, it is added to a the TIKI User S
 The discount is automatically applied during checkout for all users in the TIKI User Segment, after confirming that the License to use cookies is still active. If the License was revoked, the customer is removed from the TIKI User Segment and the discount is not applied.
 
 ### Limits
-#### Cookie auto b lock
+#### Cookie auto block
 The app does not block cookies based on user consent. Instead, we instruct [Shopify Privacy API](https://shopify.dev/docs/api/consent-tracking) about the consent collected from the user. Any app that use cookies in Shopify should rely on this API, but we cannot ensure that every installed app in your store does. 
 
 ## Get Started
@@ -35,7 +35,7 @@ Upon app installation, you will be guided through the configuration screens.
 
 ### TIKI SDK Configuration
 The first configuration screen is the TIKI SDK API Keys. To enable communication between the plugin and the TIKI infrastructure, you need to obtain API keys.
-1. Open another tab and visit the [TIKI Console](https://console.mytiki.com) to acquire the API keys.
+1. Click on the [TIKI Console](https://console.mytiki.com) link to acquire the API keys. Another tab will be open.
 2. Create a new project or select an existing one.
 3. Generate a Private Key for the project.
 4. Take note of the Private Key ID, Private Key Secret, and Publishing ID.
