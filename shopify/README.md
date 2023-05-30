@@ -12,11 +12,13 @@ The TIKI Shopify App makes it simple to create offers in the form of discounts t
 ## How it works
 TIKI Shopify App offers customers a discount in exchange for consenting to the use of cookies.
 
+The discount is applied in a new [Customer Segment](https://help.shopify.com/en/manual/customers/customer-segmentation/customer-segments) created by the app: the TIKI User Segment.
+
 Upon a user's first visit, the app presents the offer through a banner. If the user accepts the offer, a license is created in the TIKI infrastructure. 
 
 If the user is already registered in the store, it is added to a the TIKI User Segment in Shopify. If the user is not logged in, their TIKI ID is saved in the browser's cookies, and the user is added to the TIKI User segment upon their first login. 
 
-The discount is automatically applied during checkout for all users in the TIKI User Segment.
+The discount is automatically applied during checkout for all users in the TIKI User Segment, after confirming that the License to use cookies is still active. If the License was revoked, the customer is removed from the TIKI User Segment and the discount is not applied.
 
 ### Limits
 #### Cookie auto b lock
