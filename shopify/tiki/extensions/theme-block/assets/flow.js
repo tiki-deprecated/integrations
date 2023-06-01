@@ -32,6 +32,7 @@ class TikiSdkFlow {
                         TikiSdkFlow.goTo('terms');
                     },
                     () => {
+                        // save cookies
                         offerPrompt.remove();
                     },
                     () => {
