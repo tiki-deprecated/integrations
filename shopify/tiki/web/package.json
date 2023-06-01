@@ -1,8 +1,8 @@
 {
-  "name": "shopify-app-template-node",
+  "name": "tiki-shopify-app",
   "version": "1.0.0",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "debug": "node --inspect-brk index.js",
     "dev": "cross-env NODE_ENV=development nodemon index.js --ignore ./frontend",

@@ -1,0 +1,23 @@
+window.addEventListener('load', function() {
+    TikiSdk.config()
+        .theme
+        .primaryTextColor('#1C0000')
+        .secondaryTextColor('#1C000099')
+        .primaryBackgroundColor('#FFFFFF')
+        .secondaryBackgroundColor('#F6F6F6')
+        .accentColor('#00b272')
+        .fontFamily('"Space Grotesk", sans-serif')
+        .and()
+        .offer
+        .description('Trade your IDFA (kind of like a serial # for your phone) for a discount.')
+        .reward('https://cdn.mytiki.com/assets/demo-reward.png')
+        .bullet({ text: 'Learn how our ads perform', isUsed: true })
+        .bullet({ text: 'Reach you on other platforms', isUsed: false })
+        .bullet({ text: 'Sold to other companies', isUsed: false })
+        .terms('terms.md')
+        .ptr('db2fd320-aed0-498e-af19-0be1d9630c63')
+        .tag(TikiSdk.TitleTag.deviceId())
+        .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
+        .add()
+        .initialize('e12f5b7b-6b48-4503-8b39-28e4995b5f88', 'test_tiki')
+})
