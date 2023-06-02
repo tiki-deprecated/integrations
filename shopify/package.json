@@ -12,7 +12,6 @@
     "deploy": "shopify app deploy"
   },
   "dependencies": {
-    "@mytiki/tiki-sdk-js": "^1.0.6",
     "@shopify/app": "3.46.1",
     "@shopify/cli": "3.46.1"
   },

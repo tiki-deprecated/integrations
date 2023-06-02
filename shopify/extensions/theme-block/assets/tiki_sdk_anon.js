@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-class TikiSdkFlow {
+class TikiSdkAnon {
     static id = "tiki-offer"
     static overlayId = "tiki-offer-overlay"
 
@@ -28,14 +28,17 @@ class TikiSdkFlow {
                 const offerPrompt = TikiSdk.UI.Prompt.create(
                     TikiSdk.config()._offers[0],
                     () => {
+                        debugger
                         offerPrompt.remove();
                         TikiSdkFlow.goTo('terms');
                     },
                     () => {
-                        // save cookies
+                        debugger
+                        TikiSdkFlow.setDecisionCookie(false);
                         offerPrompt.remove();
                     },
                     () => {
+                        debugger
                         offerPrompt.remove();
                         TikiSdkFlow.goTo('learnMore');
                     },
@@ -45,6 +48,7 @@ class TikiSdkFlow {
                 break;
             case 'learnMore': {
                 const learnMore = TikiSdk.UI.LearnMore.create(() => {
+                    debugger
                     learnMore.remove();
                     TikiSdkFlow.goTo('prompt');
                 }, TikiSdk.config().activeTheme);
@@ -52,15 +56,17 @@ class TikiSdkFlow {
                 break;
             }
             case 'terms': {
-                const terms = TikiSdk.UI.LearnMore.create(
+                const terms = TikiSdk.UI.Terms.create(
                     {
                         src: TikiSdk.config()._offers[0]._terms,
                     },
                     async () => {
-                        // create cookies
+                        debugger
+                        TikiSdkFlow.setDecisionCookie(true);
                         terms.remove();
                     },
                     () => {
+                        debugger
                         terms.remove();
                         TikiSdkFlow.goTo('prompt');
                     },
@@ -83,5 +89,16 @@ class TikiSdkFlow {
         const overlay = TikiSdk.UI.Overlay.create(() => TikiSdkFlow.goTo('none'));
         overlay.id = TikiSdkFlow.overlayId;
         return overlay;
+    }
+
+    static setDecision = (accept) => {
+        let expire = new Date()
+        let expireTime = expire.setFullYear(expire.getFullYear() + 1)
+        expire.setTime(expireTime)
+        if(accept) {
+            TikiCookiePrivacy.handleAccept()
+        }else{
+            TikiCookiePrivacy.handleDecline()
+        }
     }
 }
