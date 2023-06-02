@@ -5,7 +5,7 @@ services:
    container_name: tiki_woocommerce
    volumes:
      - ./wordpress:/var/www/html
-     - ./tiki-for-woocommerce:/var/www/html/wp-content/plugins/tiki-for-woocommerce
+     - ./plugin:/var/www/html/wp-content/plugins/tiki-for-woocommerce
    environment:
      - WORDPRESS_DB_NAME=wordpress
      - WORDPRESS_TABLE_PREFIX=wp_
