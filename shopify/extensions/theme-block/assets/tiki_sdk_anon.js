@@ -7,7 +7,7 @@ class TikiSdkAnon {
     static id = "tiki-offer"
     static overlayId = "tiki-offer-overlay"
 
-    static start = () => {
+    static present = () => {
         debugger
         if (document.getElementById(TikiSdkFlow.id) == null) {
             const div = document.createElement("div");
@@ -95,9 +95,9 @@ class TikiSdkAnon {
         let expire = new Date()
         let expireTime = expire.setFullYear(expire.getFullYear() + 1)
         expire.setTime(expireTime)
-        if(accept) {
+        if (accept) {
             TikiCookiePrivacy.handleAccept()
-        }else{
+        } else {
             TikiCookiePrivacy.handleDecline()
         }
     }
