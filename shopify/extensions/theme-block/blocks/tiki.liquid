@@ -1,0 +1,19 @@
+<script defer src="{{ 'index.js' | asset_url }}"></script>
+<script defer src="{{ 'flow.js' | asset_url }}"></script>
+<script defer src="{{ 'tiki_embed.js' | asset_url }}"></script>
+ 
+{% schema %}
+{
+  "name": "TIKI",
+  "target": "body",
+  "settings": [
+    { "type": "color", "id": "primaryTextColor", "label": "PrimaryTextColor", "default": "#1C0000" },
+    { "type": "color", "id": "secondaryTextColor", "label": "SecondaryTextColor", "default": "#00001C" },
+    { "type": "color", "id": "primaryBackgroundColor", "label": "PrimaryBackgroundColor", "default": "#FFFFFF" },
+    { "type": "color", "id": "secondaryBackgroundColor", "label": "SecondaryBackgroundColor", "default": "#F6F6F6" },
+    { "type": "color", "id": "accentColor", "label": "AccentColor", "default": "#00b272" },
+    { "type": "text", "id": "fontFamily", "label": "Font Family", "default": "Space Grotesk" }
+  ]
+}
+{% endschema %}
+

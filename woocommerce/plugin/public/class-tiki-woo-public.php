@@ -226,7 +226,6 @@ class Tiki_Woo_Public {
 				let tiki_user_id = TikiSdk.id()
 				tikiSetUserIdCookie(tiki_user_id)
 				let presented = document.cookie.match('tiki_presented')
-				debugger
 				if( !presented ) {
 					TikiSdk.present()
 				}
