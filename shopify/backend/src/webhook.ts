@@ -40,39 +40,6 @@ export const registerWebhooks = async (session: Session, env: Env) => {
     handleRegisterReturnErrors(response)
 }
 
-const handleRegisterReturnErrors = (response: RegisterReturn) => {
-    if (!response['ORDERS_CREATE'][0].success) {
-        console.log(
-        `Failed to register ORDERS_CREATE webhook: ${response['ORDERS_CREATE'][0].result}`,
-        );
-    }
-    if (!response['DATA_REQUEST'][0].success) {
-        console.log(
-        `Failed to register DATA_REQUEST webhook: ${response['DATA_REQUEST'][0].result}`,
-        );
-    }
-    if (!response['CUSTOMER_REDACT'][0].success) {
-        console.log(
-        `Failed to register CUSTOMER_REDACT webhook: ${response['CUSTOMER_REDACT'][0].result}`,
-        );
-    }
-    if (!response['SHOP_REDACT'][0].success) {
-        console.log(
-        `Failed to register SHOP_REDACT webhook: ${response['SHOP_REDACT'][0].result}`,
-        );
-    }
-}
-
-const validate = async (req: RouterRequest, res: RouterResponse, env: Env) => {
-    const shopify = shopifyApp(env)
-    const { valid } = await shopify.webhooks.validate({
-        rawBody: req.body as string, 
-        rawRequest: req,
-        rawResponse: res,
-    });
-    return valid
-}
-
 export const orderCreate: RouterHandler<Env> = async ({ res, req, env }) => {
     const isValid = await validate(req, res, env)
     if( !isValid ){
@@ -141,4 +108,37 @@ export const shopRedact: RouterHandler<Env> = async ({ res, req, env }) => {
         req.body,
         req.headers
     ])
+}
+
+const handleRegisterReturnErrors = (response: RegisterReturn) => {
+    if (!response['ORDERS_CREATE'][0].success) {
+        console.log(
+        `Failed to register ORDERS_CREATE webhook: ${response['ORDERS_CREATE'][0].result}`,
+        );
+    }
+    if (!response['DATA_REQUEST'][0].success) {
+        console.log(
+        `Failed to register DATA_REQUEST webhook: ${response['DATA_REQUEST'][0].result}`,
+        );
+    }
+    if (!response['CUSTOMER_REDACT'][0].success) {
+        console.log(
+        `Failed to register CUSTOMER_REDACT webhook: ${response['CUSTOMER_REDACT'][0].result}`,
+        );
+    }
+    if (!response['SHOP_REDACT'][0].success) {
+        console.log(
+        `Failed to register SHOP_REDACT webhook: ${response['SHOP_REDACT'][0].result}`,
+        );
+    }
+}
+
+const validate = async (req: RouterRequest, res: RouterResponse, env: Env) => {
+    const shopify = shopifyApp(env)
+    const { valid } = await shopify.webhooks.validate({
+        rawBody: req.body as string, 
+        rawRequest: req,
+        rawResponse: res,
+    });
+    return valid
 }

@@ -5,7 +5,7 @@ import Env from './env'
 
 const router = new Router<Env>()
 
-router.get('/', Auth.auth)
+router.get('/auth', Auth.auth)
 
 router.get('/auth/callback', Auth.authCallback)
 

@@ -61,7 +61,7 @@ In the Theme Editor you can personalize the look of the banner to match your sit
 The appearance of the UI components is customized using the following settings.
 
 **Colors**
-- Primary Text Color - default `#1C0000` ![#1C0000](https://placehold.co/15x15/1C0000/1C0000.png) ,
+- Primary Text Color - default `#00001C` ![#00001C](https://placehold.co/15x15/00001C/00001C.png) ,
 - Secondary Text Color - default `#9900001C` ![#9900001C](https://placehold.co/15x15/1C0000/1C0000.png) -> with alpha 60%, 
 - Primary_background color - default `#FFFFFF` ![#FFFFFF](https://placehold.co/15x15/FFFFFF/FFFFFF.png) ,
 - Secondary_background color - default `#F6F6F6` ![#F6F6F6](https://placehold.co/15x15/F6F6F6/F6F6F6.png),
