@@ -5,7 +5,7 @@ import Env from './env'
 
 const router = new Router<Env>()
 
-router.get('/auth', Auth.auth)
+router.get('/', Auth.auth)
 
 router.get('/auth/callback', Auth.authCallback)
 
@@ -19,6 +19,6 @@ router.get('/webhook/shop/redact', WebHook.shopRedact)
 
 export default {
     async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-        return router.handle(env, request)
+        return await router.handle(env, request, ctx)
     }
 }

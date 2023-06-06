@@ -11,5 +11,10 @@
     "@tsndr/cloudflare-worker-router": "^2.3.3",
     "typescript": "^5.0.4",
     "wrangler": "^3.0.0"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^7.3.0",
+    "crypto-js": "^4.1.1",
+    "crypto-ts": "^1.0.2"
   }
 }

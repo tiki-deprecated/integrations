@@ -1,4 +1,6 @@
 export default interface Env {
-    // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-    // MY_KV_NAMESPACE: KVNamespace
+    SHOPIFY_CLIENT_ID: string,
+    SHOPIFY_SECRET_KEY: string,
+
+    TIKI: KVNamespace
 }
