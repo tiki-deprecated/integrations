@@ -8,13 +8,22 @@
   "name": "TIKI",
   "target": "body",
   "settings": [
+    { "type": "checkbox", "id": "preview", "label": "Preview Banner", "default": false }
     { "type": "color", "id": "primaryTextColor", "label": "PrimaryTextColor", "default": "#1C0000" },
     { "type": "color", "id": "secondaryTextColor", "label": "SecondaryTextColor", "default": "#00001C" },
     { "type": "color", "id": "primaryBackgroundColor", "label": "PrimaryBackgroundColor", "default": "#FFFFFF" },
     { "type": "color", "id": "secondaryBackgroundColor", "label": "SecondaryBackgroundColor", "default": "#F6F6F6" },
     { "type": "color", "id": "accentColor", "label": "AccentColor", "default": "#00b272" },
     { "type": "text", "id": "fontFamily", "label": "Font Family", "default": "Space Grotesk" },
-    { "type": "checkbox", "id": "preview", "label": "Preview Banner", "default": false }
+    { "type": "text", "id": "enable_discount", "label": "Enable discount coupons", "default": "Space Grotesk", info:"Wether to enable discount coupons offer." },
+    { "type": "text", "id": "discount_type", "label": "Discount Type", "default": "Space Grotesk", info:"The WooCommerce Coupon type of discount." },
+    { "type": "number", "id": "discount_value", "label": "Discount Value", "default": "Space Grotesk", info:"The numeric value of the discount. It can be a percentage or a fixed value, depending on the discount type. Accepts up to 2 decimal numbers." },
+    { "type": "text", "id": "description", "label": "Description", "default": "Space Grotesk", info:"Small text to add user-friendly details to the Offer. We recommend including details like the type of data the user is trading and participation requirements (like 10% off your next purchase of $10 or more)." },
+    { "type": "image_picker", "id": "offer_image", "label": "Offer image", "default": "Space Grotesk", info:"A 300 x 86 resolution image that ilustrates the offer. We've elected to make this portion of the UI an image so you can get as fancy/detailed as you'd like. We strongly recommend the image to be compelling, easy to understand, and focused on the incentive for the user to participate (hence, why it's called the reward image). The reward always goes hand in hand with the text Description (like a caption), so avoid over crowding it with too much text." },
+    { "type": "text", "id": "use_case_1", "label": "Offer use case 1", "default": "Space Grotesk", info:"Short statement for users on how their data will be used or not used, using familiar terms to enhance understanding and trust." },
+    { "type": "text", "id": "use_case_2", "label": "Offer use case 2", "default": "Space Grotesk", info:"Short statement for users on how their data will be used or not used, using familiar terms to enhance understanding and trust." },
+    { "type": "text", "id": "use_case_3", "label": "Offer use case 3", "default": "Space Grotesk", info:"Short statement for users on how their data will be used or not used, using familiar terms to enhance understanding and trust." },
+    { "type": "richtext", "id": "terms", "label": "Terms", "default": "Space Grotesk", info:"The terms and conditions URL for this offer agreement. It should be a URL to a plain text file containing the legal conditions. This file can include simple markdown format." }
   ]
 }
 {% endschema %}
