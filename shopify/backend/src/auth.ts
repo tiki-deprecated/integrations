@@ -21,7 +21,6 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const code = req.query.code
     const shop = req.query.shop
     const baseUrl = new URL(req.url).hostname
-    console.log(baseUrl)
     const accessCodeUrl = `https://${shop}/admin/oauth/access_token?` +
         `client_id=${env.SHOPIFY_CLIENT_ID}` +
         `&client_secret=${env.SHOPIFY_SECRET_KEY}` +
@@ -43,6 +42,13 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
 
     await saveKeysToMetafields(shop, access_token, tikiPublicKey, tikiPrivateKey)
     await registerWebhooks(shop, access_token, baseUrl)
+
+    const extensionUuid = 'be1d0038-a8e3-4b7e-b0ee-383555ebc6b8'
+    const handle = 'tiki.liquid'
+    const deepLinkUrl = `https://${shop}/admin/themes/current/editor?context=apps&activateAppId=${extensionUuid}/${handle}`
+
+    res.status = 302
+    res.headers.set('location', deepLinkUrl)
 }
 
 const loginWithTiki = async (shop: string, shopify_token: string): Promise<String> => {
