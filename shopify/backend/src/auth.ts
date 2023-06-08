@@ -18,7 +18,6 @@ export const auth: RouterHandler<Env> = async ({ req, res, env }) => {
 }
 
 export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
-    const shopify = shopifyApp(env)
     const code = req.query.code
     const shop = req.query.shop
 
@@ -41,16 +40,8 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const tikiPublicKey = await createAppPublicKey(tikiAccessToken, tikiAppId)
     const tikiPrivateKey = await createAppPrivateKey(tikiAccessToken, tikiAppId)
 
-    //await saveKeysToMetafields(access_token, tikiPublicKey, tikiPrivateKey)
-    
-    shopify.session.customAppSession
-    registerWebhooks(shop, access_token)
-
-    // deeplink redirect
-    // `https://${shop}/admin/themes/current/editor?` +
-    // `context=apps` +
-    // `&activateAppId=${uuid}` +
-    // `/tiki.liquid` +
+    await saveKeysToMetafields(shop, access_token, tikiPublicKey, tikiPrivateKey)
+    await registerWebhooks(shop, access_token)
 }
 
 const loginWithTiki = async (shop: string, shopify_token: string): Promise<String> => {
@@ -93,7 +84,6 @@ const createApp = async (tikiAccessToken: String, shop: String): Promise<String>
 }
 
 const createAppPrivateKey = async (tikiAccessToken: String, appId: String): Promise<String> => {
-
     const createKeysUrl = `https://auth.l0.mytiki.com/api/latest/app/${appId}/key`
     const createKeysResponse = await fetch(createKeysUrl, {
         method: "POST",
@@ -108,7 +98,6 @@ const createAppPrivateKey = async (tikiAccessToken: String, appId: String): Prom
 }
 
 const createAppPublicKey = async (tikiAccessToken: String, appId: String): Promise<String> => {
-
     const createKeysUrl = `https://auth.l0.mytiki.com/api/latest/app/${appId}/key`
     const createKeysResponse = await fetch(createKeysUrl, {
         method: "POST",
@@ -126,7 +115,8 @@ const createAppPublicKey = async (tikiAccessToken: String, appId: String): Promi
 }
 
 const saveKeysToMetafields = async (shop: String, shopifyAccessToken: String, tikiPrivateKey: String, tikiPublicKey: String): Promise<String> => {
-    const queryUrl = `https://${shop}.myshopify.com/admin/api/2023-04/graphql.json`
+    const queryUrl = `https://${shop}/admin/api/2023-04/graphql.json`
+    const query = `{"query" : "query {currentAppInstallation{id}}"}`
     const appIdQuery = await fetch(queryUrl, {
         method: "POST",
         headers: {
@@ -134,18 +124,9 @@ const saveKeysToMetafields = async (shop: String, shopifyAccessToken: String, ti
             'X-Shopify-Access-Token': `${shopifyAccessToken}`,
             'content-type': 'application/json',
         },
-        body: JSON.stringify({
-            query: `{
-                products
-              }
-            `
-        })
+        body: query
     })
-    console.log(appIdQuery.status)
-    console.log(await appIdQuery.json())
-
 }
-
 
 interface TikiLoginReq {
     grant_type: String,
