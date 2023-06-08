@@ -1,6 +1,8 @@
 import { RouterHandler } from '@tsndr/cloudflare-worker-router'
 import Env from './env';
 import { AccessTokenResponse } from '@shopify/shopify-api';
+import { registerWebhooks } from './webhook';
+import { shopifyApp } from './shopify';
 
 export const auth: RouterHandler<Env> = async ({ req, res, env }) => {
     const shop = req.query.shop
@@ -16,6 +18,7 @@ export const auth: RouterHandler<Env> = async ({ req, res, env }) => {
 }
 
 export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
+    const shopify = shopifyApp(env)
     const code = req.query.code
     const shop = req.query.shop
 
@@ -31,6 +34,7 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
             "content-type": "application/json;charset=UTF-8",
         },
     });
+
     const { access_token }: AccessTokenResponse = await accessCodeUrlResp.json()
     const tikiAccessToken = await loginWithTiki(shop, access_token)
     const tikiAppId = await createApp(tikiAccessToken, shop)
@@ -38,9 +42,9 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const tikiPrivateKey = await createAppPrivateKey(tikiAccessToken, tikiAppId)
 
     //await saveKeysToMetafields(access_token, tikiPublicKey, tikiPrivateKey)
-
     
-
+    shopify.session.customAppSession
+    registerWebhooks(shop, access_token)
 
     // deeplink redirect
     // `https://${shop}/admin/themes/current/editor?` +
@@ -122,7 +126,6 @@ const createAppPublicKey = async (tikiAccessToken: String, appId: String): Promi
 }
 
 const saveKeysToMetafields = async (shop: String, shopifyAccessToken: String, tikiPrivateKey: String, tikiPublicKey: String): Promise<String> => {
-    console.log("query")
     const queryUrl = `https://${shop}.myshopify.com/admin/api/2023-04/graphql.json`
     const appIdQuery = await fetch(queryUrl, {
         method: "POST",

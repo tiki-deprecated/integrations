@@ -3,41 +3,26 @@ import { Session, DeliveryMethod, RegisterReturn, WebhookValidation } from '@sho
 import { shopifyApp } from './shopify';
 import Env from './env';
 
-export const registerWebhooks = async (session: Session, env: Env) => {
-    const shopify = shopifyApp(env)
+export const registerWebhooks = async (shop: string, accessToken: string) => {
+    const ordersPaidWebhook = {
+        "webhook": {
+            "address":"pubsub://projectName:topicName",
+            "topic":"orders/paid",
+            "format":"json"
+        }
+    }
 
-    shopify.webhooks.addHandlers({
-        ORDERS_CREATE: [
-            {
-                deliveryMethod: DeliveryMethod.Http,
-                callbackUrl: '/webhook/order_create',
-            },
-        ],
-        DATA_REQUEST: [
-            {
-                deliveryMethod: DeliveryMethod.Http,
-                callbackUrl: '/webhook/customers/data_request',
-            },
-        ],
-        CUSTOMER_REDACT: [
-            {
-                deliveryMethod: DeliveryMethod.Http,
-                callbackUrl: '/webhook/customers/redact',
-            },
-        ],
-        SHOP_REDACT: [
-            {
-                deliveryMethod: DeliveryMethod.Http,
-                callbackUrl: '/webhook/shop/redact',
-            },
-        ],
-    });
-
-    const response: RegisterReturn = await shopify.webhooks.register({
-        session: session,
-    });
-
-    handleRegisterReturnErrors(response)
+    const queryUrl = `https://${shop}/admin/api/2023-04/webhooks.json`
+    const webhookCreate = await fetch(queryUrl, {
+        method: "POST",
+        headers: {
+            'accept': 'application/json',
+            'X-Shopify-Access-Token': `${accessToken}`,
+            'content-type': 'application/json',
+        },
+        body: JSON.stringify(ordersPaidWebhook)
+    })
+    console.log(webhookCreate)
 }
 
 export const orderCreate: RouterHandler<Env> = async ({ res, req, env }) => {
