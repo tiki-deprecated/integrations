@@ -20,7 +20,8 @@ export const auth: RouterHandler<Env> = async ({ req, res, env }) => {
 export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const code = req.query.code
     const shop = req.query.shop
-
+    const baseUrl = new URL(req.url).hostname
+    console.log(baseUrl)
     const accessCodeUrl = `https://${shop}/admin/oauth/access_token?` +
         `client_id=${env.SHOPIFY_CLIENT_ID}` +
         `&client_secret=${env.SHOPIFY_SECRET_KEY}` +
@@ -41,7 +42,7 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const tikiPrivateKey = await createAppPrivateKey(tikiAccessToken, tikiAppId)
 
     await saveKeysToMetafields(shop, access_token, tikiPublicKey, tikiPrivateKey)
-    await registerWebhooks(shop, access_token)
+    await registerWebhooks(shop, access_token, baseUrl)
 }
 
 const loginWithTiki = async (shop: string, shopify_token: string): Promise<String> => {

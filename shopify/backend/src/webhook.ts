@@ -3,10 +3,10 @@ import { Session, DeliveryMethod, RegisterReturn, WebhookValidation } from '@sho
 import { shopifyApp } from './shopify';
 import Env from './env';
 
-export const registerWebhooks = async (shop: string, accessToken: string) => {
+export const registerWebhooks = async (shop: string, accessToken: string, baseUrl: string) => {
     const ordersPaidWebhook = {
         "webhook": {
-            "address": "pubsub://projectName:topicName",
+            "address": `https://${baseUrl}/webhook/order/paid`,
             "topic": "orders/paid",
             "format": "json"
         }
@@ -24,7 +24,7 @@ export const registerWebhooks = async (shop: string, accessToken: string) => {
     })
 }
 
-export const orderCreate: RouterHandler<Env> = async ({ res, req, env }) => {
+export const orderPaid: RouterHandler<Env> = async ({ res, req, env }) => {
     const isValid = await validate(req, res, env)
     if (!isValid) {
         res.status = 400;
