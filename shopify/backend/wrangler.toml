@@ -2,10 +2,6 @@ name = "backend"
 main = "src/worker.ts"
 compatibility_date = "2023-06-05"
 
-kv_namespaces = [
-    { binding = "TIKI", id = "4c4e4794ea174aafa14c47019d97ea88" }
-]
-
 [vars]
 SHOPIFY_CLIENT_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
 SHOPIFY_SECRET_KEY = "4a606e64092dd10501ce90c232aee402"
