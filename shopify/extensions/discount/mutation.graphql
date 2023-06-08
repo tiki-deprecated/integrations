@@ -1,0 +1,15 @@
+mutation {
+  discountAutomaticAppCreate(automaticAppDiscount: {
+    title: "TIKI discount",
+    functionId: "01H1Y5NDWAX5413D74GRVDETTD",
+    startsAt: "2023-06-02T00:00:00"
+  }) {
+     automaticAppDiscount {
+      discountId
+     }
+     userErrors {
+      field
+      message
+     }
+  }
+}

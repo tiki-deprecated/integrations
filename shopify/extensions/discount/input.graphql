@@ -1,7 +1,13 @@
 query Input {
-  discountNode {
-    metafield(namespace: "$app:discount", key: "function-configuration") {
-      value
+  cart {
+    lines {
+      quantity
+      merchandise {
+        __typename
+        ...on ProductVariant {
+            id
+        }
+      }
     }
   }
 }
