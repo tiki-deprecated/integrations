@@ -9,7 +9,7 @@ router.get('/', Auth.auth)
 
 router.get('/auth/callback', Auth.authCallback)
 
-router.get('/webhook/order/paid', WebHook.orderPaid)
+router.post('/webhook/order/paid', WebHook.orderPaid)
 
 router.get('/webhook/customers/data_request', WebHook.dataRequest)
 

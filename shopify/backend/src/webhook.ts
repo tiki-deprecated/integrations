@@ -13,7 +13,7 @@ export const registerWebhooks = async (shop: string, accessToken: string, baseUr
     }
     const jsonBody = JSON.stringify(ordersPaidWebhook)
     const queryUrl = `https://${shop}/admin/api/2023-04/webhooks.json`
-    const webhookCreate = await fetch(queryUrl, {
+    await fetch(queryUrl, {
         method: "POST",
         headers: {
             'accept': 'application/json',
@@ -25,28 +25,21 @@ export const registerWebhooks = async (shop: string, accessToken: string, baseUr
 }
 
 export const orderPaid: RouterHandler<Env> = async ({ res, req, env }) => {
-    const isValid = await validate(req, res, env)
-    if (!isValid) {
-        res.status = 400;
-        return
-    }
 
-    const shopify = shopifyApp(env)
+    // TODO authenticate with TIKI
+    const orderData = req.body
+    const url = 'https://postman-echo.com/post' // TODO CHANGE TO TIKI URL
 
-    res.body = JSON.stringify([
-        req.body,
-        req.headers
-    ])
-
-    // // - get access tokens from Workers KV
-    // const value = await env.TIKI.get("first-key");
-
-    // if (value === null) {
-    //   res.status = 500
-    // }
-    // // - get TIKI credentials from Shopify pi
-    // // - authenticate with TIKI and send data
-    // res.body = 'Hello World'
+    const echo = await fetch(url, {
+        method: "POST",
+        headers: {
+            'accept': 'application/json',
+            // add TIKI Bearer token
+            'content-type': 'application/json',
+        },
+        body: orderData
+    })
+    console.log(await echo.text()) // REMOVE
 }
 
 export const dataRequest: RouterHandler<Env> = async ({ res, req, env }) => {
