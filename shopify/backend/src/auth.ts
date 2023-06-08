@@ -1,6 +1,6 @@
 import { RouterHandler } from '@tsndr/cloudflare-worker-router'
 import Env from './env';
-import { AccessTokenResponse } from '@shopify/shopify-api';
+import { AccessTokenResponse, CurrentAppInstallations } from '@shopify/shopify-api';
 import { registerWebhooks } from './webhook';
 import { shopifyApp } from './shopify';
 
@@ -20,7 +20,8 @@ export const auth: RouterHandler<Env> = async ({ req, res, env }) => {
 export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const code = req.query.code
     const shop = req.query.shop
-
+    const baseUrl = new URL(req.url).hostname
+    console.log(baseUrl)
     const accessCodeUrl = `https://${shop}/admin/oauth/access_token?` +
         `client_id=${env.SHOPIFY_CLIENT_ID}` +
         `&client_secret=${env.SHOPIFY_SECRET_KEY}` +
@@ -41,7 +42,7 @@ export const authCallback: RouterHandler<Env> = async ({ req, res, env }) => {
     const tikiPrivateKey = await createAppPrivateKey(tikiAccessToken, tikiAppId)
 
     await saveKeysToMetafields(shop, access_token, tikiPublicKey, tikiPrivateKey)
-    await registerWebhooks(shop, access_token)
+    await registerWebhooks(shop, access_token, baseUrl)
 }
 
 const loginWithTiki = async (shop: string, shopify_token: string): Promise<String> => {
@@ -126,6 +127,36 @@ const saveKeysToMetafields = async (shop: String, shopifyAccessToken: String, ti
         },
         body: query
     })
+    let { data }: CurrentAppInstallationResp = await appIdQuery.json()
+    let appId = data.currentAppInstallation.id
+    const mutationQuery = `{"query" : "mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) { ` +
+        'metafieldsSet(metafields: $metafields) { metafields { key namespace value createdAt updatedAt }' +
+        'userErrors { field message code } } }",' +
+        '"variables": {' +
+        '"metafields": [' +
+        '{' +
+        '"namespace": "tiki_keys",' +
+        '"key": "tiki_public_key",' +
+        '"type": "single_line_text_field",' +
+        `"value": "${tikiPublicKey}",` +
+        `"ownerId": "${appId}"` +
+        '},' +
+        '{' +
+        '"namespace": "tiki_keys",' +
+        '"key": "tiki_private_key",' +
+        '"type": "single_line_text_field",' +
+        `"value": "${tikiPrivateKey}",` +
+        `"ownerId": "${appId}"` +
+        '}]}}'
+    const createFieldsQuery = await fetch(queryUrl, {
+        method: "POST",
+        headers: {
+            'accept': 'application/json',
+            'X-Shopify-Access-Token': `${shopifyAccessToken}`,
+            'content-type': 'application/json',
+        },
+        body: mutationQuery
+    })
 }
 
 interface TikiLoginReq {
@@ -158,4 +189,12 @@ interface TikiCreateKeysResp {
     isPublic: boolean,
     secret: String,
     public: boolean
+}
+
+interface CurrentAppInstallationResp {
+    data: {
+        currentAppInstallation: {
+            id: string,
+        }
+    }
 }
