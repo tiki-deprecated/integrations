@@ -6,12 +6,12 @@ import Env from './env';
 export const registerWebhooks = async (shop: string, accessToken: string) => {
     const ordersPaidWebhook = {
         "webhook": {
-            "address":"pubsub://projectName:topicName",
-            "topic":"orders/paid",
-            "format":"json"
+            "address": "pubsub://projectName:topicName",
+            "topic": "orders/paid",
+            "format": "json"
         }
     }
-
+    const jsonBody = JSON.stringify(ordersPaidWebhook)
     const queryUrl = `https://${shop}/admin/api/2023-04/webhooks.json`
     const webhookCreate = await fetch(queryUrl, {
         method: "POST",
@@ -20,14 +20,13 @@ export const registerWebhooks = async (shop: string, accessToken: string) => {
             'X-Shopify-Access-Token': `${accessToken}`,
             'content-type': 'application/json',
         },
-        body: JSON.stringify(ordersPaidWebhook)
+        body: jsonBody
     })
-    console.log(webhookCreate)
 }
 
 export const orderCreate: RouterHandler<Env> = async ({ res, req, env }) => {
     const isValid = await validate(req, res, env)
-    if( !isValid ){
+    if (!isValid) {
         res.status = 400;
         return
     }
@@ -38,7 +37,7 @@ export const orderCreate: RouterHandler<Env> = async ({ res, req, env }) => {
         req.body,
         req.headers
     ])
-    
+
     // // - get access tokens from Workers KV
     // const value = await env.TIKI.get("first-key");
 
@@ -52,7 +51,7 @@ export const orderCreate: RouterHandler<Env> = async ({ res, req, env }) => {
 
 export const dataRequest: RouterHandler<Env> = async ({ res, req, env }) => {
     const isValid = await validate(req, res, env)
-    if( !isValid ){
+    if (!isValid) {
         res.status = 400;
         return
     }
@@ -67,22 +66,7 @@ export const dataRequest: RouterHandler<Env> = async ({ res, req, env }) => {
 
 export const customerRedact: RouterHandler<Env> = async ({ res, req, env }) => {
     const isValid = await validate(req, res, env)
-    if( !isValid ){
-        res.status = 400;
-        return
-    }
-
-    const shopify = shopifyApp(env)
-
-    res.body = JSON.stringify([
-        req.body,
-        req.headers
-    ])
-} 
-
-export const shopRedact: RouterHandler<Env> = async ({ res, req, env }) => {
-    const isValid = await validate(req, res, env)
-    if( !isValid ){
+    if (!isValid) {
         res.status = 400;
         return
     }
@@ -95,33 +79,25 @@ export const shopRedact: RouterHandler<Env> = async ({ res, req, env }) => {
     ])
 }
 
-const handleRegisterReturnErrors = (response: RegisterReturn) => {
-    if (!response['ORDERS_CREATE'][0].success) {
-        console.log(
-        `Failed to register ORDERS_CREATE webhook: ${response['ORDERS_CREATE'][0].result}`,
-        );
+export const shopRedact: RouterHandler<Env> = async ({ res, req, env }) => {
+    const isValid = await validate(req, res, env)
+    if (!isValid) {
+        res.status = 400;
+        return
     }
-    if (!response['DATA_REQUEST'][0].success) {
-        console.log(
-        `Failed to register DATA_REQUEST webhook: ${response['DATA_REQUEST'][0].result}`,
-        );
-    }
-    if (!response['CUSTOMER_REDACT'][0].success) {
-        console.log(
-        `Failed to register CUSTOMER_REDACT webhook: ${response['CUSTOMER_REDACT'][0].result}`,
-        );
-    }
-    if (!response['SHOP_REDACT'][0].success) {
-        console.log(
-        `Failed to register SHOP_REDACT webhook: ${response['SHOP_REDACT'][0].result}`,
-        );
-    }
+
+    const shopify = shopifyApp(env)
+
+    res.body = JSON.stringify([
+        req.body,
+        req.headers
+    ])
 }
 
 const validate = async (req: RouterRequest, res: RouterResponse, env: Env) => {
     const shopify = shopifyApp(env)
     const { valid } = await shopify.webhooks.validate({
-        rawBody: req.body as string, 
+        rawBody: req.body as string,
         rawRequest: req,
         rawResponse: res,
     });

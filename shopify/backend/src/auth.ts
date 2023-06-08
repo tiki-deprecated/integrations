@@ -1,6 +1,6 @@
 import { RouterHandler } from '@tsndr/cloudflare-worker-router'
 import Env from './env';
-import { AccessTokenResponse } from '@shopify/shopify-api';
+import { AccessTokenResponse, CurrentAppInstallations } from '@shopify/shopify-api';
 import { registerWebhooks } from './webhook';
 import { shopifyApp } from './shopify';
 
@@ -126,6 +126,36 @@ const saveKeysToMetafields = async (shop: String, shopifyAccessToken: String, ti
         },
         body: query
     })
+    let { data }: CurrentAppInstallationResp = await appIdQuery.json()
+    let appId = data.currentAppInstallation.id
+    const mutationQuery = `{"query" : "mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) { ` +
+        'metafieldsSet(metafields: $metafields) { metafields { key namespace value createdAt updatedAt }' +
+        'userErrors { field message code } } }",' +
+        '"variables": {' +
+        '"metafields": [' +
+        '{' +
+        '"namespace": "tiki_keys",' +
+        '"key": "tiki_public_key",' +
+        '"type": "single_line_text_field",' +
+        `"value": "${tikiPublicKey}",` +
+        `"ownerId": "${appId}"` +
+        '},' +
+        '{' +
+        '"namespace": "tiki_keys",' +
+        '"key": "tiki_private_key",' +
+        '"type": "single_line_text_field",' +
+        `"value": "${tikiPrivateKey}",` +
+        `"ownerId": "${appId}"` +
+        '}]}}'
+    const createFieldsQuery = await fetch(queryUrl, {
+        method: "POST",
+        headers: {
+            'accept': 'application/json',
+            'X-Shopify-Access-Token': `${shopifyAccessToken}`,
+            'content-type': 'application/json',
+        },
+        body: mutationQuery
+    })
 }
 
 interface TikiLoginReq {
@@ -158,4 +188,12 @@ interface TikiCreateKeysResp {
     isPublic: boolean,
     secret: String,
     public: boolean
+}
+
+interface CurrentAppInstallationResp {
+    data: {
+        currentAppInstallation: {
+            id: string,
+        }
+    }
 }
