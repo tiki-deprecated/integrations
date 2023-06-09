@@ -4,4 +4,6 @@ compatibility_date = "2023-06-05"
 
 [vars]
 SHOPIFY_CLIENT_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
-SHOPIFY_SECRET_KEY = "4a606e64092dd10501ce90c232aee402"
+SHOPIFY_APP_THEME_EXTENSION_UUID = "be1d0038-a8e3-4b7e-b0ee-383555ebc6b8"
+# The necessary secrets are:
+# - SHOPIFY_SECRET_KEY
