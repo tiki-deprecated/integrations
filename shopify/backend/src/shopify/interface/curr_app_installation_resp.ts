@@ -1,7 +1,7 @@
 export interface CurrentAppInstallationResp {
-    data: {
-        currentAppInstallation: {
-            id: string,
-        }
-    }
+  data: {
+    currentAppInstallation: {
+      id: string;
+    };
+  };
 }

@@ -1,7 +1,7 @@
 export interface TikiCreateKeysResp {
-    id: String,
-    created: String,
-    isPublic: boolean,
-    secret: String,
-    public: boolean
+  id: String;
+  created: String;
+  isPublic: boolean;
+  secret: String;
+  public: boolean;
 }
