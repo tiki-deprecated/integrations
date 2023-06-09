@@ -1,18 +1,23 @@
-# Dependency directory
-node_modules
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# Ignore Apple macOS Desktop Services Store
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
 .DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# Logs
-logs
-*.log
-
-# vite build output
-dist/
-
-# Partners can use npm, yarn or pnpm with the CLI.
-# We ignore lock files so they don't get a package manager mis-match
-# Without this, they may get a warning if using a different package manager to us
-yarn.lock
-package-lock.json
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
