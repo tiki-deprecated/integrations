@@ -1,5 +1,5 @@
 <script async src="https://unpkg.com/@mytiki/tiki-sdk-js@1.0.7/dist/index.js"></script>
-<script async src="{{ 'tiki_embed.js' | asset_url }}"></script>
+<script async src="{{ 'tiki_shopify.js' | asset_url }}"></script>
 
 <script>
 const TIKI_SETTINGS = {
@@ -24,10 +24,8 @@ const TIKI_SETTINGS = {
     terms : "{{ block.settings.term }}",
     publishing_id: "{{ app.metafields.tiki_keys.tiki_public_key}}"
 }
-window.addEventListener("DOMContentLoaded", (event) => {
-    TikiEmbed.start(TIKI_SETTINGS)
-});
 </script>
+
 {% schema %}
 {
   "name": "TIKI",

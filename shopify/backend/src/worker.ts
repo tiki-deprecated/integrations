@@ -1,21 +1,22 @@
 import { Router } from '@tsndr/cloudflare-worker-router'
-import * as Auth from './auth'
-import * as WebHook from './webhook'
-import Env from './env'
+import * as OAuth from './routes/oauth'
+import * as Order from './routes/order'
+import * as Customer from './routes/customer'
+import * as Shop from './routes/shop'
 
 const router = new Router<Env>()
 
-router.get('/', Auth.auth)
+router.get('/api/latest/oauth/authorize', OAuth.authorize)
 
-router.get('/auth/callback', Auth.authCallback)
+router.get('/api/latest/oauth/token', OAuth.token)
 
-router.post('/webhook/order/paid', WebHook.orderPaid)
+router.post('/api/latest/order/paid', Order.paid)
 
-router.get('/webhook/customers/data_request', WebHook.dataRequest)
+router.post('/api/latest/customer/data-request', Customer.dataRequest)
 
-router.get('/webhook/customers/redact', WebHook.customerRedact)
+router.post('/api/latest/customer/redact', Customer.redact)
 
-router.get('/webhook/shop/redact', WebHook.shopRedact)
+router.post('/api/latest/shop/redact', Shop.redact)
 
 export default {
     async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
