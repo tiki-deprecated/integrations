@@ -1,6 +1,3 @@
-<script async src="https://unpkg.com/@mytiki/tiki-sdk-js@1.0.7/dist/index.js"></script>
-<script async src="{{ 'tiki_shopify.js' | asset_url }}"></script>
-
 <script>
 const TIKI_SETTINGS = {
     preview : "{{ block.settings.preview }}",
@@ -25,6 +22,8 @@ const TIKI_SETTINGS = {
     publishing_id: "{{ app.metafields.tiki_keys.tiki_public_key}}"
 }
 </script>
+<script async src="https://unpkg.com/@mytiki/tiki-sdk-js@1.0.7/dist/index.js"></script>
+<script async src="{{ 'tiki_shopify.js' | asset_url }}"></script>
 
 {% schema %}
 {

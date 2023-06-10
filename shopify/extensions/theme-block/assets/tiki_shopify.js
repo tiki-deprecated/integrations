@@ -91,42 +91,43 @@ const tikiAnonSetDecision = (accept) => {
 
 TikiSdk.config()
     .theme
-        .primaryTextColor(settings.primaryTextColor)
-        .secondaryTextColor(settings.secondaryTextColor)
-        .primaryBackgroundColor(settings.primaryBackgroundColor)
-        .secondaryBackgroundColor(settings.secondaryBackgroundColor)
-        .accentColor(settings.accentColor)
-        .fontFamily(settings.fontFamily)
-        .and()
+    .primaryTextColor(TIKI_SETTINGS.primaryTextColor)
+    .secondaryTextColor(TIKI_SETTINGS.secondaryTextColor)
+    .primaryBackgroundColor(TIKI_SETTINGS.primaryBackgroundColor)
+    .secondaryBackgroundColor(TIKI_SETTINGS.secondaryBackgroundColor)
+    .accentColor(TIKI_SETTINGS.accentColor)
+    .fontFamily(TIKI_SETTINGS.fontFamily)
+    .and()
     .offer
-        .description(settings.description)
-        .reward(settings.offerImage)
-        .bullet({ text: settings.useCase1, isUsed: settings.isUsed1 })
-        .bullet({ text: settings.useCase2, isUsed: settings.isUsed2 })
-        .bullet({ text: settings.useCase3, isUsed: settings.isUsed3 })
-        .terms(settings.terms)
-        .tag(TikiSdk.TitleTag.deviceId())
-        .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
-        .add()
+    .description(TIKI_SETTINGS.description)
+    .reward(TIKI_SETTINGS.offerImage)
+    .bullet({ text: TIKI_SETTINGS.useCase1, isUsed: TIKI_SETTINGS.isUsed1 })
+    .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
+    .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
+    .terms(TIKI_SETTINGS.terms)
+    .tag(TikiSdk.TitleTag.deviceId())
+    .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
+    .add()
 let offer = TikiSdk.config()._offers[0];
 if (customer_id) {
-    await TikiSdk.config().offer()
+    TikiSdk.config().offer()
         .ptr(customer_id)
-        .initialize(settings.publishingId, customer_id);
-    let tikiDecisionCookie = document.cookie.match(RegExp('(?:^|;\\s*)tiki_decision=([^;]*)'));
-    if (tikiDecisionCookie) {
-        let uses = true === decision ? offer._uses : []
-        await license(
-            offer._ptr,
-            uses,
-            offer._terms,
-            offer._tags,
-            offer._description,
-            offer._expiry
-        );
-    } else {
-        TikiSdk.present()
-    }
+        .initialize(TIKI_SETTINGS.publishingId, customer_id, () => {
+            let tikiDecisionCookie = document.cookie.match(RegExp('(?:^|;\\s*)tiki_decision=([^;]*)'));
+            if (tikiDecisionCookie) {
+                let uses = true === decision ? offer._uses : []
+                license(
+                    offer._ptr,
+                    uses,
+                    offer._terms,
+                    offer._tags,
+                    offer._description,
+                    offer._expiry
+                );
+            } else {
+                TikiSdk.present()
+            }
+        })
 } else {
     tikiAnon()
 }

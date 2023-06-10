@@ -1,0 +1,11 @@
+name = "order-discount"
+type = "order_discounts"
+api_version = "2023-01"
+
+[build]
+command = ""
+path = "dist/function.wasm"
+
+[ui.paths]
+create = "/ui/order-discount/new"
+details = "/ui/order-discount/:id"

@@ -1,7 +1,6 @@
 {
   "name": "tiki",
   "version": "1.0.0",
-  "main": "web/index.js",
   "license": "MIT",
   "scripts": {
     "shopify": "shopify",
@@ -19,6 +18,7 @@
   "private": true,
   "workspaces": [
     "backend",
+    "frontend",
     "extensions/*"
   ]
 }

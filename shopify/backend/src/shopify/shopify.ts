@@ -4,7 +4,10 @@ import { AccessTokenResponse } from './interface';
 export const auth = (shop: string, apiKey: string, baseUrl: string) => {
     const scopes = 'read_orders,write_discounts';
     const redirectUri = `https://${baseUrl}/api/latest/oauth/token`;
-    return `https://${shop}/admin/oauth/authorize?` + `client_id=${apiKey}&` + `scope=${scopes}&` + `redirect_uri=${redirectUri}`;
+    return `https://${shop}/admin/oauth/authorize?` + 
+    `client_id=${apiKey}&` + 
+    `scope=${scopes}&` + 
+    `redirect_uri=${redirectUri}`;
 };
 
 export const token = async (shop: string, appId: string, secretKey: string, code: string) => {
