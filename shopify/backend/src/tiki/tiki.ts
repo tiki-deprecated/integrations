@@ -1,73 +1,106 @@
-import { TikiCreateAppResp, TikiLoginReq, TikiLoginResp, TikiCreateKeysResp } from './interface';
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
-export const loginWithTiki = async (shop: string, shopify_token: string): Promise<String> => {
-  const loginReq: TikiLoginReq = {
-    grant_type: 'urn:ietf:params:oauth:grant-type:token-exchange',
-    client_id: shop,
-    subject_token: shopify_token,
-    subject_token_type: 'urn:mytiki:params:oauth:token-type:shopify',
-    scope: 'auth',
-  };
-  const url = 'https://auth.l0.mytiki.com/api/latest/oauth/token';
-  const formBody = Object.entries(loginReq)
-    .map(([key, value]) => encodeURIComponent(key) + '=' + encodeURIComponent(value))
-    .join('&');
-  const tikiLoginResponse = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-    },
-    body: formBody,
-  });
-  const { access_token }: TikiLoginResp = await tikiLoginResponse.json();
-  return access_token;
-};
+import { TikiTokenExRsp } from './tiki-token-ex-rsp';
+import { TikiTokenExReq } from './tiki-token-ex-req';
+import { TikiAppCreateRsp } from './tiki-app-create-rsp';
+import { TikiAppCreateReq } from './tiki-app-create-req';
+import { TikiKeyCreateRsp } from './tiki-key-create-rsp';
+import { TikiKeyCreateReq } from './tiki-key-create-req';
+import {
+  APPLICATION_FORM_URL,
+  APPLICATION_JSON,
+  HeaderBuilder,
+} from '@mytiki/worker-utils-ts/api/api-headers';
 
-export const createApp = async (tikiAccessToken: String, shop: String): Promise<String> => {
-  const createAppUrl = 'https://auth.l0.mytiki.com/api/latest/app';
-  const createAppJsonReq = JSON.stringify({
-    name: shop,
-  });
-  const createAppResponse: Response = await fetch(createAppUrl, {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      authorization: `Bearer ${tikiAccessToken}`,
-      'content-type': 'application/json',
-    },
-    body: createAppJsonReq,
-  });
-  const { appId }: TikiCreateAppResp = await createAppResponse.json();
-  return appId;
-};
+export type { TikiKeyCreateRsp, TikiAppCreateRsp };
 
-export const createAppPrivateKey = async (tikiAccessToken: String, appId: String): Promise<String> => {
-  const createKeysUrl = `https://auth.l0.mytiki.com/api/latest/app/${appId}/key`;
-  const createKeysResponse = await fetch(createKeysUrl, {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      authorization: `Bearer ${tikiAccessToken}`,
-      'content-type': 'application/json',
-    },
-  });
-  const { secret }: TikiCreateKeysResp = await createKeysResponse.json();
-  return secret;
-};
+export class Tiki {
+  static readonly grantType = 'urn:ietf:params:oauth:grant-type:token-exchange';
+  static readonly tokenType = 'urn:mytiki:params:oauth:token-type:shopify';
+  static readonly scope = 'auth';
+  baseUrl: string;
 
-export const createAppPublicKey = async (tikiAccessToken: String, appId: String): Promise<String> => {
-  const createKeysUrl = `https://auth.l0.mytiki.com/api/latest/app/${appId}/key`;
-  const createKeysResponse = await fetch(createKeysUrl, {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      authorization: `Bearer ${tikiAccessToken}`,
-      'content-type': 'application/json',
-    },
-    body: JSON.stringify({
-      public: true,
-    }),
-  });
-  const { id }: TikiCreateKeysResp = await createKeysResponse.json();
-  return id;
-};
+  constructor(baseUrl: string) {
+    this.baseUrl = baseUrl;
+  }
+
+  async login(shopDomain: string, shopifyToken: string): Promise<string> {
+    const req: TikiTokenExReq = {
+      grant_type: Tiki.grantType,
+      client_id: shopDomain,
+      subject_token: shopifyToken,
+      subject_token_type: Tiki.tokenType,
+      scope: Tiki.scope,
+    };
+    return fetch(`${this.baseUrl}/oauth/token`, {
+      method: 'POST',
+      headers: new HeaderBuilder().content(APPLICATION_FORM_URL).build(),
+      body: new URLSearchParams(req),
+    })
+      .then((res) => res.json())
+      .then((json) => (json as TikiTokenExRsp).access_token);
+  }
+
+  async createApp(
+    accessToken: string,
+    shopDomain: string
+  ): Promise<TikiAppCreateRsp> {
+    const req: TikiAppCreateReq = {
+      name: shopDomain,
+    };
+    return fetch(`${this.baseUrl}/app`, {
+      method: 'POST',
+      headers: new HeaderBuilder()
+        .accept(APPLICATION_JSON)
+        .authorization(`Bearer ${accessToken}`)
+        .content(APPLICATION_JSON)
+        .build(),
+      body: JSON.stringify(req),
+    })
+      .then((res) => res.json())
+      .then((json) => json as TikiAppCreateRsp);
+  }
+
+  async createPrivateKey(
+    accessToken: string,
+    appId: string
+  ): Promise<TikiKeyCreateRsp> {
+    const req: TikiKeyCreateReq = {
+      isPublic: false,
+    };
+    return fetch(`${this.baseUrl}/app/${appId}/key`, {
+      method: 'POST',
+      headers: new HeaderBuilder()
+        .accept(APPLICATION_JSON)
+        .authorization(`Bearer ${accessToken}`)
+        .content(APPLICATION_JSON)
+        .build(),
+      body: JSON.stringify(req),
+    })
+      .then((res) => res.json())
+      .then((json) => json as TikiKeyCreateRsp);
+  }
+
+  async createPublicKey(
+    accessToken: string,
+    appId: string
+  ): Promise<TikiKeyCreateRsp> {
+    const req: TikiKeyCreateReq = {
+      isPublic: true,
+    };
+    return fetch(`${this.baseUrl}/app/${appId}/key`, {
+      method: 'POST',
+      headers: new HeaderBuilder()
+        .accept(APPLICATION_JSON)
+        .authorization(`Bearer ${accessToken}`)
+        .content(APPLICATION_JSON)
+        .build(),
+      body: JSON.stringify(req),
+    })
+      .then((res) => res.json())
+      .then((json) => json as TikiKeyCreateRsp);
+  }
+}

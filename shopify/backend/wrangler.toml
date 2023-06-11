@@ -1,9 +1,11 @@
 name = "backend"
-main = "src/worker.ts"
+main = "dist/worker.js"
 compatibility_date = "2023-06-05"
 
 [vars]
 SHOPIFY_CLIENT_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
 SHOPIFY_APP_THEME_EXTENSION_UUID = "be1d0038-a8e3-4b7e-b0ee-383555ebc6b8"
+TIKI_URL = "https://auth.l0.mytiki.com/api/latest"
+
 # The necessary secrets are:
 # - SHOPIFY_SECRET_KEY
