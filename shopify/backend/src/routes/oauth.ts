@@ -6,12 +6,12 @@
 import { RouterHandler, RouterRequest } from '@tsndr/cloudflare-worker-router';
 import { Shopify } from '../shopify/shopify';
 import { Tiki } from '../tiki/tiki';
-import { ApiError } from '@mytiki/worker-utils-ts/api/api-error';
+import { ApiError } from '@mytiki/worker-utils-ts';
 
 export const authorize: RouterHandler<Env> = async ({ req, res, env }) => {
   const { baseUrl, shop } = parseParams(req);
   if (shop == null) {
-    res.raw = new ApiError()
+    res.raw = new ApiError.ApiError()
       .message('Missing required parameters.')
       .detail('shop is null')
       .response(200);
@@ -29,7 +29,7 @@ export const authorize: RouterHandler<Env> = async ({ req, res, env }) => {
 export const token: RouterHandler<Env> = async ({ req, res, env }) => {
   const { baseUrl, shop, code } = parseParams(req);
   if (shop == null || code == null) {
-    res.raw = new ApiError()
+    res.raw = new ApiError.ApiError()
       .message('Missing required parameters.')
       .detail('shop and code are null')
       .response(200);
