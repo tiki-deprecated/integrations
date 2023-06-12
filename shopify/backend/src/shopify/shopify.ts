@@ -26,11 +26,11 @@ export class Shopify {
     this.shopDomain = shopDomain;
   }
 
-  authorize = (clientId: string): string =>
+  authorize = (clientId: string, redirectUri: string): string =>
     `https://${this.shopDomain}/admin/oauth/authorize?` +
     `client_id=${clientId}&` +
     `scope=${Shopify.scope}&` +
-    `redirect_uri=https://${this.baseUrl}/api/latest/oauth/token`;
+    `redirect_uri=${redirectUri}`;
 
   async grant(
     clientId: string,

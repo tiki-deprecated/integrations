@@ -18,7 +18,10 @@ export const authorize: RouterHandler<Env> = async ({ req, res, env }) => {
     return;
   }
   const shopify = new Shopify(baseUrl, shop);
-  const authUrl = shopify.authorize(env.SHOPIFY_CLIENT_ID);
+  const authUrl = shopify.authorize(
+    env.SHOPIFY_CLIENT_ID,
+    `https://${baseUrl}/api/latest/oauth/token`
+  );
   res.status = 302;
   res.headers.set('location', authUrl);
 };
