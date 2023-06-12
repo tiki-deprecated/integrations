@@ -1,5 +1,11 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import { RouterHandler } from '@tsndr/cloudflare-worker-router';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const paid: RouterHandler<Env> = async ({ res, req, env }) => {
   // TODO authenticate with TIKI
   const orderData = req.body;

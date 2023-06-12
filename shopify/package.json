@@ -17,7 +17,6 @@
   "author": "TIKI Inc",
   "private": true,
   "workspaces": [
-    "backend",
     "frontend",
     "extensions/*"
   ]

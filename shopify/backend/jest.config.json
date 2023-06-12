@@ -1,4 +1,5 @@
 {
+  "testEnvironment": "miniflare",
   "preset": "ts-jest",
   "transform": {
     "^.+\\.(t|j)sx?$": "ts-jest"
@@ -9,6 +10,5 @@
     "default",
     ["jest-junit", {"outputDirectory": "reports", "outputName": "report.xml"}],
     "github-actions"
-  ],
-  "setupFiles": ["<rootDir>/jest.setup.js"]
+  ]
 }
