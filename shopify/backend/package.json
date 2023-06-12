@@ -41,11 +41,11 @@
     "wrangler": "^3.1.0"
   },
   "dependencies": {
-    "@mytiki/worker-utils-ts": "^0.0.7"
+    "@mytiki/worker-utils-ts": "^0.1.0"
   },
   "private": true,
   "types": "dist/worker.d.ts",
   "files": [
-    "dist/**/*"
+    "dist/"
   ]
 }

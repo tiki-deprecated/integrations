@@ -9,11 +9,7 @@ import { TikiAppCreateRsp } from './tiki-app-create-rsp';
 import { TikiAppCreateReq } from './tiki-app-create-req';
 import { TikiKeyCreateRsp } from './tiki-key-create-rsp';
 import { TikiKeyCreateReq } from './tiki-key-create-req';
-import {
-  APPLICATION_FORM_URL,
-  APPLICATION_JSON,
-  HeaderBuilder,
-} from '@mytiki/worker-utils-ts/api/api-headers';
+import { ApiHeaders } from '@mytiki/worker-utils-ts';
 
 export type { TikiKeyCreateRsp, TikiAppCreateRsp };
 
@@ -37,7 +33,9 @@ export class Tiki {
     };
     return fetch(`${this.baseUrl}/oauth/token`, {
       method: 'POST',
-      headers: new HeaderBuilder().content(APPLICATION_FORM_URL).build(),
+      headers: new ApiHeaders.HeaderBuilder()
+        .content(ApiHeaders.APPLICATION_FORM_URL)
+        .build(),
       body: new URLSearchParams(req),
     })
       .then((res) => res.json())
@@ -53,10 +51,10 @@ export class Tiki {
     };
     return fetch(`${this.baseUrl}/app`, {
       method: 'POST',
-      headers: new HeaderBuilder()
-        .accept(APPLICATION_JSON)
+      headers: new ApiHeaders.HeaderBuilder()
+        .accept(ApiHeaders.APPLICATION_JSON)
         .authorization(`Bearer ${accessToken}`)
-        .content(APPLICATION_JSON)
+        .content(ApiHeaders.APPLICATION_JSON)
         .build(),
       body: JSON.stringify(req),
     })
@@ -73,10 +71,10 @@ export class Tiki {
     };
     return fetch(`${this.baseUrl}/app/${appId}/key`, {
       method: 'POST',
-      headers: new HeaderBuilder()
-        .accept(APPLICATION_JSON)
+      headers: new ApiHeaders.HeaderBuilder()
+        .accept(ApiHeaders.APPLICATION_JSON)
         .authorization(`Bearer ${accessToken}`)
-        .content(APPLICATION_JSON)
+        .content(ApiHeaders.APPLICATION_JSON)
         .build(),
       body: JSON.stringify(req),
     })
@@ -93,10 +91,10 @@ export class Tiki {
     };
     return fetch(`${this.baseUrl}/app/${appId}/key`, {
       method: 'POST',
-      headers: new HeaderBuilder()
-        .accept(APPLICATION_JSON)
+      headers: new ApiHeaders.HeaderBuilder()
+        .accept(ApiHeaders.APPLICATION_JSON)
         .authorization(`Bearer ${accessToken}`)
-        .content(APPLICATION_JSON)
+        .content(ApiHeaders.APPLICATION_JSON)
         .build(),
       body: JSON.stringify(req),
     })
