@@ -3,41 +3,53 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { RouterHandler, RouterRequest } from '@tsndr/cloudflare-worker-router';
 import { Shopify } from '../shopify/shopify';
 import { Tiki } from '../tiki/tiki';
 import { ApiError } from '@mytiki/worker-utils-ts';
+import { IRequest, StatusError } from 'itty-router';
 
-export const authorize: RouterHandler<Env> = async ({ req, res, env }) => {
-  const { baseUrl, shop } = parseParams(req);
+export async function authorize(
+  request: IRequest,
+  env: Env
+): Promise<Response> {
+  const shop = request.params.shop;
+  const baseUrl = new URL(request.url).hostname;
   if (shop == null) {
-    res.raw = new ApiError.ApiError()
-      .message('Missing required parameters.')
-      .detail('shop is null')
-      .response(200);
-    return;
+    throw new StatusError(
+      404,
+      new ApiError.ApiError()
+        .message('Missing required parameters.')
+        .detail('shop is required.')
+    );
   }
-  const shopify = new Shopify(baseUrl, shop);
+  const shopify = new Shopify(baseUrl, shop, env.SHOPIFY_SECRET_KEY);
   const authUrl = shopify.authorize(
     env.SHOPIFY_CLIENT_ID,
     `https://${baseUrl}/api/latest/oauth/token`
   );
-  res.status = 302;
-  res.headers.set('location', authUrl);
-};
+  return new Response(null, {
+    status: 302,
+    headers: new Headers({
+      location: authUrl,
+    }),
+  });
+}
 
-export const token: RouterHandler<Env> = async ({ req, res, env }) => {
-  const { baseUrl, shop, code } = parseParams(req);
+export async function token(request: IRequest, env: Env): Promise<Response> {
+  const shop = request.params.shop;
+  const code = request.params.code;
+  const baseUrl = new URL(request.url).hostname;
   if (shop == null || code == null) {
-    res.raw = new ApiError.ApiError()
-      .message('Missing required parameters.')
-      .detail('shop and code are null')
-      .response(200);
-    return;
+    throw new StatusError(
+      404,
+      new ApiError.ApiError()
+        .message('Missing required parameters.')
+        .detail('shop and code are required.')
+    );
   }
 
   const tiki = new Tiki(env.TIKI_URL);
-  const shopify = new Shopify(baseUrl, shop);
+  const shopify = new Shopify(baseUrl, shop, env.SHOPIFY_SECRET_KEY);
   const shopifyAccessToken = await shopify.grant(
     env.SHOPIFY_CLIENT_ID,
     env.SHOPIFY_SECRET_KEY,
@@ -69,14 +81,10 @@ export const token: RouterHandler<Env> = async ({ req, res, env }) => {
   const handle = 'tiki.liquid';
   const deepLinkUrl = `https://${shop}/admin/themes/current/editor?context=apps&activateAppId=${extensionUuid}/${handle}`;
 
-  res.status = 302;
-  res.headers.set('location', deepLinkUrl);
-};
-
-const parseParams = (req: RouterRequest) => {
-  const reqUrl = new URL(req.url);
-  const baseUrl = reqUrl.hostname;
-  const shop = reqUrl.searchParams.get('shop');
-  const code = reqUrl.searchParams.get('code');
-  return { baseUrl, shop, code };
-};
+  return new Response(null, {
+    status: 302,
+    headers: new Headers({
+      location: deepLinkUrl,
+    }),
+  });
+}

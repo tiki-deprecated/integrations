@@ -5,6 +5,10 @@
     "^.+\\.(t|j)sx?$": "ts-jest"
   },
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+  "testPathIgnorePatterns": ["/__fixtures__/"],
+  "transformIgnorePatterns": [
+    "node_modules/(?!(@mytiki/worker-utils-ts)/)"
+  ],
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
   "reporters": [
     "default",
