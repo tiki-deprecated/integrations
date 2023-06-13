@@ -8,6 +8,7 @@ import * as OAuth from './routes/oauth';
 import * as Order from './routes/order';
 import * as Customer from './routes/customer';
 import * as Shop from './routes/shop';
+import * as Ui from './routes/ui';
 import { ApiError, ApiConsts } from '@mytiki/worker-utils-ts';
 
 const router = new Router<Env>();
@@ -17,9 +18,11 @@ router.cors({
   allowHeaders: 'Content-Type, Accept',
 }); // NOTE - this may not work once we need to pass an auth token. If so, use the TIKI cors stuff.
 
+router.get(`/ui/order-discount/new`, Ui.discountOrder);
+router.get(`/ui/product-discount/new`, Ui.discountProduct);
+
 router.get(`${ApiConsts.API_LATEST}/oauth/authorize`, OAuth.authorize);
 router.get(`${ApiConsts.API_LATEST}/oauth/token`, OAuth.token);
-
 router.post(`${ApiConsts.API_LATEST}/order/paid`, Order.paid);
 router.post(
   `${ApiConsts.API_LATEST}/customer/data-request`,
