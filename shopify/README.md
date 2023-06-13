@@ -1,28 +1,25 @@
 # TIKI Shopify App
-TIKI Shopify App uses the TIKI SDK JavaScript to implement the TIKI Zero Party Data infrastructure into the Shopify store.
+Introducing the TIKI Shopify App, your go-to solution for effortlessly creating irresistible discount strategies that your customers will adore, all while capturing the precise data you need.
 
-Instead of prompting the users with boring traditional low converting cookie banners, create compelling offers.
+Powered by the TIKI SDK JavaScript, it seamlessly integrates the TIKI Zero Party Data Licensing infrastructure into your Shopify store, by offering to your clients discounts in exchange for their consent to share anonymous purchase information.
 
-The TIKI Shopify App makes it simple to create offers in the form of discounts to incentivize users to allow cookies.
+Unlock the full potential of your earnings with Zero Party Data pooling by licensing valuable data to leading martech, fintech, and AI companies and earn using the cutting-edge TIKI Infrastructure.
 
 ### Requires
 
 - A [Shopify Store](https://www.shopify.com/).
 
 ## How it works
-TIKI Shopify App offers customers a discount in exchange for consenting to the use of cookies.
+Upon app instalation, a new TIKI project is created for the shop. This account is used by the app to create License, Payable and Receipt records in the TIKI infrastructure.
 
-The discount is applied in a new [Customer Segment](https://help.shopify.com/en/manual/customers/customer-segmentation/customer-segments) created by the app: the TIKI User Segment.
+When a user visits the shop it will be presented by the TIKI banner, asking for their consent to share their anonymized purchase data in exchange for the discount. If the user agrees, the automatic discount is applied to all their purchases, based on the rules that the shop owner configured in the app settings.
 
-Upon a user's first visit, the app presents the offer through a banner. If the user accepts the offer, a license is created in the TIKI infrastructure. 
-
-If the user is already registered in the store, it is added to a the TIKI User Segment in Shopify. If the user is not logged in, their TIKI ID is saved in the browser's cookies, and the user is added to the TIKI User segment upon their first login. 
-
-The discount is automatically applied during checkout for all users in the TIKI User Segment, after confirming that the License to use cookies is still active. If the License was revoked, the customer is removed from the TIKI User Segment and the discount is not applied.
+The app offers full customization of the discount options and the banner UI and texts, as well as default plug-n-play options for those who doesn't want to configure anything.
+-  
 
 ### Limits
-#### Cookie auto block
-The app does not block cookies based on user consent. Instead, we instruct [Shopify Privacy API](https://shopify.dev/docs/api/consent-tracking) about the consent collected from the user. Any app that use cookies in Shopify should rely on this API, but we cannot ensure that every installed app in your store does. 
+#### Anonymous checkout
+At the moment it is not possible to track anonymous checkouts. The customer needs to create an user account in the shop to opt-in for the discounts. This feature will be available in future versions of the app.
 
 ## Get Started
 ### Installation
@@ -31,32 +28,40 @@ The app does not block cookies based on user consent. Instead, we instruct [Shop
 3. On the app listing page, click Add app.
 4. In your Shopify admin, to authorize the use of the app, click Install app.
 
-Upon app installation, you will be guided through the configuration screens.
+After the instalation, the app redirects to the Discounts page in the Shopify admin, to create the Discount that the users will get by opting in.
 
-### TIKI SDK Configuration
-The first configuration screen is the TIKI SDK API Keys. To enable communication between the plugin and the TIKI infrastructure, you need to obtain API keys.
-1. Click on the [TIKI Console](https://console.mytiki.com) link to acquire the API keys. Another tab will be open.
-2. Create a new project or select an existing one.
-3. Generate a Private Key for the project.
-4. Take note of the Private Key ID, Private Key Secret, and Publishing ID.
-5. Go back to the onboarding screen and enter the API Keys.
-6. Click "next" to save the keys.
+### Discount options
+1. In the Discounts page, click in 'Create discount'
+2. Select the discount type:
+- TIKI Product discount: applied per product 
+- TIKI Order discount: applied to the order
+3. Configure the discounts using the following options:
+- Discount value: choose between percentage and fixed value and type in the value
+- Purchase type: if the discount is valid for one-time purchase, subscription or both
+- Specific collections/products: the discount is just applied in the specific collections/products
+- Minimum purchase amount: minimum to apply the discount
+- Minimum quantity of items: minimum toa apply the discount
+- Specific customers / customer segments: the discount is just applied in the specific customers/segments
+- Limit number of times this discount can be used in total
+- Limit to one use per customer
+- Combinations: does the discount can be applied with other discounts
+- Active dates: the start and end date of the discounts
+4. Save the discount
 
-### Offer Configuration
-The second screen configures the options for the offer:
-
-- **Discount Type**: Wether the discount will be a fixed value or a percentage or the cart total.
-- **Discount Value**: The numeric value of the discount. It can be a percentage or a fixed value, depending on the discount type. Accepts up to 2 decimal numbers.	
-- **Description**: Small text to add user-friendly details to the Offer. We recommend including details like the type of data the user is trading and participation requirements (like 10% off your next purchase of $10 or more).
-- **Offer image**: A 300 x 86 resolution image that illustrates the offer. We've elected to make this portion of the UI an image; so you can get as fancy/detailed as you'd like. We strongly recommend the image to be compelling, easy to understand, and focused on the incentive for the user to participate (hence, why it's called the reward image). The reward always goes hand in hand with the text Description (like a caption), so avoid over crowding it with too much text.
-- **Offer use case 1, 2 and 3**: The bullets that will explain to the user how their data will or will NOT be used. When creating your bullets, it's important to use terminology users are familiar with. Words like attribution, lead to confusion and lower opt-in rates.
-- **Offer terms**: The terms and conditions for this offer agreement. It should be a URL to a plain text file containing the legal conditions. This file can include simple markdown formatting.
-
-After configuring the discount offer, click "Save and add to store" to save the UI settings. You will be redirected to the Theme Editor to configure the UI.
-
+After saving it will appear in the discount list as Active. The discount must be active before it can be added to an offer.
 ### UI Personalization
-The TIKI banner is added as a block in the storefront theme's footer. 
-In the Theme Editor you can personalize the look of the banner to match your site colors. To preview the banner click in the "preview" checkbox. 
+With the discount configured, it is time to configure the offer that will be presented to the user, starting by the UI.
+
+The TIKI banner is added as an embeded block in the store. In the Theme Editor it can be personalized to match the visual ID of the shop.
+
+To preview the banner while editing it, click in the "preview" checkbox in app settings.
+
+1. In the menu, click in Online Store -> Themes
+2. In the current theme menu, click in Customize.
+3. In the right hand toolbar in theme customizer page, click in the "App embeds" icon
+4. Turn TIKI 'on' and open the options by clicking in the TIKI app name.
+
+To preview the banner during customizaion, check the "preview" box.
 
 The appearance of the UI components is customized using the following settings.
 
@@ -73,7 +78,15 @@ Before using a custom font family make sure to [set it with @fontface using CSS]
 
 - Font Family - default "Space Grotesk"
 
-After configuring the appearence of the banner, click "Save" in the top right corner.
+### Offer Configuration
+In the same screen the offer configuration is available. These settings have default options and are doesn't need customization.
+
+- **Description**: Small text to add user-friendly details to the Offer. We recommend including details like the type of data the user is trading and participation requirements.
+- **Offer image**: A 300 x 86 resolution image that illustrates the offer. We've elected to make this portion of the UI an image; so you can get as fancy/detailed as you'd like. We strongly recommend the image to be compelling, easy to understand, and focused on the incentive for the user to participate (hence, why it's called the reward image). The reward always goes hand in hand with the text Description (like a caption), so avoid over crowding it with too much text.
+- **Offer use case 1, 2 and 3**: The bullets that will explain to the user how their data will or will NOT be used. When creating your bullets, it's important to use terminology users are familiar with. Words like attribution, lead to confusion and lower opt-in rates.
+- **Offer terms**: The terms and conditions for this offer agreement. We have default terms in place that you can customize with proper advice.
+
+After configuring the appearence of the banner and the offer details, click "Save" in the top right corner.
 
 ### That's it!
-Open a new browser window and go to your website's homepage. If everything is set up correctly, you should see the TIKI banner as configured in the Theme Editor.
+Open a new browser window and go to your website's homepage while logged in. If everything is set up correctly, you should see the TIKI banner as configured in the Theme Editor.
