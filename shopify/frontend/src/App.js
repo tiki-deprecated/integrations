@@ -1,10 +1,15 @@
-import React from 'react';
-import {Provider, Loading} from '@shopify/app-bridge-react';
+import enTranslations from '@shopify/polaris/locales/en.json';
+import { useBreakpoints } from '@shopify/polaris';
+import { DiscountProvider } from './providers/DiscountProvider';
+import { OrderDiscountPage } from './pages/OrderDiscount';
+import { PureTestProvider } from './providers/PureTestProvider';
+import "@shopify/polaris/build/esm/styles.css";
 
 function App() {
-    return (
-        "Hello World"
-    );
+    const { smUp } = useBreakpoints();
+    return <PureTestProvider i18n={enTranslations}>
+        <OrderDiscountPage smUp={ smUp } />
+  </PureTestProvider>
 }
 
 export default App;
