@@ -1,5 +1,4 @@
 import { VerticalStack, RadioButton } from '@shopify/polaris';
-import { ResourcePicker } from '@shopify/app-bridge-react';
 import { useState, useCallback } from 'react';
 
 export function AppliesToRadioBtns({ onChange }) {

@@ -1,6 +1,5 @@
 import enTranslations from '@shopify/polaris/locales/en.json';
 import { useBreakpoints } from '@shopify/polaris';
-import { DiscountProvider } from './providers/DiscountProvider';
 import { OrderDiscountPage } from './pages/OrderDiscount';
 import { PureTestProvider } from './providers/PureTestProvider';
 import "@shopify/polaris/build/esm/styles.css";

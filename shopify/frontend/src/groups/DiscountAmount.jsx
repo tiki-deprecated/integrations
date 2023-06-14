@@ -1,5 +1,5 @@
 import { HorizontalGrid, HorizontalStack, Box, Button, Card, ButtonGroup, TextField } from '@shopify/polaris';
-import {useCallback, useState} from 'react';
+import { useCallback, useState } from 'react';
 import { SettingDescription } from '../components/SettingDescription';
 import { DiscountAmountBtns } from '../components/DiscountAmmountBtns';
 

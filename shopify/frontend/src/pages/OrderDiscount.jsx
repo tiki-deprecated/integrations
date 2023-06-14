@@ -1,5 +1,6 @@
 import { AppliesTo } from "../groups/AppliesTo";
 import { DiscountAmount } from "../groups/DiscountAmount";
+import { MaxDiscountUse } from "../groups/MaxDiscountUse";
 import { MinimumRequirements } from "../groups/MinimumRequirements";
 import { PurchaseType } from "../groups/PurchaseType";
 import {Page, VerticalStack, Divider} from '@shopify/polaris';
@@ -23,6 +24,8 @@ export function OrderDiscountPage({ smUp }) {
         < AppliesTo />
         {smUp ? <Divider /> : null}
         < MinimumRequirements />
+        {smUp ? <Divider /> : null}
+        < MaxDiscountUse />
     </VerticalStack>
 </Page>
 }
