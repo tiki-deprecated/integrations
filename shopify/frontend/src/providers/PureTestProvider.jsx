@@ -3,5 +3,4 @@ import { AppProvider } from "@shopify/polaris"
 
 export function PureTestProvider({ children }) {
     return <AppProvider locale="en-US" ianaTimezone="America/Los_Angeles">{children}</AppProvider>
-
 }

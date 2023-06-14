@@ -1,4 +1,4 @@
-import { VerticalStack, RadioButton, TextField } from '@shopify/polaris';
+import { VerticalStack, RadioButton } from '@shopify/polaris';
 import { useState, useCallback } from 'react';
 import MinAmountTextField from './MinAmountTextField';
 import MinQtyTextField from './MinQtyTextField';

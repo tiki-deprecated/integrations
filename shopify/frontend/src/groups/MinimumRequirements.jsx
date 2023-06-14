@@ -1,4 +1,4 @@
-import { HorizontalGrid, HorizontalStack, Box, Button, Card, ButtonGroup, TextField } from '@shopify/polaris';
+import { HorizontalGrid, HorizontalStack, Box, Card } from '@shopify/polaris';
 import { useCallback, useState } from 'react';
 import { SettingDescription } from '../components/SettingDescription';
 import { MinReqRadioBtns } from '../components/MinReqRadioBtns';
