@@ -3,22 +3,18 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { RouterHandler } from '@tsndr/cloudflare-worker-router';
+import { IRequest } from 'itty-router';
+import { Shopify } from '../shopify/shopify';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const paid: RouterHandler<Env> = async ({ res, req, env }) => {
-  // TODO authenticate with TIKI
-  const orderData = req.body;
-  const url = 'https://postman-echo.com/post'; // TODO CHANGE TO TIKI URL
+export async function paid(request: IRequest, env: Env): Promise<Response> {
+  const orderData = request.body;
 
-  const echo = await fetch(url, {
-    method: 'POST',
-    headers: {
-      accept: 'application/json',
-      // add TIKI Bearer token
-      'content-type': 'application/json',
-    },
-    body: orderData,
+  const shopify = new Shopify('', '', env.SHOPIFY_SECRET_KEY);
+  const success = await shopify.verifyWebhook(request);
+  console.log(`verified: ${success}`);
+
+  return new Response(null, {
+    status: 200,
   });
-  console.log(await echo.text()); // REMOVE
-};
+}
