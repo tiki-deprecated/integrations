@@ -7,9 +7,6 @@ const TIKI_SETTINGS = {
     secondaryBackgroundColor : "{{ block.settings.secondaryBackgroundColor }}",
     accentColor : "{{ block.settings.accentColor }}",
     fontFamily : "{{ block.settings.fontFamily }}",
-    enableDiscount : "{{ block.settings.enable_discount }}",
-    discountType : "{{ block.settings.discountType }}",
-    discountValue : "{{ block.settings.discountValue }}",
     description : "{{ block.settings.description }}",
     offerImage : "{{ block.settings.offerImage }}",
     isUsed1 : "{{ block.settings.isUsed1 }}",
@@ -19,7 +16,6 @@ const TIKI_SETTINGS = {
     isUsed3 : "{{ block.settings.isUsed3 }}",
     useCase3 : "{{ block.settings.useCase3 }}",
     terms : "{{ block.settings.term }}",
-    publishing_id: "{{ app.metafields.tiki_keys.tiki_public_key}}"
 }
 </script>
 <script async src="https://unpkg.com/@mytiki/tiki-sdk-js@1.0.7/dist/index.js"></script>
@@ -30,16 +26,14 @@ const TIKI_SETTINGS = {
   "name": "TIKI",
   "target": "body",
   "settings": [
+    { "type": "header", "content": "Banner Settings" },
     { "type": "checkbox", "id": "preview", "label": "Preview Banner", "default": false },
     { "type": "color", "id": "primaryTextColor", "label": "PrimaryTextColor", "default": "#1C0000" },
     { "type": "color", "id": "secondaryTextColor", "label": "SecondaryTextColor", "default": "#00001C" },
     { "type": "color", "id": "primaryBackgroundColor", "label": "PrimaryBackgroundColor", "default": "#FFFFFF" },
     { "type": "color", "id": "secondaryBackgroundColor", "label": "SecondaryBackgroundColor", "default": "#F6F6F6" },
     { "type": "color", "id": "accentColor", "label": "AccentColor", "default": "#00b272" },
-    { "type": "text", "id": "fontFamily", "label": "Font Family", "default": "Space Grotesk" },
-    { "type": "checkbox", "id": "enable_discount", "label": "Enable discount coupons", "default": true, "info":"Wether to enable discount coupons offer." },
-    { "type": "text", "id": "discountType", "label": "Discount Type", "default": "Space Grotesk", "info":"The WooCommerce Coupon type of discount." },
-    { "type": "number", "id": "discountValue", "label": "Discount Value", "default": 10, "info":"The numeric value of the discount. It can be a percentage or a fixed value, depending on the discount type. Accepts up to 2 decimal numbers." },
+    { "type": "header", "content": "Offer Settings"  },
     { "type": "text", "id": "description", "label": "Description", "default": "desc", "info":"Small text to add user-friendly details to the Offer. We recommend including details like the type of data the user is trading and participation requirements (like 10% off your next purchase of $10 or more)." },
     { "type": "image_picker", "id": "offerImage", "label": "Offer image", "info":"A 300 x 86 resolution image that ilustrates the offer. We've elected to make this portion of the UI an image so you can get as fancy/detailed as you'd like. We strongly recommend the image to be compelling, easy to understand, and focused on the incentive for the user to participate (hence, why it's called the reward image). The reward always goes hand in hand with the text Description (like a caption), so avoid over crowding it with too much text." },
     { "type": "checkbox", "id": "isUsed1", "label": "Is Used", "default": true, "info":"Is the use case 1 used?" },
