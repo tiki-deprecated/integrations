@@ -15,12 +15,15 @@ export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };
 export class Shopify {
   static readonly tokenHeader = 'X-Shopify-Access-Token';
   static readonly scope = 'read_orders,write_discounts';
+  static readonly signHeader = 'X-Shopify-Hmac-SHA256';
   shopDomain: string;
   baseUrl: string;
+  secretKey: string;
 
-  constructor(baseUrl: string, shopDomain: string) {
+  constructor(baseUrl: string, shopDomain: string, secretKey: string) {
     this.baseUrl = baseUrl;
     this.shopDomain = shopDomain;
+    this.secretKey = secretKey;
   }
 
   authorize = (clientId: string, redirectUri: string): string =>
@@ -139,4 +142,46 @@ export class Shopify {
         ownerId: appId,
       },
     ]);
+
+  async verifyWebhook(request: Request): Promise<boolean> {
+    const signature = request.headers.get(Shopify.signHeader) ?? '';
+    const signatureBytes = Uint8Array.from(atob(signature), (c) =>
+      c.charCodeAt(0)
+    );
+    const body = await request.text();
+    return this.verify(signatureBytes, new TextEncoder().encode(body));
+  }
+
+  async verifyOAuth(request: Request): Promise<boolean> {
+    const url = new URL(request.url);
+    const params = url.searchParams;
+    const signature = params.get('hmac') ?? '';
+    params.delete('hmac');
+    params.sort();
+
+    const match = signature.match(/.{1,2}/g);
+    if (match == null) return false;
+    const signatureBytes = Uint8Array.from(
+      match.map((byte) => parseInt(byte, 16))
+    );
+
+    return this.verify(
+      signatureBytes,
+      new TextEncoder().encode(params.toString())
+    );
+  }
+
+  private async verify(
+    signature: ArrayBuffer,
+    data: ArrayBuffer
+  ): Promise<boolean> {
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(this.secretKey),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+    return await crypto.subtle.verify('HMAC', cryptoKey, signature, data);
+  }
 }
