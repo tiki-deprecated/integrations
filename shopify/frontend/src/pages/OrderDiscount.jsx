@@ -12,6 +12,7 @@ const saveDiscountData = () => {
 export function OrderDiscountPage({ smUp }) {
     return <Page
     divider
+    title="Order Discount" 
     primaryAction={{ 
         content: "Save",
         onAction: saveDiscountData
