@@ -14,7 +14,6 @@ export async function authorize(
 ): Promise<Response> {
   const shop = request.params.shop;
   const baseUrl = new URL(request.url).hostname;
-  const state = request.params.state;
   if (shop == null) {
     throw new StatusError(
       404,
@@ -27,7 +26,7 @@ export async function authorize(
   const authUrl = shopify.authorize(
     env.SHOPIFY_CLIENT_ID,
     `https://${baseUrl}/api/latest/oauth/token`,
-    state
+    'install'
   );
   return new Response(null, {
     status: 302,

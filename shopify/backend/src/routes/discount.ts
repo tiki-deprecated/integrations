@@ -11,7 +11,6 @@ import { encodeBase64 } from '../helpers/base64';
 export async function save(request: IRequest, env: Env): Promise<Response> {
   const shop = request.params.shop;
   const baseUrl = new URL(request.url).hostname;
-  const state = request.params.state;
   if (shop == null) {
     throw new StatusError(
       404,
@@ -25,7 +24,7 @@ export async function save(request: IRequest, env: Env): Promise<Response> {
   const authUrl = shopify.authorize(
     env.SHOPIFY_CLIENT_ID,
     `https://${baseUrl}/api/latest/oauth/token?base64Opt=${base64Opt}`,
-    state
+    'saveDiscount'
   );
   return new Response(null, {
     status: 302,
