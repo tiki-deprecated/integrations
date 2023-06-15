@@ -3,7 +3,7 @@ import {useCallback, useState} from 'react';
 import { SettingDescription } from '../components/SettingDescription';
 import { PurchaseRadioBtns } from '../components/PurchaseRadioBtns';
 
-export function PurchaseType(){
+export function PurchaseType(onChange){
   const [purchaseType, setPurchaseType] = useState(0);
   
     const onChangePurchaseType = useCallback(

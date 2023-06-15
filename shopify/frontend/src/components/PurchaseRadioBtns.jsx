@@ -1,13 +1,15 @@
 import {VerticalStack, RadioButton} from '@shopify/polaris';
 import {useState, useCallback} from 'react';
 
-export function PurchaseRadioBtns({ onChange }) {
-  const [value, setValue] = useState('disabled');
+export function PurchaseRadioBtns({ onChange, type = 'one-time' }) {
+  const [type, setType] = useState(type);
 
-  const handleChange = useCallback(
-    (_, newValue) => setValue(newValue),
-    [],
-  );
+  const handleChange = useCallback( (isSet, newValue) => {
+    if(isSet){
+        setType(newValue);        
+        onChange(newValue);
+    }
+  },[type]);
 
   return (
     <VerticalStack>

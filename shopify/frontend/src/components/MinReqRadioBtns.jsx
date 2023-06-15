@@ -3,13 +3,23 @@ import { useState, useCallback } from 'react';
 import MinAmountTextField from './MinAmountTextField';
 import MinQtyTextField from './MinQtyTextField';
 
-export function MinReqRadioBtns({ onChange }) {
-    const [value, setValue] = useState('all');
+export function MinReqRadioBtns({ onChange, minQty = 0, minAmount= 0, minReq = 'all' }) {
+    const [value, setValue] = useState(minReq);
 
     const handleChange = useCallback(
-        (_, newValue) => setValue(newValue),
-        [],
+        (_, newValue) => {
+            setValue(newValue)
+            onChange({minReq})
+        },[],
     );
+
+    const handleMinQtyChange = (minQty) => {
+        onChange({minQty})
+    }
+
+    const handleMinAmountChange = (minAmount) => {
+        onChange({minAmount})
+    }
 
     return (
         <VerticalStack>
@@ -27,7 +37,7 @@ export function MinReqRadioBtns({ onChange }) {
                 name="min-amount"
                 onChange={handleChange}
             />
-            {value === 'min-amount' ? <MinAmountTextField /> : ''}
+            {value === 'min-amount' ? <MinAmountTextField onChange={ hanldeMinAmountChange } minQty={ minAmount } /> : ''}
             <RadioButton
                 label="Minimum Quantity"
                 checked={value === 'min-qty'}
@@ -35,7 +45,8 @@ export function MinReqRadioBtns({ onChange }) {
                 name="min-qty"
                 onChange={handleChange}
             />
-            {value === 'min-qty' ? <MinQtyTextField /> : ''}
+            {value === 'min-qty' ? 
+             <MinQtyTextField onChange={ handleMinQtyChange } minQty={ minQty }  /> : ''}
         </VerticalStack>
     );
 }

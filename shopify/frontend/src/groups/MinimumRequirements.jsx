@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { SettingDescription } from '../components/SettingDescription';
 import { MinReqRadioBtns } from '../components/MinReqRadioBtns';
 
-export function MinimumRequirements(){
+export function MinimumRequirements(onChange){
   const [minimumRequirements, setMinimumRequirements] = useState(0);
   
     const onChangeMinimumRequirements = useCallback(

@@ -2,7 +2,7 @@ import { HorizontalGrid, HorizontalStack, Box, Card} from '@shopify/polaris';
 import { SettingDescription } from '../components/SettingDescription';
 import { MaxDiscountBtns } from '../components/MaxDiscountBtns';
 
-export function MaxDiscountUse(){
+export function MaxDiscountUse(onChange){
 
     return <HorizontalGrid columns={{ xs: "1fr", md: "2fr 5fr" }} gap="4">
         <Box as="section" paddingInlineStart={{ xs: 4, sm: 0 }} paddingInlineEnd={{ xs: 4, sm: 0 }} >

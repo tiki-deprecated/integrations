@@ -1,18 +1,24 @@
 import {useState, useCallback} from 'react';
 import { TextField, ChoiceList } from '@shopify/polaris';
 
-export function MaxDiscountBtns({ onChange }) {
-    const [selected, setSelected] = useState(['none']);
+export function MaxDiscountBtns({ onChange, numericLimit = '', choiceList = ['none']}) {
+    const [selected, setSelected] = useState(choiceList);
     const [textFieldValue, setTextFieldValue] = useState('');
   
     const handleChoiceListChange = useCallback(
-      (value) => setSelected(value),
-      [],
+      (value) => {
+        setSelected(value)
+        onChange({choice: value})
+    },
+      [selected],
     );
   
     const handleTextFieldChange = useCallback(
-      (value) => setTextFieldValue(value),
-      [],
+      (value) => {
+        setTextFieldValue(value),
+        onChange({numericLimit: value})
+    },
+      [textFieldValue],
     );
   
     const renderChildren = useCallback(
@@ -37,6 +43,7 @@ export function MaxDiscountBtns({ onChange }) {
             {
               label: 'Limit number of times this discount can be used in total',
               value: 'number_limit',
+              onChange: handleTextFieldChange,
               helpText: 'Total usage in the shop, by all users.',
               renderChildren,
             },

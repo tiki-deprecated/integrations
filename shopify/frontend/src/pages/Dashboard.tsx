@@ -1,4 +1,5 @@
 import {Page, VerticalStack} from '@shopify/polaris';
+import React from 'react';
 
 export function Dashboard() {
     return <Page

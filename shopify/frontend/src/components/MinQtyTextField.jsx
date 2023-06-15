@@ -1,13 +1,16 @@
 import { TextField } from "@shopify/polaris"
 import { useState, useCallback } from "react";
 
-export default function MinQtyTextField(){
+export default function MinQtyTextField({onChange, minQty=0}){
 
-    const [value, setValue] = useState('1');
+    const [value, setValue] = useState(minQty);
 
     const handleTextFieldChange = useCallback(
-        (_, newValue) => setValue(newValue),
-        [],
+        (newValue) =>{
+             setValue(newValue);
+             onChange(newValue);
+        },
+        [value],
     );
 
     return <TextField

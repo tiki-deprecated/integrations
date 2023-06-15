@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react';
 import { SettingDescription } from '../components/SettingDescription';
 import { AppliesToRadioBtns } from '../components/AppliesToRadioBtns';
 
-export function AppliesTo(){
+export function AppliesTo(onChange){
   const [appliesTo, setAppliesTo] = useState(0);
   
     const onChangeAppliesTo = useCallback(
