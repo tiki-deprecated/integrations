@@ -1,6 +1,6 @@
 import ShopifyDiscountMetafields from './shopify-discount-metafields'
 import ShopifyCombinesWith from './shopify-combines-with'
-export default interface ShopifyApiDiscountOptions{
+export default interface ShopifyDiscountOptions{
     discountType: string;
     title: string;
     description: string;
