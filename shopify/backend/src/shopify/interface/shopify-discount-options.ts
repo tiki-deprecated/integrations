@@ -1,15 +1,19 @@
-/*
- * Copyright (c) TIKI Inc.
- * MIT license. See LICENSE file in root directory.
- */
+import ShopifyDiscountMetafields from './shopify-discount-metafields'
+import ShopifyCombinesWith from './shopify-combines-with'
+export default interface ShopifyApiDiscountOptions{
+    discountType: string;
+    title: string;
+    description: string;
+    startsAt: Date;
+    combinesWith: ShopifyCombinesWith;
+    metaFields: ShopifyDiscountMetafields;
+    endsAt: string;
+    id: string;
+} 
 
-export default interface ShopifyDiscountOptions {
-  discountType: string;
-  discountValue: number;
-  purchaseType: string;
-  appliesTo: string[];
-  minValue: number;
-  minQty: number;
-  maxUse: number;
-  onePerUser: boolean;
-}
+
+
+
+
+
+
