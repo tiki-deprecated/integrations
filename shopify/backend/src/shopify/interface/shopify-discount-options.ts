@@ -3,13 +3,13 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export interface ShopifyDiscountOptions {
+export default interface ShopifyDiscountOptions {
   discountType: string;
   discountValue: number;
   purchaseType: string;
   appliesTo: string[];
   minValue: number;
   minQty: number;
-  maxUse: number; 
+  maxUse: number;
   onePerUser: boolean;
 }
