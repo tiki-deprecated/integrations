@@ -7,7 +7,7 @@ import * as OAuth from './routes/oauth';
 import * as Order from './routes/order';
 import * as Customer from './routes/customer';
 import * as Shop from './routes/shop';
-import * as Ui from './routes/ui';
+import * as Discount from './routes/discount';
 import { ApiError, ApiConsts } from '@mytiki/worker-utils-ts';
 import { Router, error, createCors } from 'itty-router';
 
@@ -22,12 +22,13 @@ const router = Router();
 router
   .all('*', preflight)
   .get(`${ApiConsts.API_LATEST}/oauth/authorize`, OAuth.authorize)
-  .get(`${ApiConsts.API_LATEST}/oauth/authorize`, OAuth.authorize)
   .get(`${ApiConsts.API_LATEST}/oauth/token`, OAuth.token)
   .post(`${ApiConsts.API_LATEST}/order/paid`, Order.paid)
   .post(`${ApiConsts.API_LATEST}/customer/data-request`, Customer.dataRequest)
   .post(`${ApiConsts.API_LATEST}/customer/redact`, Customer.redact)
   .post(`${ApiConsts.API_LATEST}/shop/redact`, Shop.redact)
+  .post(`${ApiConsts.API_LATEST}/discount/order`, Discount.order)
+  .post(`${ApiConsts.API_LATEST}/discount/product`, Discount.product)
   .all('*', () => error(404, new ApiError.ApiError().message('Not Found')));
 
 export default {
