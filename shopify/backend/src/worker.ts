@@ -7,9 +7,8 @@ import * as OAuth from './routes/oauth';
 import * as Order from './routes/order';
 import * as Customer from './routes/customer';
 import * as Shop from './routes/shop';
-import * as Discount from './routes/discount';
 import { ApiError, ApiConsts } from '@mytiki/worker-utils-ts';
-import { Router, error, createCors } from 'itty-router';
+import { Router, error, createCors, StatusError } from 'itty-router';
 
 const { preflight, corsify } = createCors({
   methods: ['GET', 'POST'],
@@ -23,7 +22,6 @@ router
   .all('*', preflight)
   .get(`${ApiConsts.API_LATEST}/oauth/authorize`, OAuth.authorize)
   .get(`${ApiConsts.API_LATEST}/oauth/token`, OAuth.token)
-  .get(`${ApiConsts.API_LATEST}/discount`, Discount.save)
   .post(`${ApiConsts.API_LATEST}/order/paid`, Order.paid)
   .post(`${ApiConsts.API_LATEST}/customer/data-request`, Customer.dataRequest)
   .post(`${ApiConsts.API_LATEST}/customer/redact`, Customer.redact)
@@ -40,6 +38,7 @@ export default {
       .handle(request, env, ctx)
       .catch((err) => {
         let detail = 'Something went wrong';
+        if (err instanceof StatusError) return error(err);
         if (err instanceof Error) detail = err.message;
         return error(
           500,

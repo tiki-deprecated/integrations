@@ -1,5 +1,4 @@
 {
-  "testEnvironment": "miniflare",
   "preset": "ts-jest",
   "transform": {
     "^.+\\.(t|j)sx?$": "ts-jest"
@@ -14,5 +13,9 @@
     "default",
     ["jest-junit", {"outputDirectory": "reports", "outputName": "report.xml"}],
     "github-actions"
-  ]
+  ],
+  "testEnvironment": "miniflare",
+  "testEnvironmentOptions": {
+    "kvNamespaces": ["TEST_SHOPIFY_KV_STORE"]
+  }
 }
