@@ -25,7 +25,8 @@ export async function authorize(
   const shopify = new Shopify(baseUrl, shop, env.SHOPIFY_SECRET_KEY);
   const authUrl = shopify.authorize(
     env.SHOPIFY_CLIENT_ID,
-    `https://${baseUrl}/api/latest/oauth/token`
+    `https://${baseUrl}/api/latest/oauth/token`,
+    'install'
   );
   return new Response(null, {
     status: 302,
@@ -38,7 +39,6 @@ export async function authorize(
 export async function token(request: IRequest, env: Env): Promise<Response> {
   const shop = request.params.shop;
   const code = request.params.code;
-  const baseUrl = new URL(request.url).hostname;
   if (shop == null || code == null) {
     throw new StatusError(
       404,
@@ -48,13 +48,42 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
     );
   }
 
-  const tiki = new Tiki(env.TIKI_URL);
+  const state = request.params.nonce;
+  const baseUrl = new URL(request.url).hostname;
   const shopify = new Shopify(baseUrl, shop, env.SHOPIFY_SECRET_KEY);
   const shopifyAccessToken = await shopify.grant(
     env.SHOPIFY_CLIENT_ID,
     env.SHOPIFY_SECRET_KEY,
     code
   );
+
+  switch (state) {
+    case 'install': {
+      if (await shopify.isAppInstalled(request)) {
+        return goHome();
+      } else {
+        return installApp(shop, shopify, env, shopifyAccessToken);
+      }
+    }
+    case 'saveDiscount': {
+      const base64Opt = new URL(request.url).searchParams.get('base64Opt');
+      if (base64Opt) {
+        return shopify.saveDiscount(base64Opt, shopifyAccessToken, env);
+      }
+      return new Response('Missing required parameters.', { status: 400 });
+    }
+    default:
+      return goHome();
+  }
+}
+
+const installApp = async (
+  shop: string,
+  shopify: Shopify,
+  env: Env,
+  shopifyAccessToken: string
+): Promise<Response> => {
+  const tiki = new Tiki(env.TIKI_URL);
 
   const tikiAccessToken = await tiki.login(shop, shopifyAccessToken);
   const tikiApp = await tiki.createApp(tikiAccessToken, shop);
@@ -87,4 +116,9 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
       location: deepLinkUrl,
     }),
   });
-}
+};
+
+const goHome = () =>
+  new Response('home', {
+    status: 200,
+  });

@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export interface ShopifyAppInstallRsp {
+export default interface ShopifyAppInstallRsp {
   data: {
     currentAppInstallation: {
       id: string;
