@@ -14,7 +14,7 @@
     "preversion": "npm run lint",
     "postversion": "npm run format",
     "clean": "tsc --build --clean",
-    "deploy": "wrangler publish"
+    "deploy": "npm run build && wrangler deploy"
   },
   "devDependencies": {
     "@babel/core": "^7.22.5",

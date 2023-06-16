@@ -1,10 +1,18 @@
-name = "backend"
+name = "intg-shopify-backend"
 main = "dist/worker.js"
 compatibility_date = "2023-06-05"
+account_id = "5c5263e05bb1e54242b1afb12a5c9259"
+
+routes = [
+    { pattern = "shopify.intg.mytiki.com/api/latest/*", zone_id = "7be31970110fa56b1f8e1fe915a8b938" }
+]
+
+kv_namespaces = [
+    { binding = "SHOPIFY_KV_STORE", id = "6f3ba354a5e444f1b21e0093c80f6e85", preview_id = "ff086acf88b0483ca83a6bde7fe74600" }
+]
 
 [vars]
 SHOPIFY_CLIENT_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
-SHOPIFY_APP_THEME_EXTENSION_UUID = "be1d0038-a8e3-4b7e-b0ee-383555ebc6b8"
 TIKI_URL = "https://auth.l0.mytiki.com/api/latest"
 
 # The necessary secrets are:

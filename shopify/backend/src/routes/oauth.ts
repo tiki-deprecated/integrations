@@ -12,7 +12,7 @@ export async function authorize(
   request: IRequest,
   env: Env
 ): Promise<Response> {
-  const shop = request.params.shop;
+  const shop = request.query.shop as string;
   const baseUrl = new URL(request.url).hostname;
   if (shop == null) {
     throw new StatusError(
@@ -22,11 +22,14 @@ export async function authorize(
         .detail('shop is required.')
     );
   }
-  const shopify = new Shopify(baseUrl, shop, env.SHOPIFY_SECRET_KEY);
+  const shopify = new Shopify(
+    shop,
+    env.SHOPIFY_SECRET_KEY,
+    env.SHOPIFY_KV_STORE
+  );
   const authUrl = shopify.authorize(
     env.SHOPIFY_CLIENT_ID,
-    `https://${baseUrl}/api/latest/oauth/token`,
-    'install'
+    `https://${baseUrl}/api/latest/oauth/token`
   );
   return new Response(null, {
     status: 302,
@@ -37,8 +40,9 @@ export async function authorize(
 }
 
 export async function token(request: IRequest, env: Env): Promise<Response> {
-  const shop = request.params.shop;
-  const code = request.params.code;
+  const shop = request.query.shop as string;
+  const code = request.query.code as string;
+  const baseUrl = new URL(request.url).hostname;
   if (shop == null || code == null) {
     throw new StatusError(
       404,
@@ -48,45 +52,43 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
     );
   }
 
-  const state = request.params.nonce;
-  const baseUrl = new URL(request.url).hostname;
-  const shopify = new Shopify(baseUrl, shop, env.SHOPIFY_SECRET_KEY);
-  const shopifyAccessToken = await shopify.grant(
-    env.SHOPIFY_CLIENT_ID,
+  const shopify = new Shopify(
+    shop,
     env.SHOPIFY_SECRET_KEY,
-    code
+    env.SHOPIFY_KV_STORE
   );
-
-  switch (state) {
-    case 'install': {
-      if (await shopify.isAppInstalled(request)) {
-        return goHome();
-      } else {
-        return installApp(shop, shopify, env, shopifyAccessToken);
-      }
-    }
-    case 'saveDiscount': {
-      const base64Opt = new URL(request.url).searchParams.get('base64Opt');
-      if (base64Opt) {
-        return shopify.saveDiscount(base64Opt, shopifyAccessToken, env);
-      }
-      return new Response('Missing required parameters.', { status: 400 });
-    }
-    default:
-      return goHome();
+  await shopify.grant(env.SHOPIFY_CLIENT_ID, env.SHOPIFY_SECRET_KEY, code);
+  const appInstallation = await shopify.getAppInstallation();
+  const keys = appInstallation.data.metafields?.nodes;
+  if (keys === undefined || keys.length < 3) {
+    await onInstall(
+      new Tiki(env.TIKI_URL),
+      shopify,
+      appInstallation.data.currentAppInstallation.id,
+      baseUrl
+    );
   }
+
+  return new Response(null, {
+    status: 302,
+    headers: new Headers({
+      location: `https://${shop}/apps/${env.SHOPIFY_CLIENT_ID}`,
+    }),
+  });
 }
 
-const installApp = async (
-  shop: string,
+async function onInstall(
+  tiki: Tiki,
   shopify: Shopify,
-  env: Env,
-  shopifyAccessToken: string
-): Promise<Response> => {
-  const tiki = new Tiki(env.TIKI_URL);
-
-  const tikiAccessToken = await tiki.login(shop, shopifyAccessToken);
-  const tikiApp = await tiki.createApp(tikiAccessToken, shop);
+  installId: string,
+  baseUrl: string
+): Promise<void> {
+  const shopifyAccessToken = await shopify.getToken();
+  const tikiAccessToken = await tiki.login(
+    shopify.shopDomain,
+    shopifyAccessToken
+  );
+  const tikiApp = await tiki.createApp(tikiAccessToken, shopify.shopDomain);
   const tikiPublicKey = await tiki.createPublicKey(
     tikiAccessToken,
     tikiApp.appId
@@ -95,30 +97,6 @@ const installApp = async (
     tikiAccessToken,
     tikiApp.appId
   );
-
-  const appInstallation = await shopify.getAppInstallation(shopifyAccessToken);
-  await shopify.setKeysInMetafields(
-    shopifyAccessToken,
-    appInstallation.data.currentAppInstallation.id,
-    tikiPublicKey,
-    tikiPrivateKey
-  );
-
-  await shopify.registerOrderPaidWebhook(shopifyAccessToken);
-
-  const extensionUuid = env.SHOPIFY_APP_THEME_EXTENSION_UUID;
-  const handle = 'tiki.liquid';
-  const deepLinkUrl = `https://${shop}/admin/themes/current/editor?context=apps&activateAppId=${extensionUuid}/${handle}`;
-
-  return new Response(null, {
-    status: 302,
-    headers: new Headers({
-      location: deepLinkUrl,
-    }),
-  });
-};
-
-const goHome = () =>
-  new Response('home', {
-    status: 200,
-  });
+  await shopify.setKeysInMetafields(installId, tikiPublicKey, tikiPrivateKey);
+  await shopify.registerOrderPaidWebhook(baseUrl);
+}
