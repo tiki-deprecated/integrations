@@ -17,10 +17,8 @@ export function AppliesToRadioBtns({ onChange, resource = 'all', resourceList = 
 
     const handleListChange = useCallback(
         (newList) => {
-            if(isSet){
                 setResList(newList),
                 onChange({resourceList: newList})
-            }
         },
         [resList],
     );

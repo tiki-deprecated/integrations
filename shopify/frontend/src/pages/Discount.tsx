@@ -5,11 +5,11 @@ import { MaxDiscountUse } from "../groups/MaxDiscountUse";
 import { MinimumRequirements } from "../groups/MinimumRequirements";
 import { PurchaseType } from "../groups/PurchaseType";
 import { Page, VerticalStack, Divider } from '@shopify/polaris';
-import { saveDiscount } from '../services/api'
+import { saveDiscount } from '../services/api;
 
 import ShopifyDiscountMetafields from "../../../backend/src/shopify/interface/shopify-discount-metafields";
 
-export function DiscountPage({ smUp, options }) {
+export default function DiscountPage({ smUp, options }) {
     let shop = 'tiki-dev-store.shopify.com'
     let metafields: ShopifyDiscountMetafields = options
 
@@ -63,3 +63,11 @@ export function DiscountPage({ smUp, options }) {
     </Page>
     )
 }
+
+// discountType product/order
+// title 
+// description 
+// startsAt
+// endsAt
+// combinesWith
+// id=[]

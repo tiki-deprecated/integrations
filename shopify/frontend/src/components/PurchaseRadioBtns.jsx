@@ -1,8 +1,8 @@
 import {VerticalStack, RadioButton} from '@shopify/polaris';
 import {useState, useCallback} from 'react';
 
-export function PurchaseRadioBtns({ onChange, type = 'one-time' }) {
-  const [type, setType] = useState(type);
+export function PurchaseRadioBtns({ onChange, defaultType = 'one-time' }) {
+  const [type, setType] = useState(defaultType);
 
   const handleChange = useCallback( (isSet, newValue) => {
     if(isSet){
@@ -15,21 +15,21 @@ export function PurchaseRadioBtns({ onChange, type = 'one-time' }) {
     <VerticalStack>
       <RadioButton
         label="One-time purchase"
-        checked={value === 'one-time'}
+        checked={type === 'one-time'}
         id="one-time"
         name="one-time"
         onChange={handleChange}
       />
       <RadioButton
         label="Subscription"
-        checked={value === 'subscription'}
+        checked={type === 'subscription'}
         id="subscription"
         name="subscription"
         onChange={handleChange}
       />
       <RadioButton
         label="Both"
-        checked={value === 'both'}
+        checked={type === 'both'}
         id="both"
         name="both"
         onChange={handleChange}

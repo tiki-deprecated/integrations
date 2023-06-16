@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import ShopifyDiscountOptions from "./shopify-discount-options"
+import ShopifyDiscountOptions from "../../../backend/src/shopify/interface/shopify-discount-options";
 
 export const saveDiscount = async ( discountOptions: ShopifyDiscountOptions, shop:string ) => {
     const apiUrl = 'backend.ricardolgrj.workers.dev/api/latest'
