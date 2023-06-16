@@ -23,7 +23,6 @@ export async function authorize(
     );
   }
   const shopify = new Shopify(
-    baseUrl,
     shop,
     env.SHOPIFY_SECRET_KEY,
     env.SHOPIFY_KV_STORE
@@ -43,6 +42,7 @@ export async function authorize(
 export async function token(request: IRequest, env: Env): Promise<Response> {
   const shop = request.query.shop as string;
   const code = request.query.code as string;
+  const baseUrl = new URL(request.url).hostname;
   if (shop == null || code == null) {
     throw new StatusError(
       404,
@@ -52,41 +52,22 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
     );
   }
 
-  const baseUrl = new URL(request.url).hostname;
   const shopify = new Shopify(
-    baseUrl,
     shop,
     env.SHOPIFY_SECRET_KEY,
     env.SHOPIFY_KV_STORE
   );
-  const shopifyAccessToken = await shopify.grant(
-    env.SHOPIFY_CLIENT_ID,
-    env.SHOPIFY_SECRET_KEY,
-    code
-  );
-
-  // const tiki = new Tiki(env.TIKI_URL);
-  // const tikiAccessToken = await tiki.login(shop, shopifyAccessToken);
-  // const tikiApp = await tiki.createApp(tikiAccessToken, shop);
-  // const tikiPublicKey = await tiki.createPublicKey(
-  //   tikiAccessToken,
-  //   tikiApp.appId
-  // );
-  // const tikiPrivateKey = await tiki.createPrivateKey(
-  //   tikiAccessToken,
-  //   tikiApp.appId
-  // );
-  //
-  // const appInstallation = await shopify.getAppInstallation(shopifyAccessToken);
-  // await shopify.setKeysInMetafields(
-  //   shopifyAccessToken,
-  //   appInstallation.data.currentAppInstallation.id,
-  //   tikiPublicKey,
-  //   tikiPrivateKey
-  // );
-  //
-  // // if WH exists, don't create another
-  // await shopify.registerOrderPaidWebhook(shopifyAccessToken);
+  await shopify.grant(env.SHOPIFY_CLIENT_ID, env.SHOPIFY_SECRET_KEY, code);
+  const appInstallation = await shopify.getAppInstallation();
+  const keys = appInstallation.data.metafields?.nodes;
+  if (keys === undefined || keys.length < 3) {
+    await onInstall(
+      new Tiki(env.TIKI_URL),
+      shopify,
+      appInstallation.data.currentAppInstallation.id,
+      baseUrl
+    );
+  }
 
   return new Response(null, {
     status: 302,
@@ -94,4 +75,28 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
       location: `https://${shop}/apps/${env.SHOPIFY_CLIENT_ID}`,
     }),
   });
+}
+
+async function onInstall(
+  tiki: Tiki,
+  shopify: Shopify,
+  installId: string,
+  baseUrl: string
+): Promise<void> {
+  const shopifyAccessToken = await shopify.getToken();
+  const tikiAccessToken = await tiki.login(
+    shopify.shopDomain,
+    shopifyAccessToken
+  );
+  const tikiApp = await tiki.createApp(tikiAccessToken, shopify.shopDomain);
+  const tikiPublicKey = await tiki.createPublicKey(
+    tikiAccessToken,
+    tikiApp.appId
+  );
+  const tikiPrivateKey = await tiki.createPrivateKey(
+    tikiAccessToken,
+    tikiApp.appId
+  );
+  await shopify.setKeysInMetafields(installId, tikiPublicKey, tikiPrivateKey);
+  await shopify.registerOrderPaidWebhook(baseUrl);
 }

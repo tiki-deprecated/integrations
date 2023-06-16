@@ -6,7 +6,7 @@
   "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
   "testPathIgnorePatterns": ["/__fixtures__/"],
   "transformIgnorePatterns": [
-    "node_modules/(?!(@mytiki/worker-utils-ts)/)"
+    "node_modules/(?!(@mytiki/worker-utils-ts|itty-router)/)"
   ],
   "moduleFileExtensions": ["ts", "tsx", "js", "jsx", "json", "node"],
   "reporters": [

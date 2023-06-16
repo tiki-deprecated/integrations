@@ -7,8 +7,9 @@ import ShopifyTokenRsp from './interface/shopify-token-rsp';
 import ShopifyAppInstallRsp from './interface/shopify-app-install-rsp';
 import ShopifyMetafield from './interface/shopify-metafield';
 import { TikiKeyCreateRsp } from '../tiki/tiki-key-create-rsp';
-import { ApiHeaders } from '@mytiki/worker-utils-ts';
+import { ApiHeaders, ApiError } from '@mytiki/worker-utils-ts';
 import { ShopifyWebhookReq } from './interface/shopify-webhook-req';
+import { StatusError } from 'itty-router';
 
 export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };
 
@@ -16,18 +17,13 @@ export class Shopify {
   static readonly tokenHeader = 'X-Shopify-Access-Token';
   static readonly scope = 'read_orders,write_discounts';
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
+  static readonly namespaceKeys = 'tiki_keys';
+  private _accessToken: string | null = null;
   shopDomain: string;
-  baseUrl: string;
   secretKey: string;
   tokenStore: KVNamespace;
 
-  constructor(
-    baseUrl: string,
-    shopDomain: string,
-    secretKey: string,
-    tokenStore: KVNamespace
-  ) {
-    this.baseUrl = baseUrl;
+  constructor(shopDomain: string, secretKey: string, tokenStore: KVNamespace) {
     this.shopDomain = shopDomain;
     this.secretKey = secretKey;
     this.tokenStore = tokenStore;
@@ -43,7 +39,7 @@ export class Shopify {
     clientId: string,
     clientSecret: string,
     code: string
-  ): Promise<string> {
+  ): Promise<void> {
     const url =
       `https://${this.shopDomain}/admin/oauth/access_token?` +
       `client_id=${clientId}&` +
@@ -57,14 +53,26 @@ export class Shopify {
     })
       .then((res) => res.json())
       .then((json) => (json as ShopifyTokenRsp).access_token);
-    await this.saveToken(token);
-    return token;
+    await this.tokenStore.put(this.shopDomain, token);
   }
 
-  async registerWebhook(
-    accessToken: string,
-    webhook: ShopifyWebhookReq
-  ): Promise<void> {
+  async getToken(): Promise<string> {
+    if (this._accessToken == null) {
+      this._accessToken = await this.tokenStore.get(this.shopDomain);
+    }
+    if (this._accessToken == null) {
+      throw new StatusError(
+        403,
+        new ApiError.ApiError()
+          .message('Invalid access token')
+          .help('Try /api/latest/oauth/authorize')
+      );
+    }
+    return this._accessToken;
+  }
+
+  async registerWebhook(webhook: ShopifyWebhookReq): Promise<void> {
+    const accessToken = await this.getToken();
     await fetch(`https://${this.shopDomain}/admin/api/2023-04/webhooks.json`, {
       method: 'POST',
       headers: new ApiHeaders.HeaderBuilder()
@@ -76,37 +84,36 @@ export class Shopify {
     });
   }
 
-  registerOrderPaidWebhook = (accessToken: string): Promise<void> =>
-    this.registerWebhook(accessToken, {
+  registerOrderPaidWebhook = (baseUrl: string): Promise<void> =>
+    this.registerWebhook({
       webhook: {
-        address: `https://${this.baseUrl}/api/latest/order/paid`,
+        address: `https://${baseUrl}/api/latest/order/paid`,
         topic: 'orders/paid',
         format: 'json',
       },
     });
 
-  getAppInstallation = async (
-    accessToken: string
-  ): Promise<ShopifyAppInstallRsp> =>
-    fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
+  async getAppInstallation(): Promise<ShopifyAppInstallRsp> {
+    const accessToken = await this.getToken();
+    return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
       headers: new ApiHeaders.HeaderBuilder()
         .accept(ApiHeaders.APPLICATION_JSON)
         .content(ApiHeaders.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
-      body: `{"query" : "query {currentAppInstallation{id}}"}`,
+      body: `{"query" : "query {currentAppInstallation{id metafields(namespace: \\"${Shopify.namespaceKeys}\\", first: 3){nodes{key}}}}"}`,
     })
       .then((res) => res.json())
       .then((json) => json as ShopifyAppInstallRsp);
+  }
 
   setKeysInMetafields = async (
-    accessToken: string,
     appId: string,
     publicKey: TikiKeyCreateRsp,
     privateKey: TikiKeyCreateRsp
   ) =>
-    this.setMetafields(accessToken, [
+    this.setMetafields([
       {
         namespace: 'tiki_keys',
         key: 'public_key_id',
@@ -172,10 +179,8 @@ export class Shopify {
     return await crypto.subtle.verify('HMAC', cryptoKey, signature, data);
   }
 
-  private async setMetafields(
-    accessToken: string,
-    fields: Array<ShopifyMetafield>
-  ): Promise<void> {
+  private async setMetafields(fields: Array<ShopifyMetafield>): Promise<void> {
+    const accessToken = await this.getToken();
     const query =
       `{"query" : "mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) { ` +
       'metafieldsSet(metafields: $metafields) { metafields { key namespace value createdAt updatedAt }' +
@@ -192,10 +197,4 @@ export class Shopify {
       body: query,
     });
   }
-
-  private getToken = (): Promise<string | null> =>
-    this.tokenStore.get(this.shopDomain);
-
-  private saveToken = (token: string): Promise<void> =>
-    this.tokenStore.put(this.shopDomain, token);
 }
