@@ -126,3 +126,6 @@ dist
 
 # Fuckin Macs
 .DS_Store
+
+# Cloudflare
+.wrangler

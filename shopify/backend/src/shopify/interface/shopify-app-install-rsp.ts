@@ -8,5 +8,12 @@ export default interface ShopifyAppInstallRsp {
     currentAppInstallation: {
       id: string;
     };
+    metafields?: {
+      nodes?: [
+        {
+          key?: string;
+        }
+      ];
+    };
   };
 }
