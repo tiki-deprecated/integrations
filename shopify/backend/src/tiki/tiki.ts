@@ -19,8 +19,8 @@ export class Tiki {
   static readonly scope = 'auth';
   baseUrl: string;
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+  constructor(env: Env) {
+    this.baseUrl = env.AUTH_SERVICE_URL;
   }
 
   async login(shopDomain: string, shopifyToken: string): Promise<string> {

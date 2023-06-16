@@ -4,8 +4,12 @@
  */
 
 interface Env {
-  SHOPIFY_CLIENT_ID: string;
-  SHOPIFY_SECRET_KEY: string;
-  SHOPIFY_KV_STORE: KVNamespace;
-  TIKI_URL: string;
+  KEY_ID: string;
+  KEY_SECRET: string;
+  KV_STORE: KVNamespace;
+
+  FUNCTION_ID_ORDER_DISCOUNT: string;
+  FUNCTION_ID_PRODUCT_DISCOUNT: string;
+
+  AUTH_SERVICE_URL: string;
 }

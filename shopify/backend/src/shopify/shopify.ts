@@ -3,13 +3,16 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import ShopifyTokenRsp from './shopify-token-rsp';
-import ShopifyAppInstallRsp from './shopify-app-install-rsp';
-import ShopifyMetafield from './shopify-metafield';
+import { ShopifyTokenRsp } from './shopify-token-rsp';
+import { ShopifyMetafield } from './shopify-metafield';
+import { ShopifyAppInstallRsp } from './shopify-app-install-rsp';
 import { TikiKeyCreateRsp } from '../tiki/tiki-key-create-rsp';
 import { ApiHeaders, ApiError } from '@mytiki/worker-utils-ts';
 import { ShopifyWebhookReq } from './shopify-webhook-req';
 import { StatusError } from 'itty-router';
+import { ShopifyData } from './shopify-data';
+import { ShopifyDiscount } from './shopify-discount';
+import { DiscountReq } from '../api/discount/discount-req';
 
 export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };
 
@@ -18,32 +21,36 @@ export class Shopify {
   static readonly scope = 'read_orders,write_discounts';
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
   static readonly namespaceKeys = 'tiki_keys';
-  private _accessToken: string | null = null;
-  shopDomain: string;
-  secretKey: string;
-  tokenStore: KVNamespace;
+  private _accessToken: string | null =
+    /* null */ 'shpua_18576251f9bc3f328732165e35cd8d8e';
 
-  constructor(shopDomain: string, secretKey: string, tokenStore: KVNamespace) {
+  private readonly _keyId: string;
+  private readonly _secretKey: string;
+  private readonly _tokenStore: KVNamespace;
+  private readonly _functionIdOrder: string;
+  private readonly _functionIdProduct: string;
+  readonly shopDomain: string;
+
+  constructor(shopDomain: string, env: Env) {
     this.shopDomain = shopDomain;
-    this.secretKey = secretKey;
-    this.tokenStore = tokenStore;
+    this._keyId = env.KEY_ID;
+    this._secretKey = env.KEY_SECRET;
+    this._tokenStore = env.KV_STORE;
+    this._functionIdOrder = env.FUNCTION_ID_ORDER_DISCOUNT;
+    this._functionIdProduct = env.FUNCTION_ID_PRODUCT_DISCOUNT;
   }
 
-  authorize = (clientId: string, redirectUri: string): string =>
+  authorize = (redirectUri: string): string =>
     `https://${this.shopDomain}/admin/oauth/authorize?` +
-    `client_id=${clientId}&` +
+    `client_id=${this._keyId}&` +
     `scope=${Shopify.scope}&` +
     `redirect_uri=${redirectUri}`;
 
-  async grant(
-    clientId: string,
-    clientSecret: string,
-    code: string
-  ): Promise<void> {
+  async grant(code: string): Promise<void> {
     const url =
       `https://${this.shopDomain}/admin/oauth/access_token?` +
-      `client_id=${clientId}&` +
-      `client_secret=${clientSecret}&` +
+      `client_id=${this._keyId}&` +
+      `client_secret=${this._secretKey}&` +
       `code=${code}&`;
     const token = await fetch(url, {
       method: 'POST',
@@ -53,12 +60,12 @@ export class Shopify {
     })
       .then((res) => res.json())
       .then((json) => (json as ShopifyTokenRsp).access_token);
-    await this.tokenStore.put(this.shopDomain, token);
+    await this._tokenStore.put(this.shopDomain, token);
   }
 
   async getToken(): Promise<string> {
     if (this._accessToken == null) {
-      this._accessToken = await this.tokenStore.get(this.shopDomain);
+      this._accessToken = await this._tokenStore.get(this.shopDomain);
     }
     if (this._accessToken == null) {
       throw new StatusError(
@@ -93,7 +100,7 @@ export class Shopify {
       },
     });
 
-  async getAppInstallation(): Promise<ShopifyAppInstallRsp> {
+  async getAppInstallation(): Promise<ShopifyData<ShopifyAppInstallRsp>> {
     const accessToken = await this.getToken();
     return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
@@ -102,10 +109,18 @@ export class Shopify {
         .content(ApiHeaders.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
-      body: `{"query" : "query {currentAppInstallation{id metafields(namespace: \\"${Shopify.namespaceKeys}\\", first: 3){nodes{key}}}}"}`,
+      body: JSON.stringify({
+        query: `query {
+          currentAppInstallation {
+            id metafields(namespace: "${Shopify.namespaceKeys}", first: 3){
+              nodes {
+                key
+              }
+          }}}`,
+      }),
     })
       .then((res) => res.json())
-      .then((json) => json as ShopifyAppInstallRsp);
+      .then((json) => json as ShopifyData<ShopifyAppInstallRsp>);
   }
 
   setKeysInMetafields = async (
@@ -165,13 +180,70 @@ export class Shopify {
     );
   }
 
+  async saveDiscount(discount: DiscountReq): Promise<void> {
+    const accessToken = await this.getToken();
+    const req: ShopifyDiscount = {
+      combinesWith: {
+        orderDiscounts: discount.combinesWith.orderDiscounts,
+        productDiscounts: discount.combinesWith.productDiscounts,
+        shippingDiscounts: discount.combinesWith.shippingDiscounts,
+      },
+      endsAt: discount.endsAt,
+      functionId:
+        discount.type === 'order'
+          ? this._functionIdOrder
+          : this._functionIdProduct,
+      metafields: [
+        {
+          description: discount.description,
+          key:
+            discount.type === 'order'
+              ? 'orderDiscountOptions'
+              : 'productDiscountOptions',
+          namespace: 'tiki_options',
+          type: 'json',
+          value: JSON.stringify(discount.metafields),
+        },
+      ],
+      startsAt: discount.startsAt,
+      title: discount.title,
+    };
+    await fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
+      method: 'POST',
+      headers: new ApiHeaders.HeaderBuilder()
+        .accept(ApiHeaders.APPLICATION_JSON)
+        .content(ApiHeaders.APPLICATION_JSON)
+        .set(Shopify.tokenHeader, accessToken)
+        .build(),
+      body: JSON.stringify({
+        query: `mutation DiscountAutomaticAppCreate{
+          discountAutomaticAppCreate(automaticAppDiscount: ${JSON.stringify(
+            req
+          )}){
+            userErrors {
+              field
+              message
+            }
+          }}`,
+      }),
+    }).then(async (res) => {
+      if (res.status !== 200) {
+        const body = await res.text();
+        throw new StatusError(
+          res.status,
+          new ApiError.ApiError().message(res.statusText).detail(body)
+        );
+      }
+    });
+  }
+
   private async verify(
     signature: ArrayBuffer,
     data: ArrayBuffer
   ): Promise<boolean> {
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
-      new TextEncoder().encode(this.secretKey),
+      new TextEncoder().encode(this._secretKey),
       { name: 'HMAC', hash: 'SHA-256' },
       false,
       ['verify']

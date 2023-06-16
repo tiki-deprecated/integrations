@@ -3,6 +3,6 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export interface ShopifyTokenRsp {
-  access_token: string;
+export interface ShopifyNodes<T> {
+  nodes: Array<T>;
 }

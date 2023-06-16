@@ -4,12 +4,14 @@
  */
 
 export interface DiscountReqMeta {
-  discountType: string;
+  discountType: 'percentage' | 'amount';
   discountValue: number;
-  purchaseType: string;
-  appliesTo: string[];
+  purchaseType: 'one-time' | 'subscription' | 'both';
+  appliesTo: Array<string>;
   minValue: number;
   minQty: number;
   maxUse: number;
   onePerUser: boolean;
+  products: Array<string>;
+  collections: Array<string>;
 }

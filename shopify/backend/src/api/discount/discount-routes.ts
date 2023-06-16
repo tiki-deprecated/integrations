@@ -3,102 +3,63 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { IRequest } from 'itty-router';
+import { IRequest, StatusError } from 'itty-router';
 import { DiscountReq } from './discount-req';
+import { ApiError } from '@mytiki/worker-utils-ts';
+import { Shopify } from '../../shopify/shopify';
 
 export async function create(request: IRequest, env: Env): Promise<Response> {
-  const body: DiscountReq = await request.json();
-
   // validate session token
+  const body: DiscountReq = await request.json();
+  guard(body);
 
-  // save discount
+  const shop = 'tiki-dev-store.myshopify.com';
+  const shopify = new Shopify(shop, env);
+  await shopify.saveDiscount(body);
 
   return new Response(null, {
     status: 200,
   });
 }
 
-/**
- * from RG on 6/14
- *
- * async saveDiscount(
- *         base64Opt: string,
- *         shopifyAccessToken: string,
- *         env: Env
- *     ): Promise<Response> {
- *         let functionId, metaFieldkey;
- *         const options = JSON.parse(decodeBase64(base64Opt));
- *         const discountType = options.get('discountType');
- *         const title = options.get('title');
- *         const description = options.get('description');
- *         const startsAt = options.get('startsAt');
- *         const combinesWith = options.get('combinesWith');
- *         const metaFields: ShopifyDiscountMetafields = options.get('metaFields');
- *         const endsAt = options.get('endsAt');
- *         const id = options.get('id');
- *         // TODO ADD ERROR CONTROL FOR MISSING PROPERTIES
- *         switch (discountType) {
- *             case 'order':
- *                 functionId = env.SHOPIFY_ORDER_DISCOUNT_FUNCTION_ID;
- *                 metaFieldkey = 'orderDiscountOptions';
- *                 break;
- *             case 'product':
- *                 functionId = env.SHOPIFY_PRODUCT_DISCOUNT_FUNCTION_ID;
- *                 metaFieldkey = 'productDiscountOptions';
- *                 break;
- *             default:
- *                 return new Response(`Invalid discount type: ${discountType}`, {
- *                     status: 400,
- *                 });
- *         }
- *         const vars: ShopifyDiscountCreateReq = {
- *             automaticAppDiscount: {
- *                 combinesWith,
- *                 endsAt,
- *                 functionId,
- *                 metafields: [
- *                     {
- *                         description,
- *                         key: metaFieldkey,
- *                         namespace: 'tiki_options',
- *                         type: 'json',
- *                         value: JSON.stringify(metaFields),
- *                     },
- *                 ],
- *                 startsAt,
- *                 title,
- *             },
- *         };
- *         if (id) {
- *             (vars as ShopifyDiscountUpdateReq).id = id;
- *         }
- *         const query =
- *             '{"query": ' +
- *             'mutation discountAutomaticAppCreate($automaticAppDiscount: DiscountAutomaticAppInput!) { ' +
- *             'discountAutomaticAppCreate(automaticAppDiscount: $automaticAppDiscount) { ' +
- *             '  automaticAppDiscount { ' +
- *             JSON.stringify(vars) +
- *             '  } ' +
- *             '  userErrors { ' +
- *             '    field ' +
- *             '    message ' +
- *             '  } ' +
- *             '}' +
- *             '}';
- *         const functionResponse: Response = await fetch(
- *             `https://${this.shopDomain}/admin/api/2023-04/graphql.json`,
- *             {
- *                 method: 'POST',
- *                 headers: new ApiHeaders.HeaderBuilder()
- *                     .accept(ApiHeaders.APPLICATION_JSON)
- *                     .content(ApiHeaders.APPLICATION_JSON)
- *                     .set(Shopify.tokenHeader, shopifyAccessToken)
- *                     .build(),
- *                 body: query,
- *             }
- *         );
- *         const functionResult: ShopifyAutomaticAppDiscountRsp =
- *             await functionResponse.json();
- *         return new Response(JSON.stringify(functionResult), { status: 200 });
- *     }
- */
+function guard(req: DiscountReq): void {
+  throwIfNull(req.title, 'title');
+  throwIfNull(req.type, 'discountType');
+  throwIfNull(req.description, 'description');
+  throwIfNull(req.startsAt, 'startsAt');
+
+  throwIfNull(req.metafields, 'metafields');
+  throwIfNull(req.metafields.discountType, 'metafields.discountType');
+  throwIfNull(req.metafields.appliesTo, 'metafields.appliesTo');
+  throwIfNull(req.metafields.maxUse, 'metafields.maxUse');
+  throwIfNull(req.metafields.minQty, 'metafields.minQtq');
+  throwIfNull(req.metafields.minValue, 'metafields.minValue');
+  throwIfNull(req.metafields.discountValue, 'metafields.discountValue');
+  throwIfNull(req.metafields.onePerUser, 'metafields.onePerUser');
+  throwIfNull(req.metafields.purchaseType, 'metafields.purchaseType');
+
+  throwIfNull(req.combinesWith, 'combinesWith');
+  throwIfNull(req.combinesWith.orderDiscounts, 'combinesWith.orderDiscounts');
+  throwIfNull(
+    req.combinesWith.productDiscounts,
+    'combinesWith.productDiscounts'
+  );
+  throwIfNull(
+    req.combinesWith.shippingDiscounts,
+    'combinesWith.shippingDiscounts'
+  );
+}
+
+// TODO move into ts helpers
+function throwIfNull(param: unknown, name?: string): void {
+  if (param == null) {
+    const properties: Map<string, string> = new Map();
+    properties.set(name ?? 'param', String(param));
+    throw new StatusError(
+      400,
+      new ApiError.ApiError()
+        .message('Missing required parameter')
+        .properties(properties)
+    );
+  }
+}

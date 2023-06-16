@@ -8,11 +8,11 @@ import { Shopify } from '../shopify/shopify';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-const { TEST_SHOPIFY_KV_STORE } = getMiniflareBindings();
+const env = getMiniflareBindings() as Env;
 
 describe('Shopify Verification Tests', function () {
   test('Verify Webhook', async () => {
-    const shopify = new Shopify('dummy', Verify.secret, TEST_SHOPIFY_KV_STORE);
+    const shopify = new Shopify('dummy', env);
     const signature = await Verify.signedHeader();
     const request = new Request('https://shopify-test.mytiki.com', {
       method: 'POST',
@@ -26,7 +26,7 @@ describe('Shopify Verification Tests', function () {
   });
 
   test('Verify OAuth', async () => {
-    const shopify = new Shopify('dummy', Verify.secret, TEST_SHOPIFY_KV_STORE);
+    const shopify = new Shopify('dummy', env);
     const signedQuery = await Verify.signedQuery();
     const request = new Request(
       `https://shopify-test.mytiki.com/?${signedQuery}`

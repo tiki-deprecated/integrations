@@ -8,12 +8,15 @@ routes = [
 ]
 
 kv_namespaces = [
-    { binding = "SHOPIFY_KV_STORE", id = "6f3ba354a5e444f1b21e0093c80f6e85", preview_id = "ff086acf88b0483ca83a6bde7fe74600" }
+    { binding = "KV_STORE", id = "6f3ba354a5e444f1b21e0093c80f6e85", preview_id = "ff086acf88b0483ca83a6bde7fe74600" }
 ]
 
 [vars]
-SHOPIFY_CLIENT_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
-TIKI_URL = "https://auth.l0.mytiki.com/api/latest"
+KEY_ID = "33d82ccecd1a316a4cbdb7d090735fa8"
+FUNCTION_ID_ORDER_DISCOUNT = "01H2HC73CR5GKJP3YG6FMCHVAV"
+FUNCTION_ID_PRODUCT_DISCOUNT = "01H2E4Z1BA9PW9Z2S9VQRR95KZ"
+
+AUTH_SERVICE_URL = "https://auth.l0.mytiki.com/api/latest"
 
 # The necessary secrets are:
-# - SHOPIFY_SECRET_KEY
+# - KEY_SECRET

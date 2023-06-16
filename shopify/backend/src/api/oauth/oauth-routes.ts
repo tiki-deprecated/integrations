@@ -22,13 +22,8 @@ export async function authorize(
         .detail('shop is required.')
     );
   }
-  const shopify = new Shopify(
-    shop,
-    env.SHOPIFY_SECRET_KEY,
-    env.SHOPIFY_KV_STORE
-  );
+  const shopify = new Shopify(shop, env);
   const authUrl = shopify.authorize(
-    env.SHOPIFY_CLIENT_ID,
     `https://${baseUrl}/api/latest/oauth/token`
   );
   return new Response(null, {
@@ -52,17 +47,13 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
     );
   }
 
-  const shopify = new Shopify(
-    shop,
-    env.SHOPIFY_SECRET_KEY,
-    env.SHOPIFY_KV_STORE
-  );
-  await shopify.grant(env.SHOPIFY_CLIENT_ID, env.SHOPIFY_SECRET_KEY, code);
+  const shopify = new Shopify(shop, env);
+  await shopify.grant(code);
   const appInstallation = await shopify.getAppInstallation();
   const keys = appInstallation.data.metafields?.nodes;
   if (keys === undefined || keys.length < 3) {
     await onInstall(
-      new Tiki(env.TIKI_URL),
+      new Tiki(env),
       shopify,
       appInstallation.data.currentAppInstallation.id,
       baseUrl
@@ -72,7 +63,7 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
   return new Response(null, {
     status: 302,
     headers: new Headers({
-      location: `https://${shop}/apps/${env.SHOPIFY_CLIENT_ID}`,
+      location: `https://${shop}/apps/${env.KEY_ID}`,
     }),
   });
 }
