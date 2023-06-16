@@ -3,12 +3,12 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import ShopifyTokenRsp from './interface/shopify-token-rsp';
-import ShopifyAppInstallRsp from './interface/shopify-app-install-rsp';
-import ShopifyMetafield from './interface/shopify-metafield';
+import ShopifyTokenRsp from './shopify-token-rsp';
+import ShopifyAppInstallRsp from './shopify-app-install-rsp';
+import ShopifyMetafield from './shopify-metafield';
 import { TikiKeyCreateRsp } from '../tiki/tiki-key-create-rsp';
 import { ApiHeaders, ApiError } from '@mytiki/worker-utils-ts';
-import { ShopifyWebhookReq } from './interface/shopify-webhook-req';
+import { ShopifyWebhookReq } from './shopify-webhook-req';
 import { StatusError } from 'itty-router';
 
 export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };

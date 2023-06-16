@@ -4,7 +4,7 @@
  */
 
 import { IRequest } from 'itty-router';
-import { Shopify } from '../shopify/shopify';
+import { Shopify } from '../../shopify/shopify';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function paid(request: IRequest, env: Env): Promise<Response> {

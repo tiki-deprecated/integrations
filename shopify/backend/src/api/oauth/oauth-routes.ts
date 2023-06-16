@@ -3,8 +3,8 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Shopify } from '../shopify/shopify';
-import { Tiki } from '../tiki/tiki';
+import { Shopify } from '../../shopify/shopify';
+import { Tiki } from '../../tiki/tiki';
 import { ApiError } from '@mytiki/worker-utils-ts';
 import { IRequest, StatusError } from 'itty-router';
 

@@ -3,10 +3,11 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import * as OAuth from './routes/oauth';
-import * as Order from './routes/order';
-import * as Customer from './routes/customer';
-import * as Shop from './routes/shop';
+import * as OAuth from './api/oauth/oauth-routes';
+import * as Order from './api/order/order-routes';
+import * as Customer from './api/customer/customer-routes';
+import * as Shop from './api/shop/shop-routes';
+import * as Discount from './api/discount/discount-routes';
 import { ApiError, ApiConsts } from '@mytiki/worker-utils-ts';
 import { Router, error, createCors, StatusError } from 'itty-router';
 
@@ -26,6 +27,7 @@ router
   .post(`${ApiConsts.API_LATEST}/customer/data-request`, Customer.dataRequest)
   .post(`${ApiConsts.API_LATEST}/customer/redact`, Customer.redact)
   .post(`${ApiConsts.API_LATEST}/shop/redact`, Shop.redact)
+  .post(`${ApiConsts.API_LATEST}/discount/`, Discount.create)
   .all('*', () => error(404, new ApiError.ApiError().message('Not Found')));
 
 export default {
