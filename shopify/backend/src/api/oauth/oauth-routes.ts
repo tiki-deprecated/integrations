@@ -21,6 +21,7 @@ export async function authorize(
       .error(404);
   }
   const shopify = new Shopify(shop, env);
+  await shopify.verifyOAuth(request);
   const authUrl = shopify.authorize(
     `https://${baseUrl}/api/latest/oauth/token`
   );
