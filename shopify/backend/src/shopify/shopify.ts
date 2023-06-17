@@ -7,7 +7,7 @@ import { ShopifyTokenRsp } from './shopify-token-rsp';
 import { ShopifyMetafield } from './shopify-metafield';
 import { ShopifyAppInstallRsp } from './shopify-app-install-rsp';
 import { TikiKeyCreateRsp } from '../tiki/tiki-key-create-rsp';
-import { ApiHeaders, ApiError } from '@mytiki/worker-utils-ts';
+import { API } from '@mytiki/worker-utils-ts';
 import { ShopifyWebhookReq } from './shopify-webhook-req';
 import { StatusError } from 'itty-router';
 import { ShopifyData } from './shopify-data';
@@ -21,8 +21,7 @@ export class Shopify {
   static readonly scope = 'read_orders,write_discounts';
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
   static readonly namespaceKeys = 'tiki_keys';
-  private _accessToken: string | null =
-    /* null */ 'shpua_18576251f9bc3f328732165e35cd8d8e';
+  private _accessToken: string | null = null;
 
   private readonly _keyId: string;
   private readonly _secretKey: string;
@@ -54,8 +53,8 @@ export class Shopify {
       `code=${code}&`;
     const token = await fetch(url, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .content(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .content(API.Consts.APPLICATION_JSON)
         .build(),
     })
       .then((res) => res.json())
@@ -68,12 +67,10 @@ export class Shopify {
       this._accessToken = await this._tokenStore.get(this.shopDomain);
     }
     if (this._accessToken == null) {
-      throw new StatusError(
-        403,
-        new ApiError.ApiError()
-          .message('Invalid access token')
-          .help('Try /api/latest/oauth/authorize')
-      );
+      throw new API.ErrorBuilder()
+        .message('Invalid access token')
+        .help('Try /api/latest/oauth/authorize')
+        .error(403);
     }
     return this._accessToken;
   }
@@ -82,9 +79,9 @@ export class Shopify {
     const accessToken = await this.getToken();
     await fetch(`https://${this.shopDomain}/admin/api/2023-04/webhooks.json`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
-        .content(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
       body: JSON.stringify(webhook),
@@ -104,9 +101,9 @@ export class Shopify {
     const accessToken = await this.getToken();
     return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
-        .content(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
       body: JSON.stringify({
@@ -210,9 +207,9 @@ export class Shopify {
     };
     await fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
-        .content(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
       body: JSON.stringify({
@@ -229,10 +226,10 @@ export class Shopify {
     }).then(async (res) => {
       if (res.status !== 200) {
         const body = await res.text();
-        throw new StatusError(
-          res.status,
-          new ApiError.ApiError().message(res.statusText).detail(body)
-        );
+        throw new API.ErrorBuilder()
+          .message(res.statusText)
+          .detail(body)
+          .error(res.status);
       }
     });
   }
@@ -261,9 +258,9 @@ export class Shopify {
       `"metafields": ${JSON.stringify(fields)} }}`;
     await fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
-        .content(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
       body: query,

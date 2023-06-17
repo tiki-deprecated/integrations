@@ -8,7 +8,7 @@ import * as Order from './api/order/order-routes';
 import * as Customer from './api/customer/customer-routes';
 import * as Shop from './api/shop/shop-routes';
 import * as Discount from './api/discount/discount-routes';
-import { ApiError, ApiConsts } from '@mytiki/worker-utils-ts';
+import { API } from '@mytiki/worker-utils-ts';
 import { Router, error, createCors, StatusError } from 'itty-router';
 
 const { preflight, corsify } = createCors({
@@ -21,14 +21,14 @@ const { preflight, corsify } = createCors({
 const router = Router();
 router
   .all('*', preflight)
-  .get(`${ApiConsts.API_LATEST}/oauth/authorize`, OAuth.authorize)
-  .get(`${ApiConsts.API_LATEST}/oauth/token`, OAuth.token)
-  .post(`${ApiConsts.API_LATEST}/order/paid`, Order.paid)
-  .post(`${ApiConsts.API_LATEST}/customer/data-request`, Customer.dataRequest)
-  .post(`${ApiConsts.API_LATEST}/customer/redact`, Customer.redact)
-  .post(`${ApiConsts.API_LATEST}/shop/redact`, Shop.redact)
-  .post(`${ApiConsts.API_LATEST}/discount/`, Discount.create)
-  .all('*', () => error(404, new ApiError.ApiError().message('Not Found')));
+  .get(`${API.Consts.API_LATEST}/oauth/authorize`, OAuth.authorize)
+  .get(`${API.Consts.API_LATEST}/oauth/token`, OAuth.token)
+  .post(`${API.Consts.API_LATEST}/order/paid`, Order.paid)
+  .post(`${API.Consts.API_LATEST}/customer/data-request`, Customer.dataRequest)
+  .post(`${API.Consts.API_LATEST}/customer/redact`, Customer.redact)
+  .post(`${API.Consts.API_LATEST}/shop/redact`, Shop.redact)
+  .post(`${API.Consts.API_LATEST}/discount/`, Discount.create)
+  .all('*', () => new API.ErrorBuilder().message('Not Found').error(404));
 
 export default {
   async fetch(
@@ -40,12 +40,13 @@ export default {
       .handle(request, env, ctx)
       .catch((err) => {
         let detail = 'Something went wrong';
+        if (err instanceof Response) return err;
         if (err instanceof StatusError) return error(err);
         if (err instanceof Error) detail = err.message;
-        return error(
-          500,
-          new ApiError.ApiError().message('Uh Oh').detail(detail)
-        );
+        return new API.ErrorBuilder()
+          .message('Uh Oh')
+          .detail(detail)
+          .error(500);
       })
       .then(corsify);
   },
