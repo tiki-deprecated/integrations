@@ -5,20 +5,32 @@
 
 import { IRequest } from 'itty-router';
 import { DiscountReq } from './discount-req';
-import { Throw } from '@mytiki/worker-utils-ts';
+import { Throw, API } from '@mytiki/worker-utils-ts';
 import { Shopify } from '../../shopify/shopify';
 
 export async function create(request: IRequest, env: Env): Promise<Response> {
-  // validate session token
+  const token = request.headers.get(API.Consts.AUTHORIZATION);
+  if (token == null) {
+    throw new API.ErrorBuilder()
+      .help('Check your Authorization header')
+      .error(403);
+  }
+
+  const claims = await Shopify.verifySession(
+    token.replace('Bearer ', ''),
+    env.KEY_ID,
+    env.KEY_SECRET
+  );
+
   const body: DiscountReq = await request.json();
   guard(body);
+  Throw.ifNull(claims.dest);
 
-  const shop = 'tiki-dev-store.myshopify.com';
-  const shopify = new Shopify(shop, env);
+  const shopify = new Shopify(claims.dest as string, env);
   await shopify.saveDiscount(body);
 
   return new Response(null, {
-    status: 200,
+    status: 201,
   });
 }
 

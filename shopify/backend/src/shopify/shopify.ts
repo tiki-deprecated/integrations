@@ -7,12 +7,12 @@ import { ShopifyTokenRsp } from './shopify-token-rsp';
 import { ShopifyMetafield } from './shopify-metafield';
 import { ShopifyAppInstallRsp } from './shopify-app-install-rsp';
 import { TikiKeyCreateRsp } from '../tiki/tiki-key-create-rsp';
-import { API } from '@mytiki/worker-utils-ts';
+import { API, JWT } from '@mytiki/worker-utils-ts';
 import { ShopifyWebhookReq } from './shopify-webhook-req';
-import { StatusError } from 'itty-router';
 import { ShopifyData } from './shopify-data';
 import { ShopifyDiscount } from './shopify-discount';
 import { DiscountReq } from '../api/discount/discount-req';
+import { ShopifyJwt } from './shopify-jwt';
 
 export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };
 
@@ -175,6 +175,41 @@ export class Shopify {
       signatureBytes,
       new TextEncoder().encode(params.toString())
     );
+  }
+
+  verifySession = async (jwt: string): Promise<ShopifyJwt> =>
+    Shopify.verifySession(jwt, this._keyId, this._secretKey);
+
+  static async verifySession(
+    jwt: string,
+    id: string,
+    secret: string
+  ): Promise<ShopifyJwt> {
+    const alg = {
+      name: 'HMAC',
+      hash: 'SHA-256',
+    };
+    const key = await crypto.subtle.importKey(
+      'raw',
+      new TextEncoder().encode(secret),
+      alg,
+      false,
+      ['verify']
+    );
+    const claims = await JWT.decode(jwt, key, {
+      algorithm: alg,
+      claims: ['dest', 'iss', 'aud', 'exp'],
+      aud: [id],
+      clockSkew: 60,
+    });
+    return {
+      iss: claims.get('iss') as string,
+      sub: claims.get('sub') as string,
+      dest: claims.get('dest') as string,
+      nbf: new Date((claims.get('nbf') as number) * 1000),
+      exp: new Date((claims.get('exp') as number) * 1000),
+      aud: claims.get('aud') as string,
+    };
   }
 
   async saveDiscount(discount: DiscountReq): Promise<void> {

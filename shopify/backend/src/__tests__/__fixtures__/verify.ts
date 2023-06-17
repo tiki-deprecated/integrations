@@ -3,6 +3,8 @@
  * MIT license. See LICENSE file in root directory.
  */
 
+import { ShopifyJwt } from '../../shopify/shopify-jwt';
+
 export const secret = 'c12092f264d049ffb681e7b27ac41015';
 const query =
   'code=0907a61c0c8d55e99db179b68161bc00&shop=test-shop.myshopify.com&state=0.6784241404160823&timestamp=1337178173';
@@ -468,3 +470,15 @@ export async function signedQuery(): Promise<string> {
     .join('');
   return query.replace('&shop', `&hmac=${hex}&shop`);
 }
+
+export const jwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiZXhwIjoxOTE2MjM5MDIyLCJuYmYiOjE1MTYyMzkwMjIsImlzcyI6IlRFU1QgSVNTIiwiZGVzdCI6InRpa2ktZGV2LXN0b3JlLm15c2hvcGlmeS5jb20iLCJhdWQiOiIzM2Q4MmNjZWNkMWEzMTZhNGNiZGI3ZDA5MDczNWZhOCJ9.NiKf3meWitWaK_-6veAowx1MHacW0Sggue-cbMvgnAI';
+
+export const claims = {
+  sub: '1234567890',
+  exp: 1916239022,
+  nbf: 1516239022,
+  iss: 'TEST ISS',
+  dest: 'tiki-dev-store.myshopify.com',
+  aud: '33d82ccecd1a316a4cbdb7d090735fa8',
+};

@@ -34,4 +34,15 @@ describe('Shopify Verification Tests', function () {
     const success = await shopify.verifyOAuth(request);
     expect(success);
   });
+
+  test('Verify JWT', async () => {
+    const shopify = new Shopify(Verify.claims.dest, env);
+    const claims = await shopify.verifySession(Verify.jwt);
+    expect(claims.dest === Verify.claims.dest);
+    expect(claims.iss === Verify.claims.iss);
+    expect(claims.aud === Verify.claims.aud);
+    expect(claims.exp?.getTime() === Verify.claims.exp * 1000);
+    expect(claims.nbf?.getTime() === Verify.claims.nbf * 1000);
+    expect(claims.sub === Verify.claims.sub);
+  });
 });
