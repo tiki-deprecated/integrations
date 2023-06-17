@@ -3,9 +3,9 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { Shopify } from '../shopify/shopify';
-import { Tiki } from '../tiki/tiki';
-import { ApiError } from '@mytiki/worker-utils-ts';
+import { Shopify } from '../../shopify/shopify';
+import { Tiki } from '../../tiki/tiki';
+import { API } from '@mytiki/worker-utils-ts';
 import { IRequest, StatusError } from 'itty-router';
 
 export async function authorize(
@@ -15,20 +15,14 @@ export async function authorize(
   const shop = request.query.shop as string;
   const baseUrl = new URL(request.url).hostname;
   if (shop == null) {
-    throw new StatusError(
-      404,
-      new ApiError.ApiError()
-        .message('Missing required parameters.')
-        .detail('shop is required.')
-    );
+    throw new API.ErrorBuilder()
+      .message('Missing required parameters.')
+      .detail('Requires shop.')
+      .error(404);
   }
-  const shopify = new Shopify(
-    shop,
-    env.SHOPIFY_SECRET_KEY,
-    env.SHOPIFY_KV_STORE
-  );
+  const shopify = new Shopify(shop, env);
+  await shopify.verifyOAuth(request);
   const authUrl = shopify.authorize(
-    env.SHOPIFY_CLIENT_ID,
     `https://${baseUrl}/api/latest/oauth/token`
   );
   return new Response(null, {
@@ -44,25 +38,19 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
   const code = request.query.code as string;
   const baseUrl = new URL(request.url).hostname;
   if (shop == null || code == null) {
-    throw new StatusError(
-      404,
-      new ApiError.ApiError()
-        .message('Missing required parameters.')
-        .detail('shop and code are required.')
-    );
+    throw new API.ErrorBuilder()
+      .message('Missing required parameters.')
+      .detail('Requires shop. Requires code.')
+      .error(404);
   }
 
-  const shopify = new Shopify(
-    shop,
-    env.SHOPIFY_SECRET_KEY,
-    env.SHOPIFY_KV_STORE
-  );
-  await shopify.grant(env.SHOPIFY_CLIENT_ID, env.SHOPIFY_SECRET_KEY, code);
+  const shopify = new Shopify(shop, env);
+  await shopify.grant(code);
   const appInstallation = await shopify.getAppInstallation();
   const keys = appInstallation.data.metafields?.nodes;
   if (keys === undefined || keys.length < 3) {
     await onInstall(
-      new Tiki(env.TIKI_URL),
+      new Tiki(env),
       shopify,
       appInstallation.data.currentAppInstallation.id,
       baseUrl
@@ -72,7 +60,7 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
   return new Response(null, {
     status: 302,
     headers: new Headers({
-      location: `https://${shop}/apps/${env.SHOPIFY_CLIENT_ID}`,
+      location: `https://${shop}/apps/${env.KEY_ID}`,
     }),
   });
 }
@@ -89,13 +77,15 @@ async function onInstall(
     shopifyAccessToken
   );
   const tikiApp = await tiki.createApp(tikiAccessToken, shopify.shopDomain);
-  const tikiPublicKey = await tiki.createPublicKey(
+  const tikiPublicKey = await tiki.createKey(
     tikiAccessToken,
-    tikiApp.appId
+    tikiApp.appId,
+    true
   );
-  const tikiPrivateKey = await tiki.createPrivateKey(
+  const tikiPrivateKey = await tiki.createKey(
     tikiAccessToken,
-    tikiApp.appId
+    tikiApp.appId,
+    false
   );
   await shopify.setKeysInMetafields(installId, tikiPublicKey, tikiPrivateKey);
   await shopify.registerOrderPaidWebhook(baseUrl);

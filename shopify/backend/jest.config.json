@@ -16,6 +16,7 @@
   ],
   "testEnvironment": "miniflare",
   "testEnvironmentOptions": {
-    "kvNamespaces": ["TEST_SHOPIFY_KV_STORE"]
+    "kvNamespaces": ["KV_STORE"],
+    "bindings": { "KEY_SECRET": "FAKESECRET" }
   }
 }

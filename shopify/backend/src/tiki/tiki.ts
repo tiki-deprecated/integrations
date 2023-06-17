@@ -9,7 +9,7 @@ import { TikiAppCreateRsp } from './tiki-app-create-rsp';
 import { TikiAppCreateReq } from './tiki-app-create-req';
 import { TikiKeyCreateRsp } from './tiki-key-create-rsp';
 import { TikiKeyCreateReq } from './tiki-key-create-req';
-import { ApiHeaders } from '@mytiki/worker-utils-ts';
+import { API } from '@mytiki/worker-utils-ts';
 
 export type { TikiKeyCreateRsp, TikiAppCreateRsp };
 
@@ -19,8 +19,8 @@ export class Tiki {
   static readonly scope = 'auth';
   baseUrl: string;
 
-  constructor(baseUrl: string) {
-    this.baseUrl = baseUrl;
+  constructor(env: Env) {
+    this.baseUrl = env.AUTH_SERVICE_URL;
   }
 
   async login(shopDomain: string, shopifyToken: string): Promise<string> {
@@ -33,8 +33,8 @@ export class Tiki {
     };
     return fetch(`${this.baseUrl}/oauth/token`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .content(ApiHeaders.APPLICATION_FORM_URL)
+      headers: new API.HeaderBuilder()
+        .content(API.Consts.APPLICATION_FORM_URL)
         .build(),
       body: new URLSearchParams(req),
     })
@@ -51,10 +51,10 @@ export class Tiki {
     };
     return fetch(`${this.baseUrl}/app`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
         .authorization(`Bearer ${accessToken}`)
-        .content(ApiHeaders.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
         .build(),
       body: JSON.stringify(req),
     })
@@ -62,39 +62,20 @@ export class Tiki {
       .then((json) => json as TikiAppCreateRsp);
   }
 
-  async createPrivateKey(
+  async createKey(
     accessToken: string,
-    appId: string
+    appId: string,
+    isPublic: boolean
   ): Promise<TikiKeyCreateRsp> {
     const req: TikiKeyCreateReq = {
-      isPublic: false,
+      isPublic,
     };
     return fetch(`${this.baseUrl}/app/${appId}/key`, {
       method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
         .authorization(`Bearer ${accessToken}`)
-        .content(ApiHeaders.APPLICATION_JSON)
-        .build(),
-      body: JSON.stringify(req),
-    })
-      .then((res) => res.json())
-      .then((json) => json as TikiKeyCreateRsp);
-  }
-
-  async createPublicKey(
-    accessToken: string,
-    appId: string
-  ): Promise<TikiKeyCreateRsp> {
-    const req: TikiKeyCreateReq = {
-      isPublic: true,
-    };
-    return fetch(`${this.baseUrl}/app/${appId}/key`, {
-      method: 'POST',
-      headers: new ApiHeaders.HeaderBuilder()
-        .accept(ApiHeaders.APPLICATION_JSON)
-        .authorization(`Bearer ${accessToken}`)
-        .content(ApiHeaders.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
         .build(),
       body: JSON.stringify(req),
     })
