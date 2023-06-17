@@ -6,7 +6,7 @@
 import { Shopify } from '../../shopify/shopify';
 import { Tiki } from '../../tiki/tiki';
 import { API } from '@mytiki/worker-utils-ts';
-import { IRequest, StatusError } from 'itty-router';
+import { IRequest } from 'itty-router';
 
 export async function authorize(
   request: IRequest,
@@ -47,7 +47,7 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
   const shopify = new Shopify(shop, env);
   await shopify.grant(code);
   const appInstallation = await shopify.getAppInstallation();
-  const keys = appInstallation.data.metafields?.nodes;
+  const keys = appInstallation.data.currentAppInstallation.metafields?.nodes;
   if (keys === undefined || keys.length < 3) {
     await onInstall(
       new Tiki(env),

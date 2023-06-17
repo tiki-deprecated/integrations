@@ -3,8 +3,6 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { ShopifyJwt } from '../../shopify/shopify-jwt';
-
 export const secret = 'c12092f264d049ffb681e7b27ac41015';
 const query =
   'code=0907a61c0c8d55e99db179b68161bc00&shop=test-shop.myshopify.com&state=0.6784241404160823&timestamp=1337178173';
