@@ -13,14 +13,19 @@ import { ShopifyData } from './shopify-data';
 import { ShopifyDiscount } from './shopify-discount';
 import { DiscountReq } from '../api/discount/discount-req';
 import { ShopifyJwt } from './shopify-jwt';
+import { ShopifyCustomerRsp } from './shopify-customer-rsp';
 
 export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };
 
 export class Shopify {
   static readonly tokenHeader = 'X-Shopify-Access-Token';
-  static readonly scope = 'read_orders,write_discounts';
+  static readonly scope =
+    'read_orders,write_discounts,read_customers,write_customers';
+
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
   static readonly namespaceKeys = 'tiki_keys';
+  static readonly namespaceCustomer = 'tiki';
+  static readonly discountAppliedKey = 'discount_applied';
   private _accessToken: string | null = null;
 
   private readonly _keyId: string;
@@ -150,11 +155,12 @@ export class Shopify {
     ]);
 
   async verifyWebhook(request: Request): Promise<boolean> {
-    const signature = request.headers.get(Shopify.signHeader) ?? '';
+    const req = request.clone();
+    const signature = req.headers.get(Shopify.signHeader) ?? '';
     const signatureBytes = Uint8Array.from(atob(signature), (c) =>
       c.charCodeAt(0)
     );
-    const body = await request.text();
+    const body = await req.text();
     return this.verify(signatureBytes, new TextEncoder().encode(body));
   }
 
@@ -269,6 +275,27 @@ export class Shopify {
     });
   }
 
+  async discountUsed(customer: number, id: Array<string>): Promise<void> {
+    const cur = await this.getCustomerMetafield(
+      customer,
+      Shopify.namespaceCustomer,
+      Shopify.discountAppliedKey
+    );
+    const appliedList: Array<string> = JSON.parse(
+      cur.data.customer.metafield?.value ?? '[]'
+    );
+    await this.setMetafields([
+      {
+        namespace: Shopify.namespaceCustomer,
+        key: Shopify.discountAppliedKey,
+        description: 'Tracks TIKI discounts used by this customer',
+        type: 'json',
+        value: JSON.stringify(appliedList.concat(id)),
+        ownerId: `gid://shopify/Customer/${customer}`,
+      },
+    ]);
+  }
+
   private async verify(
     signature: ArrayBuffer,
     data: ArrayBuffer
@@ -285,12 +312,6 @@ export class Shopify {
 
   private async setMetafields(fields: Array<ShopifyMetafield>): Promise<void> {
     const accessToken = await this.getToken();
-    const query =
-      `{"query" : "mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) { ` +
-      'metafieldsSet(metafields: $metafields) { metafields { key namespace value createdAt updatedAt }' +
-      'userErrors { field message code } } }",' +
-      '"variables": {' +
-      `"metafields": ${JSON.stringify(fields)} }}`;
     await fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
       headers: new API.HeaderBuilder()
@@ -298,7 +319,52 @@ export class Shopify {
         .content(API.Consts.APPLICATION_JSON)
         .set(Shopify.tokenHeader, accessToken)
         .build(),
-      body: query,
+      body: JSON.stringify({
+        query: `mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
+          metafieldsSet(metafields: $metafields) { 
+            metafields { 
+              key 
+              namespace 
+              value 
+              createdAt 
+              updatedAt 
+            }
+            userErrors { 
+              field 
+              message 
+              code 
+            } 
+          } 
+        }`,
+        variables: {
+          metafields: JSON.stringify(fields),
+        },
+      }),
     });
+  }
+
+  private async getCustomerMetafield(
+    id: number,
+    namespace: string,
+    key: string
+  ): Promise<ShopifyData<ShopifyCustomerRsp>> {
+    const accessToken = await this.getToken();
+    return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
+      method: 'POST',
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
+        .set(Shopify.tokenHeader, accessToken)
+        .build(),
+      body: JSON.stringify({
+        query: `query Customer {
+          customer(id: "gid://shopify/Customer/${id}") {
+            metafield(key: "${key}", namespace: "${namespace}") {
+              value
+            }}}`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => json as ShopifyData<ShopifyCustomerRsp>);
   }
 }
