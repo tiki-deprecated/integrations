@@ -37,3 +37,15 @@ export async function paid(request: IRequest, env: Env): Promise<Response> {
 
 // b) is there a discount applied? is this discount a tiki discount? if so, save it to cust. metafield
 // find by title, sort by created, take top.
+
+function consumeDiscount(shopify: Shopify, order: OrderReq) {
+  if (
+    order.discount_applications == null ||
+    order.discount_applications.length === 0
+  )
+    return;
+
+  order.discount_applications.forEach((discount) => {
+    // do stuff
+  });
+}

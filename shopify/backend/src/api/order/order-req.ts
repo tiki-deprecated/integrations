@@ -7,16 +7,14 @@ export interface OrderReq {
   customer: {
     id: number;
   };
-  discount_applications: [
-    {
-      type: string;
-      title: string;
-      description: string;
-      value: string;
-      value_type: string;
-      allocation_method: string;
-      target_selection: string;
-      target_type: string;
-    }
-  ];
+  discount_applications: Array<{
+    type: string;
+    title: string;
+    description: string;
+    value: string;
+    value_type: string;
+    allocation_method: string;
+    target_selection: string;
+    target_type: string;
+  }>;
 }
