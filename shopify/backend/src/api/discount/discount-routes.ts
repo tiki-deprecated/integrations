@@ -31,7 +31,7 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
   const rsp: DiscountRsp = {
     id: await shopify.saveDiscount(body),
   };
-  const install = await shopify.getAppInstallation();
+  const install = await shopify.getInstall();
   await shopify.setDiscountActive(
     install.data.currentAppInstallation.id,
     rsp.id

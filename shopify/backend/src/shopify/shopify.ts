@@ -26,7 +26,6 @@ export class Shopify {
 
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
   static readonly namespace = 'mytiki';
-  static readonly discountAppliedKey = 'discount_applied';
   private _accessToken: string | null = null;
 
   private readonly _keyId: string;
@@ -81,19 +80,6 @@ export class Shopify {
     return this._accessToken;
   }
 
-  async registerWebhook(webhook: ShopifyWebhookReq): Promise<void> {
-    const accessToken = await this.getToken();
-    await fetch(`https://${this.shopDomain}/admin/api/2023-04/webhooks.json`, {
-      method: 'POST',
-      headers: new API.HeaderBuilder()
-        .accept(API.Consts.APPLICATION_JSON)
-        .content(API.Consts.APPLICATION_JSON)
-        .set(Shopify.tokenHeader, accessToken)
-        .build(),
-      body: JSON.stringify(webhook),
-    });
-  }
-
   registerOrderPaidWebhook = (baseUrl: string): Promise<void> =>
     this.registerWebhook({
       webhook: {
@@ -103,7 +89,7 @@ export class Shopify {
       },
     });
 
-  async getAppInstallation(): Promise<ShopifyData<ShopifyAppInstallRsp>> {
+  async getInstall(): Promise<ShopifyData<ShopifyAppInstallRsp>> {
     const accessToken = await this.getToken();
     return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
@@ -126,7 +112,7 @@ export class Shopify {
       .then((json) => json as ShopifyData<ShopifyAppInstallRsp>);
   }
 
-  setKeysInMetafields = async (
+  saveKeys = async (
     appId: string,
     publicKey: TikiKeyCreateRsp,
     privateKey: TikiKeyCreateRsp
@@ -268,7 +254,10 @@ export class Shopify {
     });
   }
 
-  setDiscountActive = async (appId: string, discountId: string) =>
+  setDiscountActive = async (
+    appId: string,
+    discountId: string
+  ): Promise<void> =>
     this.setMetafields([
       {
         namespace: Shopify.namespace,
@@ -279,26 +268,50 @@ export class Shopify {
       },
     ]);
 
-  async discountUsed(customer: number, id: Array<string>): Promise<void> {
+  async setDiscountAllowed(customer: number, id: string): Promise<void> {
+    const key = 'discount_allowed';
     const cur = await this.getCustomerMetafield(
       customer,
       Shopify.namespace,
-      Shopify.discountAppliedKey
+      key
     );
-    const appliedList: Array<string> = JSON.parse(
+    const allowedList: Array<string> = JSON.parse(
       cur.data.customer.metafield?.value ?? '[]'
     );
+    allowedList.push(id);
     await this.setMetafields([
       {
         namespace: Shopify.namespace,
-        key: Shopify.discountAppliedKey,
-        description: 'Tracks TIKI discounts used by this customer',
-        type: 'json',
-        value: JSON.stringify(appliedList.concat(id)),
+        key,
+        description: 'Tracks TIKI discounts allowed for this customer',
+        type: 'list.single_line_text_field',
+        value: JSON.stringify(allowedList),
         ownerId: `gid://shopify/Customer/${customer}`,
       },
     ]);
   }
+
+  // async discountUsed(customer: number, id: Array<string>): Promise<void> {
+  //   const key = 'discount_applied';
+  //   const cur = await this.getCustomerMetafield(
+  //     customer,
+  //     Shopify.namespace,
+  //     key
+  //   );
+  //   const appliedList: Array<string> = JSON.parse(
+  //     cur.data.customer.metafield?.value ?? '[]'
+  //   );
+  //   await this.setMetafields([
+  //     {
+  //       namespace: Shopify.namespace,
+  //       key,
+  //       description: 'Tracks TIKI discounts used by this customer',
+  //       type: 'list.single_line_text_field',
+  //       value: JSON.stringify(appliedList.concat(id)),
+  //       ownerId: `gid://shopify/Customer/${customer}`,
+  //     },
+  //   ]);
+  // }
 
   private async verify(
     signature: ArrayBuffer,
@@ -452,4 +465,17 @@ export class Shopify {
       value: JSON.stringify(req.collections),
     },
   ];
+
+  private async registerWebhook(webhook: ShopifyWebhookReq): Promise<void> {
+    const accessToken = await this.getToken();
+    await fetch(`https://${this.shopDomain}/admin/api/2023-04/webhooks.json`, {
+      method: 'POST',
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
+        .set(Shopify.tokenHeader, accessToken)
+        .build(),
+      body: JSON.stringify(webhook),
+    });
+  }
 }
