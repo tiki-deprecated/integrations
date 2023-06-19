@@ -14,6 +14,8 @@ import { ShopifyDiscount } from './shopify-discount';
 import { DiscountReq } from '../api/discount/discount-req';
 import { ShopifyJwt } from './shopify-jwt';
 import { ShopifyCustomerRsp } from './shopify-customer-rsp';
+import * as UUID from 'uuid';
+import { DiscountReqMeta } from '../api/discount/discount-req-meta';
 
 export type { ShopifyAppInstallRsp, ShopifyWebhookReq, ShopifyMetafield };
 
@@ -23,8 +25,7 @@ export class Shopify {
     'read_orders,write_discounts,read_customers,write_customers';
 
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';
-  static readonly namespaceKeys = 'tiki_keys';
-  static readonly namespaceCustomer = 'tiki';
+  static readonly namespace = 'mytiki';
   static readonly discountAppliedKey = 'discount_applied';
   private _accessToken: string | null = null;
 
@@ -114,7 +115,7 @@ export class Shopify {
       body: JSON.stringify({
         query: `query {
           currentAppInstallation {
-            id metafields(namespace: "${Shopify.namespaceKeys}", first: 3){
+            id metafields(namespace: "${Shopify.namespace}", first: 3){
               nodes {
                 key
               }
@@ -132,21 +133,21 @@ export class Shopify {
   ) =>
     this.setMetafields([
       {
-        namespace: 'tiki_keys',
+        namespace: Shopify.namespace,
         key: 'public_key_id',
         type: 'single_line_text_field',
         value: publicKey.id,
         ownerId: appId,
       },
       {
-        namespace: 'tiki_keys',
+        namespace: Shopify.namespace,
         key: 'private_key_id',
         type: 'single_line_text_field',
         value: privateKey.id,
         ownerId: appId,
       },
       {
-        namespace: 'tiki_keys',
+        namespace: Shopify.namespace,
         key: 'private_key_secret',
         type: 'single_line_text_field',
         value: privateKey.secret ?? '',
@@ -218,7 +219,8 @@ export class Shopify {
     };
   }
 
-  async saveDiscount(discount: DiscountReq): Promise<void> {
+  async saveDiscount(discount: DiscountReq): Promise<string> {
+    const id = UUID.v4();
     const accessToken = await this.getToken();
     const req: ShopifyDiscount = {
       combinesWith: {
@@ -228,25 +230,14 @@ export class Shopify {
       },
       endsAt: discount.endsAt,
       functionId:
-        discount.type === 'order'
+        discount.metafields.type === 'order'
           ? this._functionIdOrder
           : this._functionIdProduct,
-      metafields: [
-        {
-          description: discount.description,
-          key:
-            discount.type === 'order'
-              ? 'orderDiscountOptions'
-              : 'productDiscountOptions',
-          namespace: 'tiki_options',
-          type: 'json',
-          value: JSON.stringify(discount.metafields),
-        },
-      ],
+      metafields: this.discountToMetafield(id, discount.metafields),
       startsAt: discount.startsAt,
       title: discount.title,
     };
-    await fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
+    return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
       headers: new API.HeaderBuilder()
         .accept(API.Consts.APPLICATION_JSON)
@@ -271,14 +262,27 @@ export class Shopify {
           .message(res.statusText)
           .detail(body)
           .error(res.status);
+      } else {
+        return id;
       }
     });
   }
 
+  setDiscountActive = async (appId: string, discountId: string) =>
+    this.setMetafields([
+      {
+        namespace: Shopify.namespace,
+        key: 'discount_active',
+        type: 'single_line_text_field',
+        value: discountId,
+        ownerId: appId,
+      },
+    ]);
+
   async discountUsed(customer: number, id: Array<string>): Promise<void> {
     const cur = await this.getCustomerMetafield(
       customer,
-      Shopify.namespaceCustomer,
+      Shopify.namespace,
       Shopify.discountAppliedKey
     );
     const appliedList: Array<string> = JSON.parse(
@@ -286,7 +290,7 @@ export class Shopify {
     );
     await this.setMetafields([
       {
-        namespace: Shopify.namespaceCustomer,
+        namespace: Shopify.namespace,
         key: Shopify.discountAppliedKey,
         description: 'Tracks TIKI discounts used by this customer',
         type: 'json',
@@ -367,4 +371,85 @@ export class Shopify {
       .then((res) => res.json())
       .then((json) => json as ShopifyData<ShopifyCustomerRsp>);
   }
+
+  private discountToMetafield = (id: string, req: DiscountReqMeta) => [
+    {
+      key: 'type',
+      namespace: Shopify.namespace,
+      type: 'single_line_text_field',
+      value: req.type,
+    },
+    {
+      key: 'id',
+      namespace: Shopify.namespace,
+      type: 'single_line_text_field',
+      value: id,
+    },
+    {
+      key: 'description',
+      namespace: Shopify.namespace,
+      type: 'single_line_text_field',
+      value: req.description,
+    },
+    {
+      key: 'discount_type',
+      namespace: Shopify.namespace,
+      type: 'single_line_text_field',
+      value: req.discountType,
+    },
+    {
+      key: 'discount_value',
+      namespace: Shopify.namespace,
+      type: 'number_decimal',
+      value: req.discountValue.toString(),
+    },
+    {
+      key: 'purchase_type',
+      namespace: Shopify.namespace,
+      type: 'single_line_text_field',
+      value: req.purchaseType,
+    },
+    {
+      key: 'applies_to',
+      namespace: Shopify.namespace,
+      type: 'list.single_line_text_field',
+      value: JSON.stringify(req.appliesTo),
+    },
+    {
+      key: 'min_value',
+      namespace: Shopify.namespace,
+      type: 'number_decimal',
+      value: req.minValue.toString(),
+    },
+    {
+      key: 'min_qty',
+      namespace: Shopify.namespace,
+      type: 'number_integer',
+      value: req.minQty.toString(),
+    },
+    {
+      key: 'max_use',
+      namespace: Shopify.namespace,
+      type: 'number_integer',
+      value: req.maxUse.toString(),
+    },
+    {
+      key: 'once_per_user',
+      namespace: Shopify.namespace,
+      type: 'boolean',
+      value: req.onePerUser.toString(),
+    },
+    {
+      key: 'products',
+      namespace: Shopify.namespace,
+      type: 'list.single_line_text_field',
+      value: JSON.stringify(req.products),
+    },
+    {
+      key: 'collections',
+      namespace: Shopify.namespace,
+      type: 'list.single_line_text_field',
+      value: JSON.stringify(req.collections),
+    },
+  ];
 }
