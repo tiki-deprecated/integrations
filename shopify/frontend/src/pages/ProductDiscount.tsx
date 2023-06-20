@@ -1,5 +1,4 @@
 import React from 'react'
-import { useParams } from 'react-router'
 
 import { useForm, useField, SubmitResult } from '@shopify/react-form'
 import { AppliesTo, DiscountMethod, PurchaseType, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
@@ -18,27 +17,15 @@ import {
     TitleAndDescription,
     SummarySection
 } from '../components'
+import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
+import { Redirect } from '@shopify/app-bridge/actions'
 import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
 
 export function ProductDiscount() {
 
-    const { id } = useParams();
-    const authenticatedFetch = useAuthenticatedFetch()
-
-    const saveDiscount = async (discount: DiscountReq): Promise<SubmitResult> => {
-        let response = authenticatedFetch('', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                discount
-            })
-        })
-
-        const data = response
-
-        //TODO HANDLE ERRORS
-        return { status: 'success' }
-    }
+    const app = useAppBridge();
+    const redirect = Redirect.create(app);
+    const authenticatedFetch = useAuthenticatedFetch(app);
 
     const {
         fields: {
@@ -85,7 +72,6 @@ export function ProductDiscount() {
             shippingDiscounts: useField(false),
         },
         onSubmit: async (form) => {
-            debugger
             const discount: DiscountReq = {
                 title: form.title,
                 startsAt: form.startsAt,
@@ -110,7 +96,19 @@ export function ProductDiscount() {
                     shippingDiscounts: form.shippingDiscounts
                 },
             }
-            return await saveDiscount(discount)
+            const response = await authenticatedFetch("/api/discount", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    discount
+                }),
+            });
+            const data = (await response.text());
+            debugger
+            redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
+                name: Redirect.ResourceType.Discount,
+            });
+            return { status: "success" }
         },
     })
 
@@ -125,7 +123,7 @@ export function ProductDiscount() {
             <Layout>
                 <ErrorBanner submitErrors={submitErrors} />
                 <Layout.Section>
-                    <form onSubmit={submit}>
+                    <form>
                         <LegacyCard>
                             <LegacyCard.Section title="Title">
                                 <TitleAndDescription onChange={(values) => {
@@ -171,8 +169,8 @@ export function ProductDiscount() {
                             type={RequirementType.None}
                             subTotal={minValue.value}
                             qty={minQty.value}
-                            onChange={({type, value, qty}) =>{
-                                switch(type){
+                            onChange={({ type, value, qty }) => {
+                                switch (type) {
                                     case RequirementType.Quantity:
                                         minQty.value = qty
                                         minValue.value = 0
@@ -205,22 +203,6 @@ export function ProductDiscount() {
                             startsAt={startsAt.value.toUTCString()}
                             endsAt={endsAt.value ? endsAt.value.toUTCString : ''} />
                     </form>
-                </Layout.Section>
-                <Layout.Section secondary>
-                    { /*
-                <SummarySection 
-                    title={title.value}
-                    startsAt={startsAt.value ?? new Date().toUTCString() }
-                    endsAt={endsAt.value} />
-                </Layout.Section>
-                <Layout.Section>
-                    <PageActions
-                        primaryAction={{
-                            content: 'Save discount',
-                            onAction: submit,
-                        }}
-                    />
-                    */ }
                 </Layout.Section>
             </Layout>
         </Page>
