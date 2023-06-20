@@ -2,8 +2,8 @@ import {ButtonGroup, Button} from '@shopify/polaris';
 import React from 'react';
 import {useCallback, useState} from 'react';
 
-export function DiscountAmountBtns({ onChange, type = "percent" }) {
-  const [activeButtonType, setActiveButtonType] = useState(type);
+export function DiscountAmountBtns({ onChange }) {
+  const [activeButtonType, setActiveButtonType] = useState('amount');
 
   const handleButtonClick = useCallback(
     (type: string) => {
@@ -16,9 +16,9 @@ export function DiscountAmountBtns({ onChange, type = "percent" }) {
   return (
     <ButtonGroup segmented>
       <Button
-        pressed={activeButtonType === "fixed"}
+        pressed={activeButtonType === "amount"}
         onClick={() => {
-            handleButtonClick("fixed")
+            handleButtonClick("amount")
          }
         }
       >

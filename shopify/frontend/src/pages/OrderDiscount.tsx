@@ -2,8 +2,8 @@ import React from 'react'
 import { useParams } from 'react-router'
 
 import { useForm, useField, SubmitResult } from '@shopify/react-form'
-import { DiscountMethod, PurchaseType, SummaryCard, } from '@shopify/discount-app-components'
-import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris'
+import { AppliesTo, DiscountMethod, PurchaseType, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
+import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
 import { DiscountReq } from '../interface/discount-req'
 import { PurchaseTypeSection, 
@@ -12,7 +12,10 @@ import { PurchaseTypeSection,
     DiscountAmount, 
     MaxUsageCard, 
     CombinationsCard,
-    ErrorBanner } from '../components'
+    ErrorBanner, 
+    AppliesToChoices,
+    TitleAndDescription,
+    SummarySection} from '../components'
 import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
 
 
@@ -45,7 +48,6 @@ export function OrderDiscount () {
         title,
         startsAt,
         endsAt,
-        type,
         description,
         discountType,
         discountValue,
@@ -69,8 +71,7 @@ export function OrderDiscount () {
     fields: {
         title: useField(''),
         startsAt: useField(new Date()),
-        endsAt: useField(undefined),
-        type: useField(''),
+        endsAt: useField<Date | null>(null),
         description: useField(''),
         discountType: useField<'percentage' | 'amount'>('amount'),
         discountValue: useField(0.00),
@@ -116,70 +117,117 @@ export function OrderDiscount () {
   })
 
   return (
-        <Page
-            title="Create Order Discount"
-            primaryAction={{
-              content: 'Save',
-              onAction: submit,
-              disabled: !dirty,
-              loading: submitting
-            }}
-        >
-            <Layout>
-                <ErrorBanner submitErrors={ submitErrors } />
-                <Layout.Section>
-                    <form onSubmit={submit}>
-                            <LegacyCard>
-                                <LegacyCard.Section title="Value">
-                                    <DiscountAmount onChange={console.log}/>
-                                </LegacyCard.Section>
-                                <LegacyCard.Section title="Purchase Type">
-                                    <PurchaseTypeSection purchaseType={{value: PurchaseType.Both, onChange: console.log}} />
-                                </LegacyCard.Section>
-                            </LegacyCard>
-                            <MinReqsCard />
-                            <MaxUsageCard />
-                            <CombinationsCard />
-                            <ActiveDatesCard onChange={console.log} startsAt={startsAt} endsAt={endsAt}/>
-                        </form>
-                </Layout.Section>
-                <Layout.Section secondary>
-                    { /* TODO dynamic fields */ }
-                    <SummaryCard
-                        header={{
-                            discountMethod: DiscountMethod.Automatic,
-                            discountDescriptor: title.value,
-                            appDiscountType: 'TIKI',
-                            isEditing: false 
-                        }}
-                        minimumRequirements={{
-                            requirementType: '',
-                            subtotal: 0,
-                            quantity: 0,
-                        }}
-                        usageLimits={{
-                            oncePerCustomer: true,
-                            totalUsageLimit: 0
-                        }}
-                        activeDates={{
-                            startDate: startsAt.value,
-                            endDate: endsAt.value
-                        }} 
-                        performance={{
-                        isEditing: false
-                        }}                    />
-                </Layout.Section>
-                <Layout.Section>
+    <Page
+        title="Create a Product Discount"
+        primaryAction={{
+            content: 'Save',
+            onAction: submit,
+    }}
+    >
+        <Layout>
+            <ErrorBanner submitErrors={ submitErrors } />
+            <Layout.Section>
+            <form onSubmit={submit}>
+                    <LegacyCard>
+                    <LegacyCard.Section title="Title">
+                        <TitleAndDescription onChange={(values) => {
+                                    title.value = values.title
+                                    description.value = values.description
+                                }} />
+                    </LegacyCard.Section>
+                    <LegacyCard.Section title="Value">
+                        <DiscountAmount
+                            onChange={({ type, value }) => {
+                                if (type !== undefined) {
+                                    discountType.value = type
+                                }
+                                if (value !== undefined) {
+                                    discountValue.value = value
+                                }
+                            }}
+                        />
+                    </LegacyCard.Section>
+                    <LegacyCard.Section title="Purchase Type">
+                        <PurchaseTypeSection
+                            purchaseType={PurchaseType.Both}
+                            onChange={(type: PurchaseType) => {
+                                switch (type) {
+                                    case PurchaseType.Both:
+                                        console.log('both')
+                                        purchaseType.value = 'both';
+                                        break;
+                                    case PurchaseType.Subscription:
+                                        console.log('sub')
+                                        purchaseType.value = 'subscription';
+                                        break;
+                                    case PurchaseType.OneTimePurchase:
+                                        console.log('one-time-purchase')
+                                        purchaseType.value = 'one-time';
+                                        break;
+                                }
+                                console.log(purchaseType.value)
+                            }} />
+                    </LegacyCard.Section>
+                </LegacyCard>
+                <MinReqsCard
+                    appliesTo={AppliesTo.Products}
+                    type={RequirementType.None}
+                    subTotal={minValue.value}
+                    qty={minQty.value}
+                    onChange={({type, value, qty}) =>{
+                        switch(type){
+                            case RequirementType.Quantity:
+                                minQty.value = qty
+                                minValue.value = 0
+                                break;
+                            case RequirementType.Subtotal:
+                                minValue.value = value
+                                minQty.value = 0
+                                break;
+                            case RequirementType.None:
+                                minValue.value = 0
+                                minQty.value = 0
+                                break;
+                        }
+                    }}
+                />
+                <MaxUsageCard onChange={({ total, once }) => {
+                    maxUse.value = total ? total : 0
+                    onePerUser.value = once === true
+                }} />
+                <CombinationsCard onChange={(combinations) => {
+                    orderDiscounts.value = combinations.orderDiscounts
+                    productDiscounts.value = combinations.productDiscounts
+                    shippingDiscounts.value = combinations.shippingDiscounts
+                }} />
+                <ActiveDatesCard
+                    onChange={(s: string, e: string) => {
+                        startsAt.value = new Date(s)
+                        endsAt.value = e ? new Date(e) : null
+                    }}
+                    startsAt={startsAt.value.toUTCString()}
+                    endsAt={endsAt.value ? endsAt.value.toUTCString : ''} />
+            </form>
+            </Layout.Section>
+            <Layout.Section secondary>
+            { /*
+
+                <SummarySection 
+                    title={title.value}
+                    startsAt={startsAt.value}
+                    endsAt={endsAt?.value ?? ''} />
+                    */ }
+
+            </Layout.Section>
+            <Layout.Section>
                     <PageActions
                         primaryAction={{
                             content: 'Save discount',
                             onAction: submit,
-                            disabled: !dirty,
-                            loading: submitting
                         }}
                     />
                 </Layout.Section>
-            </Layout>
-        </Page>
+        </Layout>
+    </Page>
   )
 }

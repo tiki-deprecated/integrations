@@ -3,27 +3,48 @@ import { CurrencyCode } from "@shopify/react-i18n";
 import React from "react";
 import { useState } from "react";
 
-export const MinReqsCard = () => {
-    const [requirementType, setRequirementType] = useState(RequirementType.None);
-    const [subtotal, setSubtotal] = useState("");
-    const [quantity, setQuantity] = useState("");
+export const MinReqsCard = ({appliesTo, type, subTotal, qty, onChange}) => {
+    const [requirementType, setRequirementType] = useState(type);
+    const [subtotal, setSubtotal] = useState(subTotal);
+    const [quantity, setQuantity] = useState(qty);
     return (
     <MinimumRequirementsCard
-        appliesTo={AppliesTo.Products}
-        currencyCode={CurrencyCode.Cad}
+        appliesTo={appliesTo}
+        currencyCode={CurrencyCode.Usd}
         requirementType={{
-        value: requirementType,
-        onChange: setRequirementType,
+            value: requirementType,
+            onChange: (type: RequirementType) => {
+                setRequirementType(type)
+                onChange({
+                    type,
+                    value: subtotal,
+                    qty: quantity 
+                })
+            }
         }}
         subtotal={{
-        value: subtotal,
-        onChange: setSubtotal,
+            value: subtotal,
+            onChange: (value: number) => {
+                setSubtotal(value)
+                onChange({
+                    type: requirementType,
+                    value,
+                    qty: quantity 
+                })
+            }
         }}
         quantity={{
-        value: quantity,
-        onChange: setQuantity,
+            value: quantity,
+            onChange: (qty: number) => {
+                setQuantity(qty)
+                onChange({
+                    value: subtotal,
+                    type: requirementType,
+                    qty
+                })
+            }
         }}
-        discountMethod={DiscountMethod.Code}
+        discountMethod={DiscountMethod.Automatic}
         isRecurring
     />
     )};

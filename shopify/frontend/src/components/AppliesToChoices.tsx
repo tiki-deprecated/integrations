@@ -4,12 +4,13 @@ import { AppliesToRadioBtns } from './AppliesToRadioBtns';
 import { AppliesTo as Applies } from '@shopify/discount-app-components';
 import React from 'react';
 
-export function AppliesTo(onChange) {
+export function AppliesToChoices(onChange) {
     const [appliesTo, setAppliesTo] = useState(Applies.Products);
 
     const onChangeAppliesTo = useCallback(
-        (index) => {
-            setAppliesTo(index)
+        (applies) => {
+            setAppliesTo(applies),
+            onChange(applies)
         },
         [appliesTo],
     );

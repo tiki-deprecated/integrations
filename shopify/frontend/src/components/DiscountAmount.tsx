@@ -3,42 +3,38 @@ import { useCallback, useState } from 'react';
 import { DiscountAmountBtns } from './DiscountAmountBtns';
 import React from 'react';
 
-export function DiscountAmount({onChange, type ="fixed", value=0.00}){
-  const [discountType, setDiscountType] = useState(type);
-  const [discountValue, setDiscountValue] = useState(value);
+export function DiscountAmount({ onChange }) {
+    const [discountType, setDiscountType] = useState("amount");
+    const [discountValue, setDiscountValue] = useState(0);
 
     const onChangeDiscountValue = useCallback(
         (value: number) => {
-            console.log(value)
-            if (discountValue === value) return;
             setDiscountValue(value)
-            onChange({value: discountValue})
+            onChange({ value })
         },
-        [discountType],
+        [discountValue],
     );
 
     const onChangeDiscountType = useCallback(
-        (type: "percent" | "fixed" ) => {
-            console.log(type)
-            if (discountType === type) return;
+        (type: "percent" | "amount") => {
             setDiscountType(type)
-            onChange({type: discountType})
+            onChange({ type })
         },
         [discountType],
     );
 
     return <HorizontalStack gap="4">
-                <DiscountAmountBtns onChange={ onChangeDiscountType } />
-                <TextField
-                    label=""
-                    type="number"
-                    step={0.01}
-                    value={discountValue.toFixed(2)}
-                    placeholder="0.00"
-                    prefix={discountType == "0" ? "$" : ""}
-                    suffix={discountType == "1" ? "%" : ""}
-                    autoComplete="off"
-                    onChange={ (value) => onChangeDiscountValue(Number(value)) }
-                />
-            </HorizontalStack>
+        <DiscountAmountBtns onChange={onChangeDiscountType} />
+        <TextField
+            label=""
+            type="number"
+            step={0.01}
+            value={discountValue.toFixed(2)}
+            placeholder="0.00"
+            prefix={discountType == "amount" ? "$" : ""}
+            suffix={discountType == "percent" ? "%" : ""}
+            autoComplete="off"
+            onChange={(value) => onChangeDiscountValue(Number(value))}
+        />
+    </HorizontalStack>
 }

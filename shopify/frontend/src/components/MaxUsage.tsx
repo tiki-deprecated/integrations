@@ -1,24 +1,36 @@
 import { RecurringPaymentType, UsageLimitsCard } from "@shopify/discount-app-components";
-import React from "react";
+import React, { useCallback } from "react";
 import { useState } from "react";
 
-export const MaxUsageCard = () => {
-    const [totalUsageLimit, setTotalUsageLimit] = useState(null);
-    const [oncePerCustomer, setOncePerCustomer] = useState(false);
-    const [recurringPaymentType, setRecurringPaymentType] = useState(
-      RecurringPaymentType.AllPayments
-    );
-    const [recurringPaymentsLimit, setRecurringPaymentsLimit] = useState("");
+export const MaxUsageCard = ({onChange}) => {
+    const [totalUsageLimit, setTotalUsageLimit] = useState<number | null>(null);
+    const [oncePerCustomer, setOncePerCustomer] = useState<boolean>(false);
   
+    const totalUsageUpdate = useCallback(
+        (value: number) => {
+            setTotalUsageLimit(value)
+            onChange({totalUsage: value})
+        },
+        [totalUsageLimit]
+    )
+
+    const oncePerCustomerUpdate = useCallback(
+        (value: boolean) => {
+            setOncePerCustomer(value)
+            onChange({oncePerCustomer: value})
+        },
+        [oncePerCustomer]
+    )
+
     return (
       <UsageLimitsCard
         totalUsageLimit={{
           value: totalUsageLimit,
-          onChange: setTotalUsageLimit,
+          onChange: totalUsageUpdate,
         }}
         oncePerCustomer={{
           value: oncePerCustomer,
-          onChange: setOncePerCustomer,
+          onChange: oncePerCustomerUpdate,
         }}
       />
     )};

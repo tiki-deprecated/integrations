@@ -6,7 +6,7 @@ export function PurchaseTypeSection ({purchaseType = PurchaseType.OneTimePurchas
   const [type, setType] = useState(purchaseType);
   const setPurchaseType = (purchaseTypeList) => {
     setType(purchaseTypeList[0] as PurchaseType);
-    onChange(type)
+    onChange(purchaseTypeList[0])
   }
   return (
       <ChoiceList
