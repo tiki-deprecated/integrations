@@ -43,7 +43,7 @@ export function AppliesToRadioBtns({ onChange, resource = 'all', resourceList = 
             />
             {res === 'products' ? (
                 <HorizontalGrid gap="4" columns={['twoThirds', 'oneThird']}>
-                    <TextField />
+                    <TextField label='' autoComplete='search' />
                     <Button onClick={() => console.log('open')}>
                         Browse
                     </Button>
