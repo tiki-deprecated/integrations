@@ -18,7 +18,7 @@ import { ErrorBanner } from '../../components/ErrorBanner'
 
 const saveDiscountUrl = ""
 
-export default function EditDiscount () {
+export default function ProductDiscount () {
   const authenticatedFetch = useAuthenticatedFetch()
 
   const {

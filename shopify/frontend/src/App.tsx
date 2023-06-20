@@ -9,6 +9,8 @@ import {
 } from "./components/providers";
 import React from "react";
 import HomePage from "./pages";
+import OrderDiscount from "./pages/discount/order";
+import ProductDiscount from "./pages/discount/product";
 
 export default function App() {
   return (
@@ -19,6 +21,8 @@ export default function App() {
             <QueryProvider>
               <Routes>
                 <Route index element={<HomePage />} />
+                <Route path="/discount/product" element={<ProductDiscount />} />
+                <Route path="/discount/order" element={<OrderDiscount />} />
               </Routes> 
             </QueryProvider>
           </DiscountProvider>
