@@ -9,7 +9,6 @@ export function AppliesTo(onChange) {
 
     const onChangeAppliesTo = useCallback(
         (index) => {
-            console.log(index)
             setAppliesTo(index)
         },
         [appliesTo],

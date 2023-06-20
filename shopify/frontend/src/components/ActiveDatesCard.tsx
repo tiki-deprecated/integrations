@@ -1,21 +1,38 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { ActiveDatesCard as ActiveDates} from "@shopify/discount-app-components";
 
-export function ActiveDatesCard(onChange) {
-  const [startTime, setStartTime] = useState("2022-06-13T04:30:00.000Z");
-  const [endTime, setEndTime] = useState("2022-06-14T03:30:00.000Z");
+export function ActiveDatesCard({ onChange, startsAt, endsAt }) {
+  const [startTime, setStartTime] = useState(startsAt);
+  const [endTime, setEndTime] = useState(endsAt);
+  
+
+  const setStartsAt = useCallback(
+    (start: string) => {
+        setStartTime(start)
+        onChange(start, endTime)
+    },
+    [startTime],
+  );
+
+  const setEndsAt = useCallback( 
+    (end: string) => {
+        setEndTime(end)
+        onChange(startTime, end)
+        },
+    [endTime],
+  );
 
   return (
     <ActiveDates
       startDate={{
         value: startTime,
-        onChange: setStartTime,
+        onChange: setStartsAt,
       }}
       endDate={{
         value: endTime,
-        onChange: setEndTime,
+        onChange: setEndsAt,
       }}
-      timezoneAbbreviation="EST"
+      timezoneAbbreviation="UTC"
     />
   );
 }

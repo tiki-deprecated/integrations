@@ -1,29 +1,26 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { NavigationMenu } from "@shopify/app-bridge-react";
+import React from "react";
 
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import {
   AppBridgeProvider,
   QueryProvider,
   PolarisProvider,
   DiscountProvider,
 } from "./components/providers";
-import React from "react";
-import HomePage from "./pages";
-import OrderDiscount from "./pages/discount/order";
-import ProductDiscount from "./pages/discount/product";
+import { HomePage, OrderDiscount, ProductDiscount } from "./pages";
+import { DiscountReq } from "./interface/discount-req";
+import { useAuthenticatedFetch } from "./hooks/useAuthenticatedFetch"
+import { AppRouter } from "./components/AppRouter";
 
 export default function App() {
+
   return (
     <PolarisProvider>
       <BrowserRouter>
         <AppBridgeProvider>
           <DiscountProvider>
             <QueryProvider>
-              <Routes>
-                <Route index element={<HomePage />} />
-                <Route path="/discount/product" element={<ProductDiscount />} />
-                <Route path="/discount/order" element={<OrderDiscount />} />
-              </Routes> 
+              <AppRouter />
             </QueryProvider>
           </DiscountProvider>
         </AppBridgeProvider>

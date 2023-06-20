@@ -11,7 +11,7 @@ import {
 import { TitleBar } from '@shopify/app-bridge-react'
 import React from 'react'
 
-export default function HomePage () {
+export function HomePage () {
   return (
     <Page narrowWidth>
       <TitleBar title="TIKI" />

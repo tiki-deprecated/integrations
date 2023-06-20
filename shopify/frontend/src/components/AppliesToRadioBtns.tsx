@@ -6,6 +6,7 @@ import { useState, useCallback } from 'react';
 export function AppliesToRadioBtns({ onChange, resource = 'all', resourceList = [] }) {
     const [res, setRes] = useState(resource);
     const [resList, setResList] = useState(resourceList)
+    const [showResPicker, setShowResPicker] = useState()
 
     const handleChange = useCallback(
         (isSet, newValue) => {
@@ -59,7 +60,7 @@ export function AppliesToRadioBtns({ onChange, resource = 'all', resourceList = 
             />
             {res === 'collections' ? (
                 <HorizontalGrid gap="4" columns={['twoThirds', 'oneThird']}>
-                    <TextField />
+                    <TextField label='' autoComplete=''/>
                     <Button onClick={() => console.log('open')}>
                         Browse
                     </Button>

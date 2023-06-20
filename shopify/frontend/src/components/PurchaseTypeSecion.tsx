@@ -1,13 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {ChoiceList} from '@shopify/polaris';
-import { PurchaseType, Field, PurchaseTypeCardProps } from '@shopify/discount-app-components';
+import { PurchaseType } from '@shopify/discount-app-components';
 
-export function PurchaseTypeSection ({purchaseType}: PurchaseTypeCardProps) {
+export function PurchaseTypeSection ({purchaseType = PurchaseType.OneTimePurchase, onChange}) {
+  const [type, setType] = useState(purchaseType);
+  const setPurchaseType = (purchaseTypeList) => {
+    setType(purchaseTypeList[0] as PurchaseType);
+    onChange(type)
+  }
   return (
       <ChoiceList
         title='Purchase Type'
         titleHidden
-        selected={[purchaseType.value]}
+        selected={[type as PurchaseType]}
         choices={[
           {
             label: 'One Time',
@@ -22,9 +27,7 @@ export function PurchaseTypeSection ({purchaseType}: PurchaseTypeCardProps) {
             value: PurchaseType.Both,
           },
         ]}
-        onChange={(purchaseTypeList) => {
-          purchaseType.onChange(purchaseTypeList[0] as PurchaseType);
-        }}
+        onChange={ setPurchaseType }
       />
   );
 }

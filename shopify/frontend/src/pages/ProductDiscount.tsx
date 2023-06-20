@@ -1,32 +1,50 @@
 import React from 'react'
+import { useParams } from 'react-router'
+
+import { useForm, useField, SubmitResult } from '@shopify/react-form'
+import { DiscountMethod, PurchaseType, SummaryCard, } from '@shopify/discount-app-components'
 import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris'
 
-import { useForm, useField } from '@shopify/react-form'
-import { PurchaseTypeSection } from '../../components/PurchaseTypeSecion'
-import { AppliesTo } from '../../components/AppliesTo'
-import { MinReqsCard } from '../../components/MinReqsCard'
-import { ActiveDatesCard } from '../../components/ActiveDatesCard'
-import { DiscountMethod, PurchaseType, SummaryCard } from '@shopify/discount-app-components'
+import { DiscountReq } from '../interface/discount-req'
+import { PurchaseTypeSection,
+    AppliesTo,
+    MinReqsCard,
+    ActiveDatesCard,
+    DiscountAmount,
+    MaxUsageCard,
+    CombinationsCard,
+    ErrorBanner } from '../components'
+import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
 
-
-import { useAuthenticatedFetch } from '../../hooks/useAuthenticatedFetch'
-import { DiscountAmount } from '../../components/DiscountAmount'
-import { MaxUsageCard } from '../../components/MaxUsage'
-import { CombinationsCard } from '../../components/Combinations'
-import { DiscountReq } from '../../interface/discount-req'
-import { ErrorBanner } from '../../components/ErrorBanner'
-
-const saveDiscountUrl = ""
-
-export default function ProductDiscount () {
+export function ProductDiscount() {
+  
+  const { id } = useParams();
   const authenticatedFetch = useAuthenticatedFetch()
+
+  const saveDiscount = async (discount: DiscountReq) : Promise<SubmitResult> => {
+      
+      console.log(discount)
+      let response = authenticatedFetch('', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+          discount
+          })
+      })
+  
+      const data = response
+  
+      console.log(data)
+      debugger
+      //TODO HANDLE ERRORS
+      return { status: 'success' }
+  }
 
   const {
     fields: {
         title,
         startsAt,
         endsAt,
-        type,
         description,
         discountType,
         discountValue,
@@ -50,8 +68,7 @@ export default function ProductDiscount () {
     fields: {
         title: useField(''),
         startsAt: useField(new Date()),
-        endsAt: useField(undefined),
-        type: useField(''),
+        endsAt: useField<Date | null>(null),
         description: useField(''),
         discountType: useField<'percentage' | 'amount'>('amount'),
         discountValue: useField(0.00),
@@ -92,20 +109,7 @@ export default function ProductDiscount () {
             shippingDiscounts: form.shippingDiscounts
         },
       }
-
-      let response = await authenticatedFetch(saveDiscountUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            discount
-          })
-        })
-
-      const data = (await response.json()).data
-
-      console.log(data)
-      //TODO HANDLE ERRORS
-      return { status: 'success' }
+      return await saveDiscount(discount)
     }
   })
 
@@ -125,10 +129,13 @@ export default function ProductDiscount () {
                     <form onSubmit={submit}>
                         <LegacyCard>
                             <LegacyCard.Section title="Value">
-                                <DiscountAmount onChange={undefined} />
+                                <DiscountAmount type={discountType.value} value={discountValue.value} onChange={(type, value) => {
+                                    discountType.value = type
+                                    discountValue.value = value
+                                }} />
                             </LegacyCard.Section>
                             <LegacyCard.Section title="Purchase Type">
-                                <PurchaseTypeSection purchaseType={{value: PurchaseType.Both, onChange: console.log}} />
+                                <PurchaseTypeSection purchaseType={PurchaseType.Both} onChange={console.log} />
                             </LegacyCard.Section>
                             <LegacyCard.Section title="Applies To">
                                 <AppliesTo />
@@ -137,7 +144,13 @@ export default function ProductDiscount () {
                         <MinReqsCard />
                         <MaxUsageCard />
                         <CombinationsCard />
-                        <ActiveDatesCard />
+                        <ActiveDatesCard 
+                            onChange={(s: string, e: string) => {
+                                startsAt.value = new Date(s)
+                                endsAt.value = e ? new Date(e) : null
+                            }} 
+                            startsAt={startsAt.value.toUTCString()} 
+                            endsAt={endsAt.value ? endsAt.value.toUTCString : ''}/>
                     </form>
                 </Layout.Section>
                 <Layout.Section secondary>

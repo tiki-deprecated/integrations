@@ -1,32 +1,44 @@
-import { useForm, useField } from '@shopify/react-form'
-import { PurchaseTypeSection } from '../../components/PurchaseTypeSecion'
-import { MinReqsCard } from '../../components/MinReqsCard'
-import { ActiveDatesCard } from '../../components/ActiveDatesCard'
-import {
-  DiscountMethod,
-  PurchaseType,
-  SummaryCard,
-} from '@shopify/discount-app-components'
-import {
-  Banner,
-  LegacyCard,
-  Layout,
-  Page,
-  PageActions
-} from '@shopify/polaris'
-
-import { useAuthenticatedFetch } from '../../hooks/useAuthenticatedFetch'
-import { DiscountAmount } from '../../components/DiscountAmount'
-import { MaxUsageCard } from '../../components/MaxUsage'
-import { CombinationsCard } from '../../components/Combinations'
 import React from 'react'
-import { DiscountReq } from '../../interface/discount-req'
-import { ErrorBanner } from '../../components/ErrorBanner'
+import { useParams } from 'react-router'
 
-const saveDiscountUrl = ""
+import { useForm, useField, SubmitResult } from '@shopify/react-form'
+import { DiscountMethod, PurchaseType, SummaryCard, } from '@shopify/discount-app-components'
+import { LegacyCard, Layout, Page, PageActions } from '@shopify/polaris'
 
-export default function OrderDiscount () {
+import { DiscountReq } from '../interface/discount-req'
+import { PurchaseTypeSection, 
+    MinReqsCard, 
+    ActiveDatesCard, 
+    DiscountAmount, 
+    MaxUsageCard, 
+    CombinationsCard,
+    ErrorBanner } from '../components'
+import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
+
+
+export function OrderDiscount () {
+  
+  const { id } = useParams();
   const authenticatedFetch = useAuthenticatedFetch()
+
+  const saveDiscount = async (discount: DiscountReq) : Promise<SubmitResult> => {
+      
+      console.log(discount)
+      let response = authenticatedFetch('', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+          discount
+          })
+      })
+  
+      const data = response
+  
+      console.log(data)
+      debugger
+      //TODO HANDLE ERRORS
+      return { status: 'success' }
+  }
 
   const {
     fields: {
@@ -80,7 +92,7 @@ export default function OrderDiscount () {
         startsAt: form.startsAt,
         endsAt: form.endsAt,
         metafields: {
-            type: 'product',
+            type: 'order',
             description: form.description,
             discountType: form.discountType,
             discountValue: form.discountValue,
@@ -99,42 +111,9 @@ export default function OrderDiscount () {
             shippingDiscounts: form.shippingDiscounts
         },
       }
-
-      let response = await authenticatedFetch(saveDiscountUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            discount
-          })
-        })
-
-      const data = (await response.json()).data
-
-      console.log(data)
-      //TODO HANDLE ERRORS
-      return { status: 'success' }
+      return await saveDiscount(discount)
     }
   })
-
-  const errorBanner =
-        submitErrors.length > 0
-          ? (
-            <Layout.Section>
-                <Banner status="critical">
-                    <p>There were some issues with your form submission:</p>
-                    <ul>
-                        {submitErrors.map(({ message, field }, index) => {
-                          return (
-                                <li key={`${message}${index}`}>
-                                    {field?.join('.') ?? ''} {message}
-                                </li>
-                          )
-                        })}
-                    </ul>
-                </Banner>
-            </Layout.Section>
-            )
-          : null
 
   return (
         <Page
@@ -161,9 +140,9 @@ export default function OrderDiscount () {
                             <MinReqsCard />
                             <MaxUsageCard />
                             <CombinationsCard />
-                            <ActiveDatesCard />
+                            <ActiveDatesCard onChange={console.log} startsAt={startsAt} endsAt={endsAt}/>
                         </form>
-                    </Layout.Section>
+                </Layout.Section>
                 <Layout.Section secondary>
                     { /* TODO dynamic fields */ }
                     <SummaryCard
