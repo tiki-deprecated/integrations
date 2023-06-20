@@ -3,4 +3,6 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export { ShopifyDiscount as Shopify } from './discount/shopify-discount';
+export interface ShopifyData<T> {
+  data: T;
+}
