@@ -26,8 +26,9 @@ router
   .post(`${API.Consts.API_LATEST}/order/paid`, Order.paid)
   .post(`${API.Consts.API_LATEST}/customer/data-request`, Customer.dataRequest)
   .post(`${API.Consts.API_LATEST}/customer/redact`, Customer.redact)
+  .post(`${API.Consts.API_LATEST}/customer/discount`, Customer.discount)
   .post(`${API.Consts.API_LATEST}/shop/redact`, Shop.redact)
-  .post(`${API.Consts.API_LATEST}/discount/`, Discount.create)
+  .post(`${API.Consts.API_LATEST}/discount`, Discount.create)
   .all('*', () => new API.ErrorBuilder().message('Not Found').error(404));
 
 export default {

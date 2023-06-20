@@ -46,7 +46,7 @@ export async function token(request: IRequest, env: Env): Promise<Response> {
 
   const shopify = new Shopify(shop, env);
   await shopify.grant(code);
-  const appInstallation = await shopify.getAppInstallation();
+  const appInstallation = await shopify.getInstall();
   const keys = appInstallation.data.currentAppInstallation.metafields?.nodes;
   if (keys === undefined || keys.length < 3) {
     await onInstall(
@@ -87,6 +87,6 @@ async function onInstall(
     tikiApp.appId,
     false
   );
-  await shopify.setKeysInMetafields(installId, tikiPublicKey, tikiPrivateKey);
+  await shopify.saveKeys(installId, tikiPublicKey, tikiPrivateKey);
   await shopify.registerOrderPaidWebhook(baseUrl);
 }

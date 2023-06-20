@@ -82,4 +82,7 @@ export class Tiki {
       .then((res) => res.json())
       .then((json) => json as TikiKeyCreateRsp);
   }
+
+  // get M2M token
+  // get paybale from l0-index for cust.
 }

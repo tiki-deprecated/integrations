@@ -7,12 +7,9 @@ import { DiscountReqCombine } from './discount-req-combine';
 import { DiscountReqMeta } from './discount-req-meta';
 
 export interface DiscountReq {
-  type: 'product' | 'order';
   title: string;
-  description: string;
   startsAt: Date;
+  endsAt?: Date;
   combinesWith: DiscountReqCombine;
   metafields: DiscountReqMeta;
-  endsAt?: Date;
-  id?: string;
 }

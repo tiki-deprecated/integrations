@@ -4,6 +4,8 @@
  */
 
 export interface DiscountReqMeta {
+  type: 'product' | 'order';
+  description: string;
   discountType: 'percentage' | 'amount';
   discountValue: number;
   purchaseType: 'one-time' | 'subscription' | 'both';

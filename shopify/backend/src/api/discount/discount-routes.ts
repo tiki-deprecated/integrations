@@ -3,10 +3,11 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-import { IRequest } from 'itty-router';
+import { IRequest, json } from 'itty-router';
 import { DiscountReq } from './discount-req';
 import { Throw, API } from '@mytiki/worker-utils-ts';
 import { Shopify } from '../../shopify/shopify';
+import { DiscountRsp } from './discount-rsp';
 
 export async function create(request: IRequest, env: Env): Promise<Response> {
   const token = request.headers.get(API.Consts.AUTHORIZATION);
@@ -27,20 +28,22 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
   Throw.ifNull(claims.dest);
 
   const shopify = new Shopify(claims.dest as string, env);
-  await shopify.saveDiscount(body);
-
-  return new Response(null, {
-    status: 201,
-  });
+  const install = await shopify.getInstall();
+  const rsp: DiscountRsp = {
+    id: await shopify.createDiscount(
+      body,
+      install.data.currentAppInstallation.id
+    ),
+  };
+  return json(rsp);
 }
 
 function guard(req: DiscountReq): void {
   Throw.ifNull(req.title, 'title');
-  Throw.ifNull(req.type, 'discountType');
-  Throw.ifNull(req.description, 'description');
   Throw.ifNull(req.startsAt, 'startsAt');
 
   Throw.ifNull(req.metafields, 'metafields');
+  Throw.ifNull(req.metafields.type, 'metafields.type');
   Throw.ifNull(req.metafields.discountType, 'metafields.discountType');
   Throw.ifNull(req.metafields.appliesTo, 'metafields.appliesTo');
   Throw.ifNull(req.metafields.maxUse, 'metafields.maxUse');
