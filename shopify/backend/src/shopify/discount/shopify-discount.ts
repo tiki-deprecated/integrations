@@ -9,6 +9,8 @@ import { API } from '@mytiki/worker-utils-ts';
 import * as UUID from 'uuid';
 import { ShopifyAuth } from '../auth/shopify-auth';
 import { ShopifyDiscountCreate } from './shopify-discount-create';
+import { ShopifyData } from '../meta/shopify-data';
+import { ShopifyDiscountRsp } from './shopify-discount-rsp';
 
 export class ShopifyDiscount extends ShopifyMeta {
   private readonly _functionIdOrder: string;
@@ -182,25 +184,61 @@ export class ShopifyDiscount extends ShopifyMeta {
     ]);
   }
 
-  // async discountUsed(customer: number, id: Array<string>): Promise<void> {
-  //   const key = 'discount_applied';
-  //   const cur = await this.getCustomerMetafield(
-  //     customer,
-  //     ShopifyMeta.namespace,
-  //     key
-  //   );
-  //   const appliedList: Array<string> = JSON.parse(
-  //     cur.data.customer.metafield?.value ?? '[]'
-  //   );
-  //   await this.setMetafields([
-  //     {
-  //       namespace: ShopifyMeta.namespace,
-  //       key,
-  //       description: 'Tracks TIKI discounts used by this customer',
-  //       type: 'list.single_line_text_field',
-  //       value: JSON.stringify(appliedList.concat(id)),
-  //       ownerId: `gid://shopify/Customer/${customer}`,
-  //     },
-  //   ]);
-  // }
+  async getDiscountIds(
+    titles: Array<string>
+  ): Promise<ShopifyData<ShopifyDiscountRsp>> {
+    const filter = `title:(${titles
+      .map((title) => `"${title}"`)
+      .join(' OR ')})`;
+    const accessToken = await this.getToken();
+    return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
+      method: 'POST',
+      headers: new API.HeaderBuilder()
+        .accept(API.Consts.APPLICATION_JSON)
+        .content(API.Consts.APPLICATION_JSON)
+        .set(ShopifyAuth.tokenHeader, accessToken)
+        .build(),
+      body: JSON.stringify({
+        query: `query DiscountNodes {
+                    discountNodes(
+                      query: "${filter}"
+                      reverse: true
+                      sortKey: CREATED_AT
+                      first: ${titles.length * 2}
+                    ) {
+                      nodes {
+                          metafield(key: "id", namespace: "${
+                            ShopifyMeta.namespace
+                          }") {
+                              key
+                              value
+                          }
+                      }}}`,
+      }),
+    })
+      .then((res) => res.json())
+      .then((json) => json as ShopifyData<ShopifyDiscountRsp>);
+  }
+
+  async discountUsed(customer: number, id: Array<string>): Promise<void> {
+    const key = 'discount_applied';
+    const cur = await this.getCustomerMetafield(
+      customer,
+      ShopifyMeta.namespace,
+      key
+    );
+    const appliedList: Array<string> = JSON.parse(
+      cur.data.customer.metafield?.value ?? '[]'
+    );
+    await this.setMetafields([
+      {
+        namespace: ShopifyMeta.namespace,
+        key,
+        description: 'Tracks TIKI discounts used by this customer',
+        type: 'list.single_line_text_field',
+        value: JSON.stringify(appliedList.concat(id)),
+        ownerId: `gid://shopify/Customer/${customer}`,
+      },
+    ]);
+  }
 }

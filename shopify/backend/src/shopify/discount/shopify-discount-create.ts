@@ -4,10 +4,10 @@
  */
 
 import { ShopifyMetafield } from '../meta/shopify-metafield';
-import { ShopifyCombine } from './shopify-combine';
+import { ShopifyDiscountCombine } from './shopify-discount-combine';
 
 export interface ShopifyDiscountCreate {
-  combinesWith: ShopifyCombine;
+  combinesWith: ShopifyDiscountCombine;
   endsAt?: Date;
   functionId: string;
   metafields: Array<ShopifyMetafield>;

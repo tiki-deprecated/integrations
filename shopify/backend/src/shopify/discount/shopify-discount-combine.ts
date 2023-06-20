@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export interface ShopifyCombine {
+export interface ShopifyDiscountCombine {
   orderDiscounts: boolean;
   productDiscounts: boolean;
   shippingDiscounts: boolean;
