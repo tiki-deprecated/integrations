@@ -9,3 +9,7 @@ path = "dist/function.wasm"
 [ui.paths]
 create = "/discount/product"
 details = "/discount/product/:id"
+
+[input.variables]
+namespace = "$app:mytiki"
+key = "collections"
