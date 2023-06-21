@@ -132,3 +132,4 @@ if (customer_id) {
     tikiAnon()
 }
 
+// declined license

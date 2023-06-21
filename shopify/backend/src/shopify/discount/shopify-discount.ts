@@ -11,6 +11,7 @@ import { ShopifyAuth } from '../auth/shopify-auth';
 import { ShopifyDiscountCreate } from './shopify-discount-create';
 import { ShopifyData } from '../meta/shopify-data';
 import { ShopifyDiscountRsp } from './shopify-discount-rsp';
+import { query, mutation } from 'gql-query-builder';
 
 export class ShopifyDiscount extends ShopifyMeta {
   private readonly _functionIdOrder: string;
@@ -44,7 +45,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           value: discount.metafields.type,
         },
         {
-          key: 'id',
+          key: 'tid',
           namespace: ShopifyMeta.namespace,
           type: 'single_line_text_field',
           value: id,
@@ -128,17 +129,29 @@ export class ShopifyDiscount extends ShopifyMeta {
           .content(API.Consts.APPLICATION_JSON)
           .set(ShopifyAuth.tokenHeader, accessToken)
           .build(),
-        body: JSON.stringify({
-          query: `mutation DiscountAutomaticAppCreate{
-          discountAutomaticAppCreate(automaticAppDiscount: ${JSON.stringify(
-            req
-          )}){
-            userErrors {
-              field
-              message
+        body: JSON.stringify(
+          mutation(
+            {
+              operation: 'discountAutomaticAppCreate',
+              variables: {
+                automaticAppDiscount: {
+                  value: req,
+                  type: 'DiscountAutomaticAppInput',
+                  required: true,
+                },
+              },
+              fields: [
+                {
+                  userErrors: ['message', 'field'],
+                },
+              ],
+            },
+            undefined,
+            {
+              operationName: 'DiscountAutomaticAppCreate',
             }
-          }}`,
-        }),
+          )
+        ),
       }
     );
     if (res.status !== 200) {
@@ -163,11 +176,7 @@ export class ShopifyDiscount extends ShopifyMeta {
 
   async setDiscountAllowed(customer: number, id: string): Promise<void> {
     const key = 'discount_allowed';
-    const cur = await this.getCustomerMetafield(
-      customer,
-      ShopifyMeta.namespace,
-      key
-    );
+    const cur = await this.getCustomerMetafield(customer, key);
     const allowedList: Array<string> = JSON.parse(
       cur.data.customer.metafield?.value ?? '[]'
     );
@@ -176,7 +185,6 @@ export class ShopifyDiscount extends ShopifyMeta {
       {
         namespace: ShopifyMeta.namespace,
         key,
-        description: 'Tracks TIKI discounts allowed for this customer',
         type: 'list.single_line_text_field',
         value: JSON.stringify(allowedList),
         ownerId: `gid://shopify/Customer/${customer}`,
@@ -187,9 +195,7 @@ export class ShopifyDiscount extends ShopifyMeta {
   async getDiscountIds(
     titles: Array<string>
   ): Promise<ShopifyData<ShopifyDiscountRsp>> {
-    const filter = `title:(${titles
-      .map((title) => `"${title}"`)
-      .join(' OR ')})`;
+    const filter = `title:${titles.map((title) => `"${title}"`).join(' OR ')}`;
     const accessToken = await this.getToken();
     return fetch(`https://${this.shopDomain}/admin/api/2023-04/graphql.json`, {
       method: 'POST',
@@ -198,23 +204,52 @@ export class ShopifyDiscount extends ShopifyMeta {
         .content(API.Consts.APPLICATION_JSON)
         .set(ShopifyAuth.tokenHeader, accessToken)
         .build(),
-      body: JSON.stringify({
-        query: `query DiscountNodes {
-                    discountNodes(
-                      query: "${filter}"
-                      reverse: true
-                      sortKey: CREATED_AT
-                      first: ${titles.length * 2}
-                    ) {
-                      nodes {
-                          metafield(key: "id", namespace: "${
-                            ShopifyMeta.namespace
-                          }") {
-                              key
-                              value
-                          }
-                      }}}`,
-      }),
+      body: JSON.stringify(
+        query(
+          {
+            operation: 'discountNodes',
+            variables: {
+              query: {
+                value: filter,
+                type: 'String',
+              },
+              reverse: {
+                value: true,
+                type: 'Boolean',
+              },
+              sortKey: {
+                value: 'CREATED_AT',
+                type: 'DiscountSortKeys',
+              },
+              first: {
+                value: titles.length * 2,
+                type: 'Int',
+              },
+            },
+            fields: [
+              {
+                nodes: [
+                  {
+                    operation: 'metafield',
+                    variables: {
+                      key: { value: 'tid', type: 'String', required: true },
+                      namespace: {
+                        value: ShopifyMeta.namespace,
+                        type: 'String',
+                      },
+                    },
+                    fields: ['key', 'value'],
+                  },
+                ],
+              },
+            ],
+          },
+          undefined,
+          {
+            operationName: 'DiscountNodes',
+          }
+        )
+      ),
     })
       .then((res) => res.json())
       .then((json) => json as ShopifyData<ShopifyDiscountRsp>);
@@ -222,11 +257,7 @@ export class ShopifyDiscount extends ShopifyMeta {
 
   async discountUsed(customer: number, id: Array<string>): Promise<void> {
     const key = 'discount_applied';
-    const cur = await this.getCustomerMetafield(
-      customer,
-      ShopifyMeta.namespace,
-      key
-    );
+    const cur = await this.getCustomerMetafield(customer, key);
     const appliedList: Array<string> = JSON.parse(
       cur.data.customer.metafield?.value ?? '[]'
     );
@@ -234,7 +265,6 @@ export class ShopifyDiscount extends ShopifyMeta {
       {
         namespace: ShopifyMeta.namespace,
         key,
-        description: 'Tracks TIKI discounts used by this customer',
         type: 'list.single_line_text_field',
         value: JSON.stringify(appliedList.concat(id)),
         ownerId: `gid://shopify/Customer/${customer}`,

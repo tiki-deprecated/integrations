@@ -1,4 +1,4 @@
-name = "order-discount"
+name = "TIKI Order Discount"
 type = "order_discounts"
 api_version = "2023-01"
 
@@ -7,5 +7,5 @@ command = ""
 path = "dist/function.wasm"
 
 [ui.paths]
-create = "/ui/order-discount/new"
-details = "/ui/order-discount/:id"
+create = "/discount/order"
+details = "/discount/order/:id"

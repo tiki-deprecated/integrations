@@ -18,7 +18,9 @@ const TIKI_SETTINGS = {
     terms : "{{ block.settings.term }}",
 }
 </script>
+{% # theme-check-disable AssetSizeJavaScript %}
 <script async src="https://unpkg.com/@mytiki/tiki-sdk-js@1.0.7/dist/index.js"></script>
+{% # theme-check-enable AssetSizeJavaScript %}
 <script async src="{{ 'tiki_shopify.js' | asset_url }}"></script>
 
 {% schema %}

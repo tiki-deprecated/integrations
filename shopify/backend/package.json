@@ -42,6 +42,7 @@
   },
   "dependencies": {
     "@mytiki/worker-utils-ts": "^0.2.0",
+    "gql-query-builder": "^3.8.0",
     "itty-router": "^4.0.9",
     "uuid": "^9.0.0"
   },
