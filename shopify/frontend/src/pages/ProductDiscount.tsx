@@ -19,6 +19,7 @@ import {
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { Redirect } from '@shopify/app-bridge/actions'
 import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
+import { BaseResource, Resource } from '@shopify/app-bridge/actions/ResourcePicker'
 
 export function ProductDiscount() {
 
@@ -60,8 +61,8 @@ export function ProductDiscount() {
             minQty: useField(0),
             maxUse: useField(0),
             onePerUser: useField(true),
-            products: useField([]),
-            collections: useField([]),
+            products: useField<string[]>([]),
+            collections: useField<string[]>([]),
             orderDiscounts: useField(false),
             productDiscounts: useField(false),
             shippingDiscounts: useField(false),
@@ -137,7 +138,22 @@ export function ProductDiscount() {
                                 />
                             </LegacyCard.Section>
                             <LegacyCard.Section title="Applies To">
-                                <AppliesToChoices onChange={console.log} />
+                                <AppliesToChoices onChange={({resource, list}) => {
+                                    console.log({ resource, list })
+
+                                    switch (resource) {
+                                        case 'all':
+                                            products.value = []
+                                            break
+                                        case 'products':
+                                            products.value = list.map((p) => p.id)
+                                            break
+                                        case 'collections':
+                                            collections.value = list.map((p) => p.id)
+                                            break
+                                    }
+                                }}
+                                />
                             </LegacyCard.Section>
                         </LegacyCard>
                         <MinReqsCard
