@@ -69,18 +69,6 @@ export class ShopifyDiscount extends ShopifyMeta {
           value: discount.metafields.discountValue.toString(),
         },
         {
-          key: 'purchase_type',
-          namespace: ShopifyMeta.namespace,
-          type: 'single_line_text_field',
-          value: discount.metafields.purchaseType,
-        },
-        {
-          key: 'applies_to',
-          namespace: ShopifyMeta.namespace,
-          type: 'list.single_line_text_field',
-          value: JSON.stringify(discount.metafields.appliesTo),
-        },
-        {
           key: 'min_value',
           namespace: ShopifyMeta.namespace,
           type: 'number_decimal',

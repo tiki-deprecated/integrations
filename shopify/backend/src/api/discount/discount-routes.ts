@@ -45,13 +45,11 @@ function guard(req: DiscountReq): void {
   Throw.ifNull(req.metafields, 'metafields');
   Throw.ifNull(req.metafields.type, 'metafields.type');
   Throw.ifNull(req.metafields.discountType, 'metafields.discountType');
-  Throw.ifNull(req.metafields.appliesTo, 'metafields.appliesTo');
   Throw.ifNull(req.metafields.maxUse, 'metafields.maxUse');
   Throw.ifNull(req.metafields.minQty, 'metafields.minQtq');
   Throw.ifNull(req.metafields.minValue, 'metafields.minValue');
   Throw.ifNull(req.metafields.discountValue, 'metafields.discountValue');
   Throw.ifNull(req.metafields.onePerUser, 'metafields.onePerUser');
-  Throw.ifNull(req.metafields.purchaseType, 'metafields.purchaseType');
 
   Throw.ifNull(req.combinesWith, 'combinesWith');
   Throw.ifNull(req.combinesWith.orderDiscounts, 'combinesWith.orderDiscounts');
