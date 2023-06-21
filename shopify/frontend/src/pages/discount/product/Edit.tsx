@@ -4,7 +4,7 @@ import { useForm, useField, SubmitResult } from '@shopify/react-form'
 import { AppliesTo, DiscountMethod, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
 import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
-import { DiscountReq } from '../interface/discount-req'
+import { DiscountReq } from '../../../interface/discount-req'
 import {
     MinReqsCard,
     ActiveDatesCard,
@@ -15,13 +15,13 @@ import {
     AppliesToChoices,
     TitleAndDescription,
     SummarySection
-} from '../components'
+} from '../../../components'
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { Redirect } from '@shopify/app-bridge/actions'
-import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
+import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 import { BaseResource, Resource } from '@shopify/app-bridge/actions/ResourcePicker'
 
-export function ProductDiscount() {
+export function DiscountProductEdit() {
 
     const app = useAppBridge();
     const redirect = Redirect.create(app);

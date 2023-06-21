@@ -1,3 +1,3 @@
 export * from './HomePage'
-export * from './OrderDiscount'
-export * from './ProductDiscount'
+export * from './discount/order'
+export * from './discount/product'
