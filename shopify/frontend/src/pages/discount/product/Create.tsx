@@ -1,12 +1,10 @@
 import React from 'react'
-import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
-import { Redirect } from '@shopify/app-bridge/actions'
 
 import { useForm, useField, SubmitResult } from '@shopify/react-form'
-import { AppliesTo, RequirementType, SummaryCard } from '@shopify/discount-app-components'
+import { AppliesTo, DiscountMethod, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
 import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
-import { DiscountReq } from '../interface/discount-req'
+import { DiscountReq } from '../../../interface/discount-req'
 import {
     MinReqsCard,
     ActiveDatesCard,
@@ -17,10 +15,13 @@ import {
     AppliesToChoices,
     TitleAndDescription,
     SummarySection
-} from '../components'
-import { useAuthenticatedFetch } from '../hooks/useAuthenticatedFetch'
+} from '../../../components'
+import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
+import { Redirect } from '@shopify/app-bridge/actions'
+import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
+import { BaseResource, Resource } from '@shopify/app-bridge/actions/ResourcePicker'
 
-export function OrderDiscount() {
+export function DiscountProductCreate() {
 
     const app = useAppBridge();
     const redirect = Redirect.create(app);
@@ -60,8 +61,8 @@ export function OrderDiscount() {
             minQty: useField(0),
             maxUse: useField(0),
             onePerUser: useField(true),
-            products: useField([]),
-            collections: useField([]),
+            products: useField<string[]>([]),
+            collections: useField<string[]>([]),
             orderDiscounts: useField(false),
             productDiscounts: useField(false),
             shippingDiscounts: useField(false),
@@ -116,7 +117,7 @@ export function OrderDiscount() {
             <Layout>
                 <ErrorBanner submitErrors={submitErrors} />
                 <Layout.Section>
-                    <form onSubmit={submit}>
+                    <form>
                         <LegacyCard>
                             <LegacyCard.Section title="Title">
                                 <TitleAndDescription onChange={(values) => {
@@ -134,6 +135,24 @@ export function OrderDiscount() {
                                             discountValue.value = value
                                         }
                                     }}
+                                />
+                            </LegacyCard.Section>
+                            <LegacyCard.Section title="Applies To">
+                                <AppliesToChoices onChange={({resource, list}) => {
+                                    console.log({ resource, list })
+
+                                    switch (resource) {
+                                        case 'all':
+                                            products.value = []
+                                            break
+                                        case 'products':
+                                            products.value = list.map((p) => p.id)
+                                            break
+                                        case 'collections':
+                                            collections.value = list.map((p) => p.id)
+                                            break
+                                    }
+                                }}
                                 />
                             </LegacyCard.Section>
                         </LegacyCard>
@@ -176,6 +195,37 @@ export function OrderDiscount() {
                             startsAt={startsAt.value.toUTCString()}
                             endsAt={endsAt.value ? endsAt.value.toUTCString : ''} />
                     </form>
+                </Layout.Section>
+                <Layout.Section secondary>
+                        <LegacyCard>
+                            <LegacyCard.Section title="Title">
+                                <p>Title: {title.value}</p>
+                                <p>Description: {description.value}</p>
+                            </LegacyCard.Section>
+                            <LegacyCard.Section title="Value">
+                                <p>Discount Type: {discountType.value}</p>
+                                <p>Discount Value: {discountType.value === 'amount' ? '$':''} {discountValue.value}{discountType.value === 'percentage' ? '%':''}</p>
+                            </LegacyCard.Section>
+                            <LegacyCard.Section title="Minimum Requirements">
+                                <p>{minValue ? `Minimum value:${minValue}` : ''}</p>
+                                <p>{minQty ? `Minimum quantity:${minQty}` : ''}</p>
+                            </LegacyCard.Section>
+                            <LegacyCard.Section title="Max Usage">
+                                <p>Once per customer? </p>
+                                <p>{onePerUser ? 'Yes': 'No'}</p>
+                            </LegacyCard.Section>
+                        </LegacyCard>
+                        <LegacyCard>
+                            <LegacyCard.Section title="Combines with">
+                                <p>Order Discounts: {orderDiscounts.value ? 'Yes': 'No'}</p>
+                                <p>Product Discounts: {productDiscounts.value ? 'Yes': 'No'}</p>
+                                <p>Shipping Discounts: {shippingDiscounts.value ? 'Yes': 'No'}</p>
+                            </LegacyCard.Section>
+                            <LegacyCard.Section title="Active dates">
+                                <p>Starts at: {startsAt.value.toLocaleTimeString()}</p>
+                                <p>{endsAt.value ? `Ends at: ${endsAt.value!.toLocaleDateString()}`: ''}</p>
+                            </LegacyCard.Section>
+                        </LegacyCard>
                 </Layout.Section>
                 <Layout.Section>
                     <PageActions
