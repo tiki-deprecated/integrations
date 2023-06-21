@@ -4,7 +4,6 @@
  */
 
 export interface ShopifyMetafield {
-  description?: string;
   id?: string;
   key: string;
   namespace: string;

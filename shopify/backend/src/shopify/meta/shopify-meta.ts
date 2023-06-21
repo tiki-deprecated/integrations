@@ -11,6 +11,7 @@ import { TikiKeyCreateRsp } from '../../tiki/tiki-key-create-rsp';
 import { ShopifyMetafield } from './shopify-metafield';
 import { ShopifyAppInstallRsp } from './shopify-app-install-rsp';
 import { ShopifyWebhook } from '../webhook/shopify-webhook';
+import { query, mutation } from 'gql-query-builder';
 
 export class ShopifyMeta extends ShopifyWebhook {
   static readonly namespace = 'mytiki';
@@ -24,33 +25,44 @@ export class ShopifyMeta extends ShopifyWebhook {
         .content(API.Consts.APPLICATION_JSON)
         .set(ShopifyAuth.tokenHeader, accessToken)
         .build(),
-      body: JSON.stringify({
-        query: `mutation MetafieldsSet($metafields: [MetafieldsSetInput!]!) {
-          metafieldsSet(metafields: $metafields) { 
-            metafields { 
-              key 
-              namespace 
-              value 
-              createdAt 
-              updatedAt 
-            }
-            userErrors { 
-              field 
-              message 
-              code 
-            } 
-          } 
-        }`,
-        variables: {
-          metafields: JSON.stringify(fields),
-        },
-      }),
+      body: JSON.stringify(
+        mutation(
+          {
+            operation: 'metafieldsSet',
+            variables: {
+              metafields: {
+                value: fields,
+                type: 'MetafieldsSetInput!',
+                required: true,
+                list: true,
+              },
+            },
+            fields: [
+              {
+                metafields: [
+                  'key',
+                  'namespace',
+                  'value',
+                  'createdAt',
+                  'updatedAt',
+                ],
+              },
+              {
+                userErrors: ['field', 'message'],
+              },
+            ],
+          },
+          undefined,
+          {
+            operationName: 'MetafieldsSet',
+          }
+        )
+      ),
     });
   }
 
   async getCustomerMetafield(
     id: number,
-    namespace: string,
     key: string
   ): Promise<ShopifyData<ShopifyCustomerRsp>> {
     const accessToken = await this.getToken();
@@ -61,13 +73,41 @@ export class ShopifyMeta extends ShopifyWebhook {
         .content(API.Consts.APPLICATION_JSON)
         .set(ShopifyAuth.tokenHeader, accessToken)
         .build(),
-      body: JSON.stringify({
-        query: `query Customer {
-          customer(id: "gid://shopify/Customer/${id}") {
-            metafield(key: "${key}", namespace: "${namespace}") {
-              value
-            }}}`,
-      }),
+      body: JSON.stringify(
+        query(
+          {
+            operation: 'customer',
+            variables: {
+              id: {
+                value: `gid://shopify/Customer/${id}`,
+                type: 'ID',
+                required: true,
+              },
+            },
+            fields: [
+              {
+                operation: 'metafield',
+                variables: {
+                  key: {
+                    value: key,
+                    type: 'String',
+                    required: true,
+                  },
+                  namespace: {
+                    value: ShopifyMeta.namespace,
+                    type: 'String',
+                  },
+                },
+                fields: ['value'],
+              },
+            ],
+          },
+          undefined,
+          {
+            operationName: 'Customer',
+          }
+        )
+      ),
     })
       .then((res) => res.json())
       .then((json) => json as ShopifyData<ShopifyCustomerRsp>);
@@ -112,13 +152,22 @@ export class ShopifyMeta extends ShopifyWebhook {
         .set(ShopifyAuth.tokenHeader, accessToken)
         .build(),
       body: JSON.stringify({
-        query: `query {
-          currentAppInstallation {
-            id metafields(namespace: "${ShopifyMeta.namespace}", first: 3){
-              nodes {
-                key
-              }
-          }}}`,
+        operation: 'currentAppInstallation',
+        fields: [
+          'id',
+          {
+            operation: 'metafields',
+            variables: {
+              namespace: { type: 'String', value: ShopifyMeta.namespace },
+              first: { type: 'Int', value: 3 },
+            },
+            fields: [
+              {
+                nodes: ['key'],
+              },
+            ],
+          },
+        ],
       }),
     })
       .then((res) => res.json())
