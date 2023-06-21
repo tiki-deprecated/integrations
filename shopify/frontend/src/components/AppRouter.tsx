@@ -7,9 +7,9 @@ export function AppRouter() {
         <Routes>
             <Route index element={<HomePage />} />
             <Route path="/discount/product" element={<DiscountProductCreate />} />
-            <Route path="/discount/product/:id?" element={<DiscountProductDetail />} />
-            <Route path="/discount/product/:id?" element={<DiscountOrderCr />} />
-            <Route path="/discount/order/:id?" element={<OrderDiscount />} />
+            <Route path="/discount/product/:id" element={<DiscountProductDetail />} />
+            <Route path="/discount/order" element={<DiscountOrderCreate />} />
+            <Route path="/discount/order/:id" element={<DiscountOrderDetail />} />
         </Routes>
     )
 }
