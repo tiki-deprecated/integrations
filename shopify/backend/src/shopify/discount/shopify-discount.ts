@@ -44,7 +44,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           value: discount.metafields.type,
         },
         {
-          key: 'id',
+          key: 'tid',
           namespace: ShopifyMeta.namespace,
           type: 'single_line_text_field',
           value: id,
@@ -207,7 +207,7 @@ export class ShopifyDiscount extends ShopifyMeta {
                       first: ${titles.length * 2}
                     ) {
                       nodes {
-                          metafield(key: "id", namespace: "${
+                          metafield(key: "tid", namespace: "${
                             ShopifyMeta.namespace
                           }") {
                               key
