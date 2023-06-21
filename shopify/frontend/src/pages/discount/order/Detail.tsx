@@ -1,23 +1,9 @@
 import React from 'react'
 import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { Redirect } from '@shopify/app-bridge/actions'
-
-import { useForm, useField, SubmitResult } from '@shopify/react-form'
-import { AppliesTo, RequirementType, SummaryCard } from '@shopify/discount-app-components'
 import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
 import { DiscountReq } from '../../../interface/discount-req'
-import {
-    MinReqsCard,
-    ActiveDatesCard,
-    DiscountAmount,
-    MaxUsageCard,
-    CombinationsCard,
-    ErrorBanner,
-    AppliesToChoices,
-    TitleAndDescription,
-    SummarySection
-} from '../../../components'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 
 export function DiscountOrderDetail() {
@@ -53,7 +39,7 @@ export function DiscountOrderDetail() {
 
     return (
         <Page
-            title="Create a Product Discount"
+            title="Order Discount"
             primaryAction={{
                 content: 'Duplicate',
                 onAction: duplicateDiscount,

@@ -107,7 +107,7 @@ export function DiscountOrderCreate() {
 
     return (
         <Page
-            title="Create a Product Discount"
+            title="Create an Order Discount"
             primaryAction={{
                 content: 'Save',
                 onAction: submit,
