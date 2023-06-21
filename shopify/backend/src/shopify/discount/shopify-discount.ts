@@ -11,6 +11,7 @@ import { ShopifyAuth } from '../auth/shopify-auth';
 import { ShopifyDiscountCreate } from './shopify-discount-create';
 import { ShopifyData } from '../meta/shopify-data';
 import { ShopifyDiscountRsp } from './shopify-discount-rsp';
+import { query, mutation, subscription } from 'gql-query-builder';
 
 export class ShopifyDiscount extends ShopifyMeta {
   private readonly _functionIdOrder: string;
@@ -119,6 +120,29 @@ export class ShopifyDiscount extends ShopifyMeta {
       startsAt: discount.startsAt,
       title: discount.title,
     };
+    const query = mutation(
+      {
+        operation: 'discountAutomaticAppCreate',
+        variables: {
+          automaticAppDiscount: {
+            value: req,
+            type: 'DiscountAutomaticAppInput',
+            required: true,
+          },
+        },
+        fields: [
+          {
+            userErrors: ['message', 'field'],
+          },
+        ],
+      },
+      undefined,
+      {
+        operationName: 'DiscountAutomaticAppCreate',
+      }
+    );
+    console.log(query);
+
     const res = await fetch(
       `https://${this.shopDomain}/admin/api/2023-04/graphql.json`,
       {
@@ -128,17 +152,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           .content(API.Consts.APPLICATION_JSON)
           .set(ShopifyAuth.tokenHeader, accessToken)
           .build(),
-        body: JSON.stringify({
-          query: `mutation DiscountAutomaticAppCreate{
-          discountAutomaticAppCreate(automaticAppDiscount: ${JSON.stringify(
-            req
-          )}){
-            userErrors {
-              field
-              message
-            }
-          }}`,
-        }),
+        body: JSON.stringify(query),
       }
     );
     if (res.status !== 200) {
