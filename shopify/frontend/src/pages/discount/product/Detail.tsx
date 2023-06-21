@@ -21,7 +21,7 @@ import { Redirect } from '@shopify/app-bridge/actions'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 import { BaseResource, Resource } from '@shopify/app-bridge/actions/ResourcePicker'
 
-export function DiscountProductEdit() {
+export function DiscountProductDetail() {
 
     const app = useAppBridge();
     const redirect = Redirect.create(app);
@@ -138,7 +138,7 @@ export function DiscountProductEdit() {
                                 />
                             </LegacyCard.Section>
                             <LegacyCard.Section title="Applies To">
-                                <AppliesToChoices onChange={({resource, list}) => {
+                                <AppliesToChoices onChange={({ resource, list }) => {
                                     console.log({ resource, list })
 
                                     switch (resource) {

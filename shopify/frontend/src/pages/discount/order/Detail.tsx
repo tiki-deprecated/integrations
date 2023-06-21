@@ -20,7 +20,7 @@ import {
 } from '../../../components'
 import { useAuthenticatedFetch } from '../../../hooks/useAuthenticatedFetch'
 
-export function DiscountOrderEdit() {
+export function DiscountOrderDetail() {
 
     const app = useAppBridge();
     const redirect = Redirect.create(app);

@@ -7,9 +7,6 @@ import {
   PolarisProvider,
   DiscountProvider,
 } from "./components/providers";
-import { HomePage, OrderDiscount, ProductDiscount } from "./pages";
-import { DiscountReq } from "./interface/discount-req";
-import { useAuthenticatedFetch } from "./hooks/useAuthenticatedFetch"
 import { AppRouter } from "./components/AppRouter";
 
 export default function App() {
