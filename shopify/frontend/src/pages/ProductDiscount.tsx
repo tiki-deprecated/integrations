@@ -1,12 +1,11 @@
 import React from 'react'
 
 import { useForm, useField, SubmitResult } from '@shopify/react-form'
-import { AppliesTo, DiscountMethod, PurchaseType, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
+import { AppliesTo, DiscountMethod, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
 import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
 import { DiscountReq } from '../interface/discount-req'
 import {
-    PurchaseTypeSection,
     MinReqsCard,
     ActiveDatesCard,
     DiscountAmount,
@@ -35,8 +34,6 @@ export function ProductDiscount() {
             description,
             discountType,
             discountValue,
-            purchaseType,
-            appliesTo,
             minValue,
             minQty,
             maxUse,
@@ -59,8 +56,6 @@ export function ProductDiscount() {
             description: useField(''),
             discountType: useField<'percentage' | 'amount'>('amount'),
             discountValue: useField(0.00),
-            purchaseType: useField<"one-time" | "subscription" | "both">('both'),
-            appliesTo: useField([]),
             minValue: useField(0.00),
             minQty: useField(0),
             maxUse: useField(0),
@@ -81,8 +76,6 @@ export function ProductDiscount() {
                     description: form.description,
                     discountType: form.discountType,
                     discountValue: form.discountValue,
-                    purchaseType: form.purchaseType,
-                    appliesTo: form.appliesTo,
                     minValue: form.minValue,
                     minQty: form.minQty,
                     maxUse: form.maxUse,
@@ -142,23 +135,6 @@ export function ProductDiscount() {
                                         }
                                     }}
                                 />
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Purchase Type">
-                                <PurchaseTypeSection
-                                    purchaseType={PurchaseType.Both}
-                                    onChange={(type: PurchaseType) => {
-                                        switch (type) {
-                                            case PurchaseType.Both:
-                                                purchaseType.value = 'both';
-                                                break;
-                                            case PurchaseType.Subscription:
-                                                purchaseType.value = 'subscription';
-                                                break;
-                                            case PurchaseType.OneTimePurchase:
-                                                purchaseType.value = 'one-time';
-                                                break;
-                                        }
-                                    }} />
                             </LegacyCard.Section>
                             <LegacyCard.Section title="Applies To">
                                 <AppliesToChoices onChange={console.log} />

@@ -3,12 +3,11 @@ import { useAppBridge } from '@shopify/app-bridge-react/useAppBridge'
 import { Redirect } from '@shopify/app-bridge/actions'
 
 import { useForm, useField, SubmitResult } from '@shopify/react-form'
-import { AppliesTo, DiscountMethod, PurchaseType, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
+import { AppliesTo, RequirementType, SummaryCard } from '@shopify/discount-app-components'
 import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
 import { DiscountReq } from '../interface/discount-req'
 import {
-    PurchaseTypeSection,
     MinReqsCard,
     ActiveDatesCard,
     DiscountAmount,
@@ -35,8 +34,6 @@ export function OrderDiscount() {
             description,
             discountType,
             discountValue,
-            purchaseType,
-            appliesTo,
             minValue,
             minQty,
             maxUse,
@@ -59,8 +56,6 @@ export function OrderDiscount() {
             description: useField(''),
             discountType: useField<'percentage' | 'amount'>('amount'),
             discountValue: useField(0.00),
-            purchaseType: useField<"one-time" | "subscription" | "both">('both'),
-            appliesTo: useField([]),
             minValue: useField(0.00),
             minQty: useField(0),
             maxUse: useField(0),
@@ -81,8 +76,6 @@ export function OrderDiscount() {
                     description: form.description,
                     discountType: form.discountType,
                     discountValue: form.discountValue,
-                    purchaseType: form.purchaseType,
-                    appliesTo: form.appliesTo,
                     minValue: form.minValue,
                     minQty: form.minQty,
                     maxUse: form.maxUse,
@@ -142,27 +135,6 @@ export function OrderDiscount() {
                                         }
                                     }}
                                 />
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Purchase Type">
-                                <PurchaseTypeSection
-                                    purchaseType={PurchaseType.Both}
-                                    onChange={(type: PurchaseType) => {
-                                        switch (type) {
-                                            case PurchaseType.Both:
-                                                console.log('both')
-                                                purchaseType.value = 'both';
-                                                break;
-                                            case PurchaseType.Subscription:
-                                                console.log('sub')
-                                                purchaseType.value = 'subscription';
-                                                break;
-                                            case PurchaseType.OneTimePurchase:
-                                                console.log('one-time-purchase')
-                                                purchaseType.value = 'one-time';
-                                                break;
-                                        }
-                                        console.log(purchaseType.value)
-                                    }} />
                             </LegacyCard.Section>
                         </LegacyCard>
                         <MinReqsCard

@@ -8,8 +8,6 @@ export interface DiscountReqMeta {
   description: string;
   discountType: 'percentage' | 'amount';
   discountValue: number;
-  purchaseType: 'one-time' | 'subscription' | 'both';
-  appliesTo: Array<string>;
   minValue: number;
   minQty: number;
   maxUse: number;
