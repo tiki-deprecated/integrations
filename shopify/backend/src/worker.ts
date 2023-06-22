@@ -21,6 +21,7 @@ const { preflight, corsify } = createCors({
 const router = Router();
 router
   .all('*', preflight)
+  .get('/test', Order.test)
   .get(`${API.Consts.API_LATEST}/oauth/authorize`, OAuth.authorize)
   .get(`${API.Consts.API_LATEST}/oauth/token`, OAuth.token)
   .post(`${API.Consts.API_LATEST}/order/paid`, Order.paid)

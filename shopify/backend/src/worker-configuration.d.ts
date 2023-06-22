@@ -11,5 +11,6 @@ interface Env {
   FUNCTION_ID_ORDER_DISCOUNT: string;
   FUNCTION_ID_PRODUCT_DISCOUNT: string;
 
-  AUTH_SERVICE_URL: string;
+  ADMIN_ID: string;
+  ADMIN_SECRET: string;
 }
