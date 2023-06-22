@@ -1,7 +1,35 @@
-/* global TikiSdk,TIKI_SETTINGS,customer_id */
+/* global TikiSdk,TIKI_SETTINGS,ShopifyAnalytics,_st,Shopify */
 
 const tikiId = 'tiki-offer'
 const tikiOverlayId = 'tiki-offer-overlay'
+
+const getCustomerId = function () {
+  try {
+    const curr = window.ShopifyAnalytics.meta.page.customerId
+    if (curr !== undefined && curr !== null && curr !== '') {
+      return curr
+    }
+  } catch (e) { }
+  try {
+    const curr = window.meta.page.customerId
+    if (curr !== undefined && curr !== null && curr !== '') {
+      return curr
+    }
+  } catch (e) { }
+  try {
+    const curr = _st.cid
+    if (curr !== undefined && curr !== null && curr !== '') {
+      return curr
+    }
+  } catch (e) { }
+  try {
+    const curr = ShopifyAnalytics.lib.user().traits().uniqToken
+    if (curr !== undefined && curr !== null && curr !== '') {
+      return curr
+    }
+  } catch (e) { }
+  return null
+}
 
 const tikiAnon = () => {
   if (document.getElementById(tikiId) == null) {
@@ -82,45 +110,71 @@ const tikiAnonCreateOverlay = () => {
   return overlay
 }
 
-TikiSdk.config()
-  .theme
-  .primaryTextColor(TIKI_SETTINGS.primaryTextColor)
-  .secondaryTextColor(TIKI_SETTINGS.secondaryTextColor)
-  .primaryBackgroundColor(TIKI_SETTINGS.primaryBackgroundColor)
-  .secondaryBackgroundColor(TIKI_SETTINGS.secondaryBackgroundColor)
-  .accentColor(TIKI_SETTINGS.accentColor)
-  .fontFamily(TIKI_SETTINGS.fontFamily)
-  .and()
-  .offer
-  .description(TIKI_SETTINGS.description)
-  .reward(TIKI_SETTINGS.offerImage)
-  .bullet({ text: TIKI_SETTINGS.useCase1, isUsed: TIKI_SETTINGS.isUsed1 })
-  .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
-  .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
-  .terms(TIKI_SETTINGS.terms)
-  .tag(TikiSdk.TitleTag.deviceId())
-  .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
-  .add()
-const offer = TikiSdk.config()._offers[0]
-if (customer_id) {
-  TikiSdk.config().offer()
-    .ptr(customer_id)
-    .initialize(TIKI_SETTINGS.publishingId, customer_id, async () => {
-      const tikiDecisionCookie = document.cookie.match(/(?:^|;\s*)tiki_decision=([^;]*)/)
-      if (tikiDecisionCookie) {
-        const uses = tikiDecisionCookie === true ? offer._uses : []
-        const license = await TikiSdk.license(
-          offer._ptr,
-          uses,
-          offer._terms,
-          offer._tags,
-          offer._description,
-          offer._expiry
-        )
-      } else {
-        TikiSdk.present()
-      }
-    })
-} else {
-  tikiAnon()
-}
+window.addEventListener('load', (event) => {
+  const customerId = getCustomerId() + 'w'
+  console.log(customerId)
+  if (customerId) {
+    TikiSdk.config()
+      .theme
+      .primaryTextColor(TIKI_SETTINGS.primaryTextColor)
+      .secondaryTextColor(TIKI_SETTINGS.secondaryTextColor)
+      .primaryBackgroundColor(TIKI_SETTINGS.primaryBackgroundColor)
+      .secondaryBackgroundColor(TIKI_SETTINGS.secondaryBackgroundColor)
+      .accentColor(TIKI_SETTINGS.accentColor)
+      .fontFamily(TIKI_SETTINGS.fontFamily)
+      .and()
+      .offer
+      .ptr(customerId)
+      .description(TIKI_SETTINGS.description)
+      .reward(TIKI_SETTINGS.offerImage)
+      .bullet({ text: TIKI_SETTINGS.useCase1, isUsed: TIKI_SETTINGS.isUsed1 })
+      .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
+      .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
+      .terms(TIKI_SETTINGS.terms)
+      .tag(TikiSdk.TitleTag.deviceId())
+      .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
+      .add()
+      .initialize(TIKI_SETTINGS.publishingId,
+        async () => {
+          const tikiDecisionCookie = document.cookie.match(/(?:^|;\s*)tiki_decision=([^;]*)/)
+          if (tikiDecisionCookie) {
+            const offer = TikiSdk._offers[0]
+            const uses = tikiDecisionCookie === true ? offer._uses : []
+            const license = await TikiSdk.license(
+              offer._ptr,
+              uses,
+              offer._terms,
+              offer._tags,
+              offer._description,
+              offer._expiry
+            )
+            console.log(license)
+          } else {
+            TikiSdk.present()
+          }
+        })
+  } else {
+    if (!Shopify.designMode || TIKI_SETTINGS.preview === 'true') {
+      TikiSdk.config()
+        .theme
+        .primaryTextColor(TIKI_SETTINGS.primaryTextColor)
+        .secondaryTextColor(TIKI_SETTINGS.secondaryTextColor)
+        .primaryBackgroundColor(TIKI_SETTINGS.primaryBackgroundColor)
+        .secondaryBackgroundColor(TIKI_SETTINGS.secondaryBackgroundColor)
+        .accentColor(TIKI_SETTINGS.accentColor)
+        .fontFamily(TIKI_SETTINGS.fontFamily)
+        .and().offer
+        .ptr(customerId)
+        .description(TIKI_SETTINGS.description)
+        .reward(TIKI_SETTINGS.offerImage)
+        .bullet({ text: TIKI_SETTINGS.useCase1, isUsed: TIKI_SETTINGS.isUsed1 })
+        .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
+        .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
+        .terms(TIKI_SETTINGS.terms)
+        .tag(TikiSdk.TitleTag.deviceId())
+        .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
+        .add()
+      tikiAnon()
+    }
+  }
+})

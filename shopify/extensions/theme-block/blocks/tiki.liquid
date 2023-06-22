@@ -48,6 +48,12 @@ const TIKI_SETTINGS = {
 <script async src="https://unpkg.com/@mytiki/tiki-sdk-js@1.0.7/dist/index.js"></script>
 {% # theme-check-enable AssetSizeJavaScript %}
 <script async src="{{ 'tiki_shopify.js' | asset_url }}"></script>
+{% if content_for_header contains "Shopify.designMode" %}
+<script>
+  console.log({{ block.settings.preview }})
+</script>
+{% endif %}
+
 
 {% schema %}
 {
