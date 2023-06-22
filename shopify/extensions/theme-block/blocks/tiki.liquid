@@ -1,3 +1,28 @@
+<style>
+:root {
+    --tiki-font-size-xs: calc(16px * 0.75);
+    --tiki-font-size-sm: calc(16px * 0.875);
+    --tiki-font-size: calc(16px * 1);
+    --tiki-font-size-lg: calc(16px * 1.125);
+    --tiki-font-size-xl: calc(16px * 1.25);
+    
+    --tiki-line-height-xs: calc(16px * 1);
+    --tiki-line-height-sm: calc(16px * 1.25);
+    --tiki-line-height: calc(16px * 1.5);
+    --tiki-line-height-lg: calc(16px * 1.75);
+    --tiki-line-height-xl: calc(16px * 1.75);
+
+    --page-width: calc(16px * 160);
+    --product-card-corner-radius: calc(16px * 0.4);
+    --product-card-shadow-blur-radius: calc(16px * 1.0);
+    --collection-card-corner-radius: calc(16px * 0.4);
+    --collection-card-shadow-vertical-offset: calc(16px * 0.4);
+    --collection-card-shadow-blur-radius: calc(16px * 0.5);
+    --blog-card-shadow-vertical-offset: calc(16px * 0.4);
+    --blog-card-shadow-blur-radius: calc(16px * 0.5);
+    --badge-corner-radius: calc(16px * 4.0);
+}
+</style>
 <script>
 const TIKI_SETTINGS = {
     preview : "{{ block.settings.preview }}",
@@ -16,6 +41,7 @@ const TIKI_SETTINGS = {
     isUsed3 : "{{ block.settings.isUsed3 }}",
     useCase3 : "{{ block.settings.useCase3 }}",
     terms : "{{ block.settings.term }}",
+    publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88"
 }
 </script>
 {% # theme-check-disable AssetSizeJavaScript %}
