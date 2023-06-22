@@ -7,6 +7,36 @@ import { IRequest } from 'itty-router';
 import { Shopify } from '../../shopify/shopify';
 import { OrderReq } from './order-req';
 import { Throw, API } from '@mytiki/worker-utils-ts';
+import { Tiki } from '../../tiki/tiki';
+
+export async function test(request: IRequest, env: Env): Promise<Response> {
+  // request needs the auth token + address (X-Tiki-Address) + signature (X-Tiki-Address-Signature)
+
+  const tiki = new Tiki(env);
+  const token = await tiki.admin();
+  console.log(token);
+  const license = await tiki.license(
+    token,
+    'db2fd320-aed0-498e-af19-0be1d9630c63',
+    '2ab3efdb-8e91-4148-a43b-a7c198b4d3d7'
+  );
+  console.log(JSON.stringify(license.results.at(0)?.uses));
+  const registry = await tiki.registry(
+    token,
+    'uZ20E1tfSzORkJr-XE3Rwhv3nIg4cfRiO74rvEkpLMM',
+    '2ab3efdb-8e91-4148-a43b-a7c198b4d3d7'
+  );
+  console.log(registry.id);
+  const pubkey = await tiki.pubkey(
+    'uZ20E1tfSzORkJr-XE3Rwhv3nIg4cfRiO74rvEkpLMM',
+    '2ab3efdb-8e91-4148-a43b-a7c198b4d3d7'
+  );
+  console.log(pubkey.byteLength);
+
+  return new Response(null, {
+    status: 200,
+  });
+}
 
 export async function paid(request: IRequest, env: Env): Promise<Response> {
   const shop = request.headers.get('X-Shopify-Shop-Domain');
