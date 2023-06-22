@@ -6,6 +6,9 @@
 import { ShopifyAuth } from '../auth/shopify-auth';
 import { API } from '@mytiki/worker-utils-ts';
 import { ShopifyWebhookReq } from './shopify-webhook-req';
+import { ShopifyWebhookReqWebhook } from './shopify-webhook-req-webhook';
+
+export type { ShopifyWebhookReq, ShopifyWebhookReqWebhook };
 
 export class ShopifyWebhook extends ShopifyAuth {
   async registerWebhook(webhook: ShopifyWebhookReq): Promise<void> {

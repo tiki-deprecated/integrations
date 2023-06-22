@@ -7,6 +7,8 @@ import { ShopifyJwt } from './shopify-jwt';
 import { ShopifyTokenRsp } from './shopify-token-rsp';
 import { API, JWT } from '@mytiki/worker-utils-ts';
 
+export type { ShopifyJwt };
+
 export class ShopifyAuth {
   static readonly tokenHeader = 'X-Shopify-Access-Token';
   static readonly signHeader = 'X-Shopify-Hmac-SHA256';

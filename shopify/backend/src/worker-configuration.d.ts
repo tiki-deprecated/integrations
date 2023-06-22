@@ -13,4 +13,6 @@ interface Env {
 
   ADMIN_ID: string;
   ADMIN_SECRET: string;
+
+  JWK: string;
 }

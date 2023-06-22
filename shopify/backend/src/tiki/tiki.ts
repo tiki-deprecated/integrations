@@ -9,13 +9,13 @@ import { TikiAppCreateRsp } from './tiki-app-create-rsp';
 import { TikiAppCreateReq } from './tiki-app-create-req';
 import { TikiKeyCreateRsp } from './tiki-key-create-rsp';
 import { TikiKeyCreateReq } from './tiki-key-create-req';
-import { API } from '@mytiki/worker-utils-ts';
+import { API, JWT } from '@mytiki/worker-utils-ts';
 import { TikiTokenAdminReq } from './tiki-token-admin-req';
 import { TikiLicenseRsp } from './tiki-license-rsp';
 import { TikiLicenseReq } from './tiki-license-req';
 import { TikiRegistryRsp } from './tiki-registry-rsp';
 
-export type { TikiKeyCreateRsp, TikiAppCreateRsp };
+export type { TikiKeyCreateRsp, TikiAppCreateRsp, TikiRegistryRsp };
 
 export class Tiki {
   static readonly authUrl = 'https://auth.l0.mytiki.com/api/latest';
@@ -28,10 +28,12 @@ export class Tiki {
   static readonly scope = 'auth';
   clientId: string;
   clientSecret: string;
+  jwk: string;
 
   constructor(env: Env) {
     this.clientId = env.ADMIN_ID;
     this.clientSecret = env.ADMIN_SECRET;
+    this.jwk = env.JWK;
   }
 
   async login(shopDomain: string, shopifyToken: string): Promise<string> {
@@ -151,23 +153,43 @@ export class Tiki {
     }).then((res) => res.arrayBuffer());
   }
 
-  async verify(
+  async verifyRsa(
     key: ArrayBuffer,
-    signature: ArrayBuffer,
-    data: ArrayBuffer
+    signature: string,
+    data: string
   ): Promise<boolean> {
     const cryptoKey = await crypto.subtle.importKey(
       'raw',
       key,
-      { name: 'ECDSA', namedCurve: 'P-256', hash: 'SHA-256' },
+      { name: 'RSASSA-PKCS1-v1_5', hash: 'SHA-256' },
       false,
       ['verify']
     );
     return await crypto.subtle.verify(
-      { name: 'ECDSA', hash: 'SHA-256' },
+      'RSASSA-PKCS1-v1_5',
       cryptoKey,
-      signature,
-      data
+      b64Decode(signature),
+      new TextEncoder().encode(data)
     );
   }
+
+  async verifyEcdsa(token: string): Promise<Map<string, unknown>> {
+    const key = await crypto.subtle.importKey(
+      'jwk',
+      JSON.parse(this.jwk),
+      { name: 'ECDSA', namedCurve: 'P-256', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+    return JWT.decode(token, key, {
+      algorithm: { name: 'ECDSA', hash: 'SHA-256' },
+      iss: 'com.mytiki.l0.auth',
+    });
+  }
 }
+
+const b64Encode = (bytes: Uint8Array): string =>
+  btoa(bytes.reduce((acc, current) => acc + String.fromCharCode(current), ''));
+
+const b64Decode = (b64: string): Uint8Array =>
+  Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
