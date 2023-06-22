@@ -150,4 +150,24 @@ export class Tiki {
       headers: new API.HeaderBuilder().build(),
     }).then((res) => res.arrayBuffer());
   }
+
+  async verify(
+    key: ArrayBuffer,
+    signature: ArrayBuffer,
+    data: ArrayBuffer
+  ): Promise<boolean> {
+    const cryptoKey = await crypto.subtle.importKey(
+      'raw',
+      key,
+      { name: 'ECDSA', namedCurve: 'P-256', hash: 'SHA-256' },
+      false,
+      ['verify']
+    );
+    return await crypto.subtle.verify(
+      { name: 'ECDSA', hash: 'SHA-256' },
+      cryptoKey,
+      signature,
+      data
+    );
+  }
 }
