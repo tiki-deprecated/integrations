@@ -57,40 +57,16 @@ export class ShopifyDiscount extends ShopifyMeta {
           value: discount.metafields.description,
         },
         {
-          key: 'discount_type',
+          key: 'discount_amount',
           namespace: ShopifyMeta.namespace,
           type: 'single_line_text_field',
-          value: discount.metafields.discountType,
+          value: JSON.stringify(discount.metafields.discountAmount),
         },
         {
-          key: 'discount_value',
+          key: 'discount_restrictions',
           namespace: ShopifyMeta.namespace,
           type: 'number_decimal',
-          value: discount.metafields.discountValue.toString(),
-        },
-        {
-          key: 'min_value',
-          namespace: ShopifyMeta.namespace,
-          type: 'number_decimal',
-          value: discount.metafields.minValue.toString(),
-        },
-        {
-          key: 'min_qty',
-          namespace: ShopifyMeta.namespace,
-          type: 'number_integer',
-          value: discount.metafields.minQty.toString(),
-        },
-        {
-          key: 'max_use',
-          namespace: ShopifyMeta.namespace,
-          type: 'number_integer',
-          value: discount.metafields.maxUse.toString(),
-        },
-        {
-          key: 'once_per_user',
-          namespace: ShopifyMeta.namespace,
-          type: 'boolean',
-          value: discount.metafields.onePerUser.toString(),
+          value: JSON.stringify(discount.metafields.discountRestrictions),
         },
         {
           key: 'products',
@@ -258,5 +234,48 @@ export class ShopifyDiscount extends ShopifyMeta {
         ownerId: `gid://shopify/Customer/${customer}`,
       },
     ]);
+  }
+
+  async getDiscount(id: string, accessToken:st): Promise<void> {
+    const response = await fetch(
+      'https://tiki-dev-store.myshopify.com/admin/api/2023-04/graphql.json',
+      {
+        method: 'POST',
+        headers: new API.HeaderBuilder()
+          .accept(API.Consts.APPLICATION_JSON)
+          .content(API.Consts.APPLICATION_JSON)
+          .set(ShopifyAuth.tokenHeader, accessToken)
+          .build(),
+        body: JSON.stringify({
+          query: `query GetDiscount {
+            discountNode(id: "gid://shopify/DiscountCodeNode/${id}") {
+                id
+                configurationField: metafield(
+                    namespace: ${ShopifyMeta.namespace},
+                    key: "function-configuration"
+                ) {
+                    id
+                    value
+                }
+                discount {
+                    __typename
+                    ... on DiscountAutomaticApp {
+                        title
+                        discountClass
+                        combinesWith {
+                            orderDiscounts
+                            productDiscounts
+                            shippingDiscounts
+                        }
+                        startsAt
+                        endsAt
+                        }
+                    }
+                }
+            }`,
+        }),
+      }
+    );
+    return await response.json();
   }
 }
