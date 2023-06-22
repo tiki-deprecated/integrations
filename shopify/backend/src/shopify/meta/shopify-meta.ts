@@ -13,6 +13,13 @@ import { ShopifyAppInstallRsp } from './shopify-app-install-rsp';
 import { ShopifyWebhook } from '../webhook/shopify-webhook';
 import { query, mutation } from 'gql-query-builder';
 
+export type {
+  ShopifyData,
+  ShopifyAppInstallRsp,
+  ShopifyCustomerRsp,
+  ShopifyMetafield,
+};
+
 export class ShopifyMeta extends ShopifyWebhook {
   static readonly namespace = 'mytiki';
 

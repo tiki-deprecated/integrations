@@ -13,6 +13,8 @@ import { ShopifyData } from '../meta/shopify-data';
 import { ShopifyDiscountRsp } from './shopify-discount-rsp';
 import { query, mutation } from 'gql-query-builder';
 
+export type { ShopifyDiscountRsp };
+
 export class ShopifyDiscount extends ShopifyMeta {
   private readonly _functionIdOrder: string;
   private readonly _functionIdProduct: string;

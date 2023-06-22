@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export interface TikiTokenExRsp {
+export interface TikiTokenRsp {
   access_token: string;
   refresh_token: string;
   scope: string;

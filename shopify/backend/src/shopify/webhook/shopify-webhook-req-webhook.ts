@@ -3,7 +3,7 @@
  * MIT license. See LICENSE file in root directory.
  */
 
-export default interface ShopifyWebhookReqWebhook {
+export interface ShopifyWebhookReqWebhook {
   address: string;
   topic: string;
   format: 'json' | 'xml';
