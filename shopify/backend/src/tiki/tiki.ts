@@ -188,8 +188,5 @@ export class Tiki {
   }
 }
 
-const b64Encode = (bytes: Uint8Array): string =>
-  btoa(bytes.reduce((acc, current) => acc + String.fromCharCode(current), ''));
-
 const b64Decode = (b64: string): Uint8Array =>
   Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
