@@ -24,22 +24,16 @@ query Input {
     tid: metafield(namespace: "mytiki", key: "tid"){
       value
     }
-    discountType: metafield(namespace: "mytiki", key: "discountType"){
+    discountAmount: metafield(namespace: "mytiki", key: "discountAmount"){
       value
     }
-    discountValue: metafield(namespace: "mytiki", key: "discountValue"){
+    discountRestrictions: metafield(namespace: "mytiki", key: "discountRestrictions"){
       value
     }
-    minValue: metafield(namespace: "mytiki", key: "minValue"){
+    products: metafield(namespace: "mytiki", key: "products"){
       value
     }
-    minQty: metafield(namespace: "mytiki", key: "minQty"){
-      value
-    }
-    maxUse: metafield(namespace: "mytiki", key: "maxUse"){
-      value
-    }
-    onePerUser: metafield(namespace: "mytiki", key: "onePerUser"){
+    collections: metafield(namespace: "mytiki", key: "collections"){
       value
     }
   }
