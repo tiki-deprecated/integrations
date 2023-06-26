@@ -1,32 +1,53 @@
 {
-  "name": "shopify-frontend-template-react",
-  "private": true,
-  "license": "UNLICENSED",
-  "scripts": {
-    "build": "vite build",
-    "dev": "vite",
-    "coverage": "vitest run --coverage"
-  },
-  "type": "module",
-  "engines": {
-    "node": ">= 12.16"
-  },
+  "name": "@mytiki/intg-shopify-frontend",
+  "version": "1.0.0",
+  "license": "MIT",
   "dependencies": {
     "@shopify/app-bridge": "^3.1.0",
     "@shopify/app-bridge-react": "^3.1.0",
     "@shopify/app-bridge-utils": "^3.1.0",
     "@shopify/discount-app-components": "^1.0.7",
-    "@shopify/polaris": "^9.11.0",
+    "@shopify/polaris": "^10.0.0",
     "@shopify/react-form": "^2.5.0",
-    "@shopify/react-i18n": "^7.5.1",
-    "@vitejs/plugin-react": "1.2.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "@shopify/react-i18n": "^7.8.0",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^20.3.1",
+    "@types/react": "^18.2.14",
+    "@types/react-dom": "^18.2.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-query": "^3.34.19",
     "react-router-dom": "^6.3.0",
-    "vite": "^2.8.6"
+    "react-scripts": "5.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
     "@typescript-eslint/eslint-plugin": "^5.60.0",
     "eslint": "^8.43.0",
     "eslint-config-standard-with-typescript": "^35.0.0",
