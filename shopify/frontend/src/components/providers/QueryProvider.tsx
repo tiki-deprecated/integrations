@@ -10,11 +10,11 @@ import {
  * Sets up the QueryClientProvider from react-query.
  * @desc See: https://react-query.tanstack.com/reference/QueryClientProvider#_top
  */
-export function QueryProvider({ children }) {
+export function QueryProvider(props: { children: React.ReactNode }) {
   const client = new QueryClient({
     queryCache: new QueryCache(),
     mutationCache: new MutationCache(),
   });
 
-  return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
+  return <QueryClientProvider client={client}>{props.children}</QueryClientProvider>;
 }
