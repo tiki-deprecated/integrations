@@ -3,7 +3,13 @@
 const tikiId = 'tiki-offer'
 const tikiOverlayId = 'tiki-offer-overlay'
 
-const getCustomerId = function () {
+const tikiSetDecisionCookie = () => {
+  const expiry = new Date();
+  expiry.setFullYear(expiry.getFullYear() + 1);
+  document.cookie = `tiki_decision=true; expires=${expiry.toUTCString()}; path=/`;
+}
+
+const tikiGetCustomerId = () => {
   try {
     const curr = window.ShopifyAnalytics.meta.page.customerId
     if (curr !== undefined && curr !== null && curr !== '') {
@@ -49,14 +55,13 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'prompt': {
-      const offerPrompt = TikiSdk.UI.Prompt.create(
+      const offerPrompt = TikiSdk.UI.Screen.Prompt.create(
         TikiSdk.config()._offers[0],
         () => {
           offerPrompt.remove()
           tikiAnonGoTo('terms')
         },
         () => {
-          setDecisionCookie(false)
           offerPrompt.remove()
         },
         () => {
@@ -69,7 +74,7 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'learnMore': {
-      const learnMore = TikiSdk.UI.LearnMore.create(() => {
+      const learnMore = TikiSdk.UI.Screen.LearnMore.create(() => {
         learnMore.remove()
         tikiAnonGoTo('prompt')
       }, TikiSdk.config().activeTheme)
@@ -77,12 +82,12 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'terms': {
-      const terms = TikiSdk.UI.Terms.create(
+      const terms = TikiSdk.UI.Screen.Terms.create(
         {
           src: TikiSdk.config()._offers[0]._terms
         },
         async () => {
-          setDecisionCookie(true)
+          tikiSetDecisionCookie()
           terms.remove()
         },
         () => {
@@ -105,13 +110,13 @@ const tikiAnonShowScreen = (screen) => {
 }
 
 const tikiAnonCreateOverlay = () => {
-  const overlay = TikiSdk.UI.Overlay.create(() => tikiAnonGoTo('none'))
+  const overlay = TikiSdk.UI.Element.Overlay.create(() => tikiAnonGoTo('none'))
   overlay.id = tikiOverlayId
   return overlay
 }
 
 window.addEventListener('load', (event) => {
-  const customerId = getCustomerId() + 'w'
+  const customerId = tikiGetCustomerId()
   console.log(customerId)
   if (customerId) {
     TikiSdk.config()
@@ -131,8 +136,8 @@ window.addEventListener('load', (event) => {
       .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
       .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
       .terms(TIKI_SETTINGS.terms)
-      .tag(TikiSdk.TitleTag.deviceId())
-      .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
+      .tag(TikiSdk.Trail.Title.TitleTag.deviceId())
+      .use({ usecases: [TikiSdk.Trail.License.LicenseUsecase.attribution()] })
       .add()
       .initialize(TIKI_SETTINGS.publishingId,
         async () => {
@@ -140,7 +145,7 @@ window.addEventListener('load', (event) => {
           if (tikiDecisionCookie) {
             const offer = TikiSdk._offers[0]
             const uses = tikiDecisionCookie === true ? offer._uses : []
-            const license = await TikiSdk.license(
+            const license = await TikiSdk.Trail.License.create(
               offer._ptr,
               uses,
               offer._terms,
@@ -148,7 +153,7 @@ window.addEventListener('load', (event) => {
               offer._description,
               offer._expiry
             )
-            console.log(license)
+            
           } else {
             TikiSdk.present()
           }
@@ -171,8 +176,8 @@ window.addEventListener('load', (event) => {
         .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
         .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
         .terms(TIKI_SETTINGS.terms)
-        .tag(TikiSdk.TitleTag.deviceId())
-        .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
+        .tag(TikiSdk.Trail.Title.TitleTag.deviceId())
+        .use({ usecases: [TikiSdk.Trail.License.LicenseUsecase.attribution()] })
         .add()
       tikiAnon()
     }
