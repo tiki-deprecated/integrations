@@ -1,9 +1,8 @@
 import { LegacyCard, HorizontalStack, Box, Card, TextField } from '@shopify/polaris';
 import { useCallback, useState } from 'react';
 import { DiscountAmountBtns } from './DiscountAmountBtns';
-import React from 'react';
 
-export function DiscountAmount({ onChange }) {
+export function DiscountAmount({ onChange = console.log }) {
     const [discountType, setDiscountType] = useState("amount");
     const [discountValue, setDiscountValue] = useState(0);
 

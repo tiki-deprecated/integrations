@@ -2,7 +2,7 @@ import {ButtonGroup, Button} from '@shopify/polaris';
 import React from 'react';
 import {useCallback, useState} from 'react';
 
-export function DiscountAmountBtns({ onChange }) {
+export function DiscountAmountBtns({ onChange = console.log }) {
   const [activeButtonType, setActiveButtonType] = useState('amount');
 
   const handleButtonClick = useCallback(

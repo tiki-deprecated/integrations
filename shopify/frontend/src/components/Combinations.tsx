@@ -1,7 +1,13 @@
 import { CombinationCard, DiscountClass } from "@shopify/discount-app-components";
 import React, { useCallback, useState } from "react";
 
-export const CombinationsCard = ({onChange}) => {
+export interface Combinations {
+    orderDiscounts: boolean
+    productDiscounts: boolean
+    shippingDiscounts: boolean
+}
+
+export const CombinationsCard = ({onChange = console.log, discountClass = DiscountClass.Product}) => {
     const [combinesWith, setCombinesWith] = useState({
       orderDiscounts: false,
       productDiscounts: false,
@@ -9,7 +15,7 @@ export const CombinationsCard = ({onChange}) => {
     });
 
     const onChangeCallback = useCallback (
-        (value) => {
+        (value: Combinations) => {
             onChange(value)
             setCombinesWith(value)
         },
@@ -22,7 +28,7 @@ export const CombinationsCard = ({onChange}) => {
           value: combinesWith,
           onChange: onChangeCallback,
         }}
-        discountClass={DiscountClass.Product}
+        discountClass={discountClass}
         discountDescriptor=""
       />
     );

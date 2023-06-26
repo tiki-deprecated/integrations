@@ -4,46 +4,59 @@ import { SearchMinor } from '@shopify/polaris-icons';
 import { AppliesTo } from '@shopify/discount-app-components';
 import { VerticalStack, RadioButton, TextField, Button, HorizontalGrid, ResourceList, Icon, ResourceItem, Thumbnail, SkeletonThumbnail } from '@shopify/polaris';
 import { useState, useCallback } from 'react';
-import { BaseResource, Collection, Product, ResourceType, SelectAction, SelectPayload } from '@shopify/app-bridge/actions/ResourcePicker';
+import { BaseResource, Collection, Product, Resource, ResourceType, SelectAction, SelectPayload } from '@shopify/app-bridge/actions/ResourcePicker';
 
-export function AppliesToChoices({ onChange = console.log, resource = 'all', prods = [], colls = [] }) {
-    const [res, setRes] = useState(resource);
+type ResourceOptions = 'all' | 'products' | 'collections'
+
+export interface AppliesToChoicesProps{
+    onChange: (list: Array<Resource>, resource: ResourceOptions) => void
+    resource: ResourceOptions
+    prods: Array<Product>
+    colls: Array<Collection>
+}
+
+export function AppliesToChoices(props: AppliesToChoicesProps) {
+    const [res, setRes] = useState(props.resource);
     const [open, setOpen] = useState(false);
-    const [products, setProducts] = useState<Product[]>(prods)
-    const [collections, setCollections] = useState<Collection[]>(colls)
+    const [products, setProducts] = useState<Product[]>(props.prods)
+    const [collections, setCollections] = useState<Collection[]>(props.colls)
+    const onChange = props.onChange
 
     const handleChange = useCallback(
-        (isSet, newValue) => {
+        (isSet: boolean, newValue: ResourceOptions) => {
             if (isSet) {
                 let list: Product[] | Collection[] = []
                 switch(newValue){
+                    case 'all':
+                        list = []
+                        break
                     case 'products' :
                         list = products
-                        break;
+                        break
                     case 'collections' :
                         list = collections
-                        break;    
+                        break    
                 }
-                setRes(newValue);
-                onChange({ list, resource: newValue });
+                setRes(newValue)
+                onChange( list, newValue );
             }
         },
         [res],
     );
 
     const handleProductList = useCallback(
-        (list, resource) => {
+        (list: Product[], resource: ResourceOptions) => {
             setProducts(list)
-            onChange({ list, resource })
+            onChange( list, resource )
             setOpen(false)
         },
         [products]
     )
 
     const handleCollectionList = useCallback(
-        (list, resource) => {
+        (list: Collection[], resource: ResourceOptions) => {
             setCollections(list)
-            onChange({ list, resource })
+            onChange( list, resource )
             setOpen(false)
         },
         [collections]
@@ -84,7 +97,7 @@ export function AppliesToChoices({ onChange = console.log, resource = 'all', pro
                         }}
                         initialSelectionIds={products as BaseResource[]}
                         onSelection={(selectPayload: SelectPayload) => {
-                            handleProductList(selectPayload.selection, 'products');
+                            handleProductList(selectPayload.selection as Product[], 'products');
                         }}
                     />
                     <ResourceList
@@ -138,7 +151,7 @@ export function AppliesToChoices({ onChange = console.log, resource = 'all', pro
                         }}
                         initialSelectionIds={collections as BaseResource[]}
                         onSelection={(selectPayload: SelectPayload) => {
-                            handleCollectionList(selectPayload.selection, 'collections');
+                            handleCollectionList(selectPayload.selection as Collection[], 'collections');
                         }}
                     />
                     <ResourceList
