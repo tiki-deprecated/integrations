@@ -1,26 +1,35 @@
 <script>
 const TIKI_SETTINGS = {
-    preview : "{{ block.settings.preview }}",
-    primaryTextColor : "{{ block.settings.primaryTextColor }}",
-    secondaryTextColor : "{{ block.settings.secondaryTextColor }}",
-    primaryBackgroundColor : "{{ block.settings.primaryBackgroundColor }}",
-    secondaryBackgroundColor : "{{ block.settings.secondaryBackgroundColor }}",
-    accentColor : "{{ block.settings.accentColor }}",
-    fontFamily : "{{ block.settings.fontFamily }}",
-    description : "{{ block.settings.description }}",
-    offerImage : "{{ block.settings.offerImage }}",
-    isUsed1 : "{{ block.settings.isUsed1 }}",
-    useCase1 : "{{ block.settings.useCase1 }}",
-    isUsed2 : "{{ block.settings.isUsed2 }}",
-    useCase2 : "{{ block.settings.useCase2 }}",
-    isUsed3 : "{{ block.settings.isUsed3 }}",
-    useCase3 : "{{ block.settings.useCase3 }}",
-    terms : "{{ block.settings.term }}",
-    publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88"
+    UI : {
+        preview : "{{ block.settings.preview }}",
+        primaryTextColor : "{{ block.settings.primaryTextColor }}",
+        secondaryTextColor : "{{ block.settings.secondaryTextColor }}",
+        primaryBackgroundColor : "{{ block.settings.primaryBackgroundColor }}",
+        secondaryBackgroundColor : "{{ block.settings.secondaryBackgroundColor }}",
+        accentColor : "{{ block.settings.accentColor }}",
+        fontFamily : "{{ block.settings.fontFamily }}",
+        description : "{{ block.settings.description }}",
+        offerImage : "{{ block.settings.offerImage }}",
+        isUsed1 : "{{ block.settings.isUsed1 }}",
+        useCase1 : "{{ block.settings.useCase1 }}",
+        isUsed2 : "{{ block.settings.isUsed2 }}",
+        useCase2 : "{{ block.settings.useCase2 }}",
+        isUsed3 : "{{ block.settings.isUsed3 }}",
+        useCase3 : "{{ block.settings.useCase3 }}",
+        terms : "{{ block.settings.terms }}"
+    },
+    discount: {
+        amount: "10",//"{{ app.metafields.mytiki.discount.amount }}",
+        type: "percent",//"{{ app.metafields.mytiki.discount.type }}",
+        description: "",//"{{ app.metafields.mytiki.discount.description }}",
+        expiry: undefined,//"{{ app.metafields.mytiki.discount.expiry }}",
+        reference: "tid",//"{{ app.metafields.mytiki.discount.tid }}",
+    },
+    publishingId: "e12f5b7b-6b48-4503-8b39-28e4995b5f88" //{{ app.metafields.tiki_keys.tiki_public_key }}
 }
 </script>
 {% # theme-check-disable AssetSizeJavaScript %}
-<script async src="https://unpkg.com/@mytiki/tiki-sdk-js@2.1.1/dist/index.js"></script>
+<script async src="https://unpkg.com/@mytiki/tiki-sdk-js@2.1.2/dist/index.js"></script>
 {% # theme-check-enable AssetSizeJavaScript %}
 <script async src="{{ 'tiki_shopify.js' | asset_url }}"></script>
 <style>
@@ -73,7 +82,7 @@ const TIKI_SETTINGS = {
     { "type": "text", "id": "useCase2", "label": "Offer use case 2", "default": "Use case 2", "info":"Short statement for users on how their data will be used or not used, using familiar terms to enhance understanding and trust." },
     { "type": "checkbox", "id": "isUsed3", "label": "Is Used", "default": true, "info":"Is the use case 3 used?" },
     { "type": "text", "id": "useCase3", "label": "Offer use case 3", "default": "Use case 3", "info":"Short statement for users on how their data will be used or not used, using familiar terms to enhance understanding and trust." },
-    { "type": "richtext", "id": "terms", "label": "Terms", "default": "<p></p>", "info":"The terms and conditions URL for this offer agreement. It should be a URL to a plain text file containing the legal conditions. This file can include simple markdown format." }
+    { "type": "richtext", "id": "terms", "label": "Terms", "default": "<p>terms</p>", "info":"The terms and conditions URL for this offer agreement. It should be a URL to a plain text file containing the legal conditions. This file can include simple markdown format." }
   ]
 }
 {% endschema %}
