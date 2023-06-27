@@ -3,7 +3,19 @@
 const tikiId = 'tiki-offer'
 const tikiOverlayId = 'tiki-offer-overlay'
 
-const getCustomerId = function () {
+const tikiCreateTitle = async (offer) => {
+    let title = await TikiSdk.Trail.Title.getByPtr(offer._ptr)
+    if (!title) {
+        title = await TikiSdk.Trail.Title.create(
+            offer._ptr,
+            offer._tags,
+            "desc"
+        )
+    }
+    return title
+}
+
+const tikiGetCustomerId = () => {
   try {
     const curr = window.ShopifyAnalytics.meta.page.customerId
     if (curr !== undefined && curr !== null && curr !== '') {
@@ -49,14 +61,16 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'prompt': {
-      const offerPrompt = TikiSdk.UI.Prompt.create(
+      const offerPrompt = TikiSdk.UI.Screen.Prompt.create(
         TikiSdk.config()._offers[0],
         () => {
           offerPrompt.remove()
           tikiAnonGoTo('terms')
         },
         () => {
-          setDecisionCookie(false)
+          if (!Shopify.designMode){
+            tikiHandleDecision(false)
+          }
           offerPrompt.remove()
         },
         () => {
@@ -69,7 +83,7 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'learnMore': {
-      const learnMore = TikiSdk.UI.LearnMore.create(() => {
+      const learnMore = TikiSdk.UI.Screen.LearnMore.create(() => {
         learnMore.remove()
         tikiAnonGoTo('prompt')
       }, TikiSdk.config().activeTheme)
@@ -77,12 +91,14 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'terms': {
-      const terms = TikiSdk.UI.Terms.create(
+      const terms = TikiSdk.UI.Screen.Terms.create(
         {
           src: TikiSdk.config()._offers[0]._terms
         },
         async () => {
-          setDecisionCookie(true)
+          if (!Shopify.designMode){
+            tikiHandleDecision(true)
+          }
           terms.remove()
         },
         () => {
@@ -105,76 +121,91 @@ const tikiAnonShowScreen = (screen) => {
 }
 
 const tikiAnonCreateOverlay = () => {
-  const overlay = TikiSdk.UI.Overlay.create(() => tikiAnonGoTo('none'))
+  const overlay = TikiSdk.UI.Element.Overlay.create(() => tikiAnonGoTo('none'))
   overlay.id = tikiOverlayId
   return overlay
 }
 
-window.addEventListener('load', (event) => {
-  const customerId = getCustomerId() + 'w'
-  console.log(customerId)
+const tikiSdkConfig = () => {
+    return TikiSdk.config()
+    .theme
+    .primaryTextColor(TIKI_SETTINGS.UI.primaryTextColor)
+    .secondaryTextColor(TIKI_SETTINGS.UI.secondaryTextColor)
+    .primaryBackgroundColor(TIKI_SETTINGS.UI.primaryBackgroundColor)
+    .secondaryBackgroundColor(TIKI_SETTINGS.UI.secondaryBackgroundColor)
+    .accentColor(TIKI_SETTINGS.UI.accentColor)
+    .fontFamily(TIKI_SETTINGS.UI.fontFamily)
+    .and()
+    .offer
+    .description(TIKI_SETTINGS.UI.description)
+    .reward(TIKI_SETTINGS.UI.offerImage)
+    .bullet({ text: TIKI_SETTINGS.UI.useCase1, isUsed: TIKI_SETTINGS.UI.isUsed1 })
+    .bullet({ text: TIKI_SETTINGS.UI.useCase2, isUsed: TIKI_SETTINGS.UI.isUsed2 })
+    .bullet({ text: TIKI_SETTINGS.UI.useCase3, isUsed: TIKI_SETTINGS.UI.isUsed3 })
+    .terms(TIKI_SETTINGS.UI.terms)
+    .tag(TikiSdk.Trail.Title.TitleTag.deviceId())
+    .use({ usecases: [TikiSdk.Trail.License.LicenseUsecase.attribution()], destinations: ['*'] })
+}
+
+window.addEventListener('load', async (event) => {
+  debugger
+  const customerId = tikiGetCustomerId()
   if (customerId) {
-    TikiSdk.config()
-      .theme
-      .primaryTextColor(TIKI_SETTINGS.primaryTextColor)
-      .secondaryTextColor(TIKI_SETTINGS.secondaryTextColor)
-      .primaryBackgroundColor(TIKI_SETTINGS.primaryBackgroundColor)
-      .secondaryBackgroundColor(TIKI_SETTINGS.secondaryBackgroundColor)
-      .accentColor(TIKI_SETTINGS.accentColor)
-      .fontFamily(TIKI_SETTINGS.fontFamily)
-      .and()
-      .offer
+    await tikiSdkConfig()
       .ptr(customerId)
-      .description(TIKI_SETTINGS.description)
-      .reward(TIKI_SETTINGS.offerImage)
-      .bullet({ text: TIKI_SETTINGS.useCase1, isUsed: TIKI_SETTINGS.isUsed1 })
-      .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
-      .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
-      .terms(TIKI_SETTINGS.terms)
-      .tag(TikiSdk.TitleTag.deviceId())
-      .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
       .add()
-      .initialize(TIKI_SETTINGS.publishingId,
-        async () => {
-          const tikiDecisionCookie = document.cookie.match(/(?:^|;\s*)tiki_decision=([^;]*)/)
-          if (tikiDecisionCookie) {
-            const offer = TikiSdk._offers[0]
-            const uses = tikiDecisionCookie === true ? offer._uses : []
-            const license = await TikiSdk.license(
-              offer._ptr,
-              uses,
-              offer._terms,
-              offer._tags,
-              offer._description,
-              offer._expiry
-            )
-            console.log(license)
-          } else {
-            TikiSdk.present()
-          }
-        })
+      .initialize(TIKI_SETTINGS.publishingId, customerId)
+    const tikiDecisionCookie = document.cookie.match(/(?:^|;\s*)tiki_decision=([^;]*)/)
+    if (tikiDecisionCookie) {
+        tikiHandleDecision()
+    } else {
+        tikiAnon()
+    }
   } else {
     if (!Shopify.designMode || TIKI_SETTINGS.preview === 'true') {
-      TikiSdk.config()
-        .theme
-        .primaryTextColor(TIKI_SETTINGS.primaryTextColor)
-        .secondaryTextColor(TIKI_SETTINGS.secondaryTextColor)
-        .primaryBackgroundColor(TIKI_SETTINGS.primaryBackgroundColor)
-        .secondaryBackgroundColor(TIKI_SETTINGS.secondaryBackgroundColor)
-        .accentColor(TIKI_SETTINGS.accentColor)
-        .fontFamily(TIKI_SETTINGS.fontFamily)
-        .and().offer
-        .ptr(customerId)
-        .description(TIKI_SETTINGS.description)
-        .reward(TIKI_SETTINGS.offerImage)
-        .bullet({ text: TIKI_SETTINGS.useCase1, isUsed: TIKI_SETTINGS.isUsed1 })
-        .bullet({ text: TIKI_SETTINGS.useCase2, isUsed: TIKI_SETTINGS.isUsed2 })
-        .bullet({ text: TIKI_SETTINGS.useCase3, isUsed: TIKI_SETTINGS.isUsed3 })
-        .terms(TIKI_SETTINGS.terms)
-        .tag(TikiSdk.TitleTag.deviceId())
-        .use({ usecases: [TikiSdk.LicenseUsecase.attribution()] })
-        .add()
+      tikiSdkConfig().add()
       tikiAnon()
     }
   }
 })
+
+const tikiHandleDecision = async (accepted) => {
+    const customerId = tikiGetCustomerId()
+    if(!customerId){
+        const expiry = new Date();
+        expiry.setFullYear(expiry.getFullYear() + 1);
+        document.cookie = `tiki_decision=true; expires=${expiry.toUTCString()}; path=/`;
+    }else{
+        const offer = TikiSdk.config()._offers[0]
+        let title = await tikiCreateTitle(offer)
+        let license = await TikiSdk.Trail.License.create(
+            title.id,
+            accepted ? offer._uses : [],
+            offer._terms,
+            offer._description,
+            offer._expiry
+        )
+        const discountId = TIKI_SETTINGS.discount.reference
+        const payable = await TikiSdk.Trail.Payable.create(
+            license.id,
+            TIKI_SETTINGS.discount.amount,
+            TIKI_SETTINGS.discount.type,
+            TIKI_SETTINGS.discount.description,
+            TIKI_SETTINGS.discount.expiry,
+            discountId
+        )
+        if(payable){
+            tikiSaveCustomerDiscount(customerId, discountId)
+        }
+    }
+}
+
+const tikiSaveCustomerDiscount = async (customerId, discountId) => {
+    const customerDiscountBody = {
+        shop: Shopify.shop,
+        customerId,
+        discountId,
+    }
+    console.log('save customer discount')
+    console.log(customerDiscountBody)
+}
