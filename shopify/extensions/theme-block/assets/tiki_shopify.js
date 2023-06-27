@@ -201,11 +201,28 @@ const tikiHandleDecision = async (accepted) => {
 }
 
 const tikiSaveCustomerDiscount = async (customerId, discountId) => {
-    const customerDiscountBody = {
-        shop: Shopify.shop,
+    const shop = Shopify.shop
+    const customerDiscountBody = JSON.stringify({
+        shop,
         customerId,
         discountId,
+    })
+    const authToken = await TikiSdk.IDP.Auth.token()
+    const xTikiAddress = TikiSdk.Trail.address()
+    const utf8Encoder = new TextEncoder()
+    const customerDiscountByteArray = utf8Encoder.encode(customerDiscountBody) 
+    const xTikiAddressSig = await TikiSdk.IDP.Key.sign(customerId, customerDiscountByteArray)
+    const headers = {
+        'Authorization': `Bearer ${authToken.accessToken}`, 
+        'X-Tiki-Address ': xTikiAddress,
+        'X-Tiki-Address-Signature': xTikiAddressSig
     }
-    console.log('save customer discount')
-    console.log(customerDiscountBody)
+    fetch(`https://${Shopify.shop}/mytiki/api/latest/customer/discount`, {
+		method: 'POST',
+		headers,
+        body: customerDiscountBody
+	})
+		.then(response => response.json())
+		.then(response => console.log(response))
+		.catch(err => console.error(err));
 }
