@@ -38,6 +38,28 @@ export async function create(request: IRequest, env: Env): Promise<Response> {
   return json(rsp);
 }
 
+export async function get(
+  request: IRequest,
+  env: Env,
+  ctx: { id: string }
+): Promise<Response> {
+  const token = request.headers.get(API.Consts.AUTHORIZATION);
+  if (token == null) {
+    throw new API.ErrorBuilder()
+      .help('Check your Authorization header')
+      .error(403);
+  }
+
+  const claims = await Shopify.verifySession(
+    token.replace('Bearer ', ''),
+    env.KEY_ID,
+    env.KEY_SECRET
+  );
+  const shopify = new Shopify(claims.dest as string, env);
+  const rsp = await shopify.getDiscountById(ctx.id);
+  return json(rsp);
+}
+
 function guard(req: DiscountReq): void {
   Throw.ifNull(req.title, 'title');
   Throw.ifNull(req.startsAt, 'startsAt');

@@ -53,7 +53,7 @@ const tikiAnon = () => {
   }
 }
 
-const tikiAnonGoTo = (step) => {
+const tikiAnonGoTo = async (step) => {
   switch (step) {
     case 'none': {
       const element = document.getElementById(tikiId)
@@ -61,7 +61,7 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'prompt': {
-      const offerPrompt = TikiSdk.UI.Screen.Prompt.create(
+      const offerPrompt = await TikiSdk.UI.Screen.Prompt.create(
         TikiSdk.config()._offers[0],
         () => {
           offerPrompt.remove()
@@ -83,7 +83,7 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'learnMore': {
-      const learnMore = TikiSdk.UI.Screen.LearnMore.create(() => {
+      const learnMore = await TikiSdk.UI.Screen.LearnMore.create(() => {
         learnMore.remove()
         tikiAnonGoTo('prompt')
       }, TikiSdk.config().activeTheme)
@@ -91,7 +91,7 @@ const tikiAnonGoTo = (step) => {
       break
     }
     case 'terms': {
-      const terms = TikiSdk.UI.Screen.Terms.create(
+      const terms = await TikiSdk.UI.Screen.Terms.create(
         {
           src: TikiSdk.config()._offers[0]._terms
         },
@@ -146,28 +146,6 @@ const tikiSdkConfig = () => {
     .tag(TikiSdk.Trail.Title.TitleTag.deviceId())
     .use({ usecases: [TikiSdk.Trail.License.LicenseUsecase.attribution()], destinations: ['*'] })
 }
-
-window.addEventListener('load', async (event) => {
-  debugger
-  const customerId = tikiGetCustomerId()
-  if (customerId) {
-    await tikiSdkConfig()
-      .ptr(customerId)
-      .add()
-      .initialize(TIKI_SETTINGS.publishingId, customerId)
-    const tikiDecisionCookie = document.cookie.match(/(?:^|;\s*)tiki_decision=([^;]*)/)
-    if (tikiDecisionCookie) {
-        tikiHandleDecision()
-    } else {
-        tikiAnon()
-    }
-  } else {
-    if (!Shopify.designMode || TIKI_SETTINGS.preview === 'true') {
-      tikiSdkConfig().add()
-      tikiAnon()
-    }
-  }
-})
 
 const tikiHandleDecision = async (accepted) => {
     const customerId = tikiGetCustomerId()
@@ -226,3 +204,27 @@ const tikiSaveCustomerDiscount = async (customerId, discountId) => {
 		.then(response => console.log(response))
 		.catch(err => console.error(err));
 }
+
+window.addEventListener('load', async (event) => {
+  debugger
+  const customerId = tikiGetCustomerId()
+  if (customerId) {
+    await tikiSdkConfig()
+      .ptr(customerId)
+      .add()
+      .initialize(TIKI_SETTINGS.publishingId, customerId)
+    const tikiDecisionCookie = document.cookie.match(/(?:^|;\s*)tiki_decision=([^;]*)/)
+    if (tikiDecisionCookie) {
+        tikiHandleDecision()
+    } else {
+        tikiAnon()
+    }
+  } else {
+    if (!Shopify.designMode || TIKI_SETTINGS.preview === 'true') {
+      tikiSdkConfig().add()
+      tikiAnon()
+    }
+  }
+})
+
+

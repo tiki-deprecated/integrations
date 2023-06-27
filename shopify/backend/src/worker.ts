@@ -29,6 +29,7 @@ router
   .post(`${API.Consts.API_LATEST}/customer/discount`, Customer.discount)
   .post(`${API.Consts.API_LATEST}/shop/redact`, Shop.redact)
   .post(`${API.Consts.API_LATEST}/discount`, Discount.create)
+  .get(`${API.Consts.API_LATEST}/discount/:id`, Discount.get)
   .all('*', () => new API.ErrorBuilder().message('Not Found').error(404));
 
 export default {

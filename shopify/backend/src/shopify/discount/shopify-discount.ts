@@ -223,6 +223,56 @@ export class ShopifyDiscount extends ShopifyMeta {
 
   async getDiscountById(id: string): Promise<Response> {
     const accessToken = await this.getToken();
+    const discountId = `gid://shopify/DiscountNode/${id}`;
+    const gql = query({
+      operation: 'discountNode',
+      variables: {
+        id: {
+          value: discountId,
+          type: 'ID!',
+        },
+      },
+      fields: [
+        'id',
+        {
+          metafield: {
+            operation: 'metafield',
+            variables: {
+              key: { value: 'tid', type: 'String', required: true },
+              namespace: {
+                value: ShopifyMeta.namespace,
+                type: 'String',
+              },
+            },
+            fields: ['key', 'value'],
+          },
+        },
+        {
+          discount: {
+            operation: 'discount',
+            fields: {
+              operation: 'DiscountAutomaticApp',
+              fields: [
+                'title',
+                'discountClass',
+                {
+                  operation: 'combinesWith',
+                  fields: [
+                    'orderDiscounts',
+                    'productDiscounts',
+                    'shippingDiscounts',
+                  ],
+                },
+                'startsAt',
+                'endsAt',
+              ],
+              fragment: true,
+            },
+          },
+        },
+      ],
+    });
+    console.log(query);
     const response = await fetch(
       `https://${this.shopDomain}/admin/api/2023-04/graphql.json`,
       {
@@ -232,56 +282,7 @@ export class ShopifyDiscount extends ShopifyMeta {
           .content(API.Consts.APPLICATION_JSON)
           .set(ShopifyAuth.tokenHeader, accessToken)
           .build(),
-        body: JSON.stringify(
-          query({
-            operation: 'discountNode',
-            variables: {
-              id: {
-                value: id,
-                type: 'String',
-              },
-            },
-            fields: [
-              id,
-              {
-                metafield: {
-                  operation: 'metafield',
-                  variables: {
-                    key: { value: 'tid', type: 'String', required: true },
-                    namespace: {
-                      value: ShopifyMeta.namespace,
-                      type: 'String',
-                    },
-                  },
-                  fields: ['key', 'value'],
-                },
-              },
-              {
-                discount: {
-                  operation: 'discount',
-                  fields: {
-                    operation: 'DiscountAutomaticApp',
-                    fields: [
-                      'title',
-                      'discountClass',
-                      {
-                        operation: 'combinesWith',
-                        fields: [
-                          'orderDiscounts',
-                          'productDiscounts',
-                          'shippingDiscounts',
-                        ],
-                      },
-                      'startsAt',
-                      'endsAt',
-                    ],
-                    fragment: true,
-                  },
-                },
-              },
-            ],
-          })
-        ),
+        body: JSON.stringify(gql),
       }
     );
     return await response.json();
