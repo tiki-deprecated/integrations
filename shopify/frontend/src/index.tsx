@@ -1,4 +1,8 @@
-import React from 'react'
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import ReactDOM from 'react-dom'
 import App from './App'
 

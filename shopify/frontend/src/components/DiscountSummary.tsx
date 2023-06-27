@@ -1,8 +1,16 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import { SummaryCard, DiscountMethod } from "@shopify/discount-app-components";
-import React from "react";
 
+export interface DiscountSummaryProps{
+    startsAt: string
+    endsAt: string
+}
 
-export function DiscountSummary({startsAt, endsAt}) {
+export function DiscountSummary({startsAt, endsAt}: DiscountSummaryProps) {
     return (
         <SummaryCard
             header={{
@@ -29,4 +37,5 @@ export function DiscountSummary({startsAt, endsAt}) {
             }}                    
         /> 
     )
+
 }

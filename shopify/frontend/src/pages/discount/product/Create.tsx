@@ -1,8 +1,11 @@
-import React from 'react'
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
 import { useForm, useField, SubmitResult } from '@shopify/react-form'
 import { AppliesTo, DiscountMethod, RequirementType, SummaryCard, } from '@shopify/discount-app-components'
-import { LegacyCard, Layout, Page, PageActions, TextField } from '@shopify/polaris'
+import { Card, Layout, Page, PageActions, TextField } from '@shopify/polaris'
 
 import { DiscountReq } from '../../../interface/discount-req'
 import {
@@ -11,7 +14,6 @@ import {
     DiscountAmount,
     MaxUsageCard,
     CombinationsCard,
-    ErrorBanner,
     AppliesToChoices,
     TitleAndDescription,
     SummarySection
@@ -45,11 +47,7 @@ export function DiscountProductCreate() {
             productDiscounts,
             shippingDiscounts,
         },
-        submit,
-        submitting,
-        dirty,
-        submitErrors
-    } = useForm({
+        submit    } = useForm({
         fields: {
             title: useField(''),
             startsAt: useField(new Date()),
@@ -97,7 +95,6 @@ export function DiscountProductCreate() {
                     discount
                 }),
             });
-            const data = (await response.text());
             debugger
             redirect.dispatch(Redirect.Action.ADMIN_SECTION, {
                 name: Redirect.ResourceType.Discount,
@@ -115,17 +112,16 @@ export function DiscountProductCreate() {
             }}
         >
             <Layout>
-                <ErrorBanner submitErrors={submitErrors} />
                 <Layout.Section>
                     <form>
-                        <LegacyCard>
-                            <LegacyCard.Section title="Title">
+                        <Card>
+                            <Card.Section title="Title">
                                 <TitleAndDescription onChange={(values) => {
                                     title.value = values.title
                                     description.value = values.description
                                 }} />
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Value">
+                            </Card.Section>
+                            <Card.Section title="Value">
                                 <DiscountAmount
                                     onChange={({ type, value }) => {
                                         if (type !== undefined) {
@@ -136,12 +132,10 @@ export function DiscountProductCreate() {
                                         }
                                     }}
                                 />
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Applies To">
-                                <AppliesToChoices onChange={({resource, list}) => {
-                                    console.log({ resource, list })
-
-                                    switch (resource) {
+                            </Card.Section>
+                            <Card.Section title="Applies To">
+                                <AppliesToChoices onChange={(list: Resource[], resource: 'all' | 'products' | 'collections') => {
+                                     switch (resource) {
                                         case 'all':
                                             products.value = []
                                             break
@@ -154,8 +148,8 @@ export function DiscountProductCreate() {
                                     }
                                 }}
                                 />
-                            </LegacyCard.Section>
-                        </LegacyCard>
+                            </Card.Section>
+                        </Card>
                         <MinReqsCard
                             appliesTo={AppliesTo.Products}
                             type={RequirementType.None}
@@ -193,39 +187,39 @@ export function DiscountProductCreate() {
                                 endsAt.value = e ? new Date(e) : null
                             }}
                             startsAt={startsAt.value.toUTCString()}
-                            endsAt={endsAt.value ? endsAt.value.toUTCString : ''} />
+                            endsAt={endsAt.value ? endsAt.value.toUTCString() : ''} />
                     </form>
                 </Layout.Section>
                 <Layout.Section secondary>
-                        <LegacyCard>
-                            <LegacyCard.Section title="Title">
+                        <Card>
+                            <Card.Section title="Title">
                                 <p>Title: {title.value}</p>
                                 <p>Description: {description.value}</p>
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Value">
+                            </Card.Section>
+                            <Card.Section title="Value">
                                 <p>Discount Type: {discountType.value}</p>
                                 <p>Discount Value: {discountType.value === 'amount' ? '$':''} {discountValue.value}{discountType.value === 'percentage' ? '%':''}</p>
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Minimum Requirements">
+                            </Card.Section>
+                            <Card.Section title="Minimum Requirements">
                                 <p>{minValue ? `Minimum value:${minValue}` : ''}</p>
                                 <p>{minQty ? `Minimum quantity:${minQty}` : ''}</p>
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Max Usage">
+                            </Card.Section>
+                            <Card.Section title="Max Usage">
                                 <p>Once per customer? </p>
                                 <p>{onePerUser ? 'Yes': 'No'}</p>
-                            </LegacyCard.Section>
-                        </LegacyCard>
-                        <LegacyCard>
-                            <LegacyCard.Section title="Combines with">
+                            </Card.Section>
+                        </Card>
+                        <Card>
+                            <Card.Section title="Combines with">
                                 <p>Order Discounts: {orderDiscounts.value ? 'Yes': 'No'}</p>
                                 <p>Product Discounts: {productDiscounts.value ? 'Yes': 'No'}</p>
                                 <p>Shipping Discounts: {shippingDiscounts.value ? 'Yes': 'No'}</p>
-                            </LegacyCard.Section>
-                            <LegacyCard.Section title="Active dates">
+                            </Card.Section>
+                            <Card.Section title="Active dates">
                                 <p>Starts at: {startsAt.value.toLocaleTimeString()}</p>
                                 <p>{endsAt.value ? `Ends at: ${endsAt.value!.toLocaleDateString()}`: ''}</p>
-                            </LegacyCard.Section>
-                        </LegacyCard>
+                            </Card.Section>
+                        </Card>
                 </Layout.Section>
                 <Layout.Section>
                     <PageActions

@@ -1,8 +1,11 @@
-import { DiscountMethod, SummaryCard } from "@shopify/discount-app-components"
-import { TextField, VerticalStack } from "@shopify/polaris"
-import React, { useState } from "react"
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
-export function SummarySection({title, startsAt, endsAt}){
+import { DiscountMethod, SummaryCard } from "@shopify/discount-app-components"
+
+export function SummarySection({title = "", startsAt = "", endsAt = undefined}){
     return (
         <SummaryCard
             header={{
@@ -21,8 +24,8 @@ export function SummarySection({title, startsAt, endsAt}){
                 totalUsageLimit: 0
             }}
             activeDates={{
-                startDate: startsAt.value,
-                endDate: endsAt?.value ?? undefined
+                startDate: startsAt,
+                endDate: endsAt ?? undefined
             }} 
             performance={{
             isEditing: false

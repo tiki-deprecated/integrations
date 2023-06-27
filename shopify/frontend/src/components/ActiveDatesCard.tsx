@@ -1,4 +1,9 @@
-import React, { useCallback, useState } from "react";
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
+import { useCallback, useState } from "react";
 import { ActiveDatesCard as ActiveDates} from "@shopify/discount-app-components";
 
 export interface ActiveDatesCardProps{

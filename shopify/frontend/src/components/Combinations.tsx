@@ -1,5 +1,10 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import { CombinationCard, DiscountClass } from "@shopify/discount-app-components";
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 
 export interface Combinations {
     orderDiscounts: boolean

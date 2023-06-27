@@ -1,5 +1,9 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import {ButtonGroup, Button} from '@shopify/polaris';
-import React from 'react';
 import {useCallback, useState} from 'react';
 
 export function DiscountAmountBtns({ onChange = console.log }) {

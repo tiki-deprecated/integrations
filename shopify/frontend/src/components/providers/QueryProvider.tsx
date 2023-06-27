@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import React from "react";
 import {
   QueryClient,
@@ -6,10 +11,6 @@ import {
   MutationCache,
 } from "react-query";
 
-/**
- * Sets up the QueryClientProvider from react-query.
- * @desc See: https://react-query.tanstack.com/reference/QueryClientProvider#_top
- */
 export function QueryProvider(props: { children: React.ReactNode }) {
   const client = new QueryClient({
     queryCache: new QueryCache(),

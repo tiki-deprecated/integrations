@@ -1,4 +1,9 @@
-import { LegacyCard, HorizontalStack, Box, Card, TextField } from '@shopify/polaris';
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
+import { TextField } from '@shopify/polaris';
 import { useCallback, useState } from 'react';
 import { DiscountAmountBtns } from './DiscountAmountBtns';
 
@@ -22,7 +27,7 @@ export function DiscountAmount({ onChange = console.log }) {
         [discountType],
     );
 
-    return <HorizontalStack gap="4">
+    return <>
         <DiscountAmountBtns onChange={onChangeDiscountType} />
         <TextField
             label=""
@@ -35,5 +40,5 @@ export function DiscountAmount({ onChange = console.log }) {
             autoComplete="off"
             onChange={(value) => onChangeDiscountValue(Number(value))}
         />
-    </HorizontalStack>
+    </>
 }

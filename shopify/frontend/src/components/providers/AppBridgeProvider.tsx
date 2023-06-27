@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import React, { useMemo, useState } from 'react'
 import { To, useLocation, useNavigate } from 'react-router-dom'
 import { Provider } from '@shopify/app-bridge-react'
