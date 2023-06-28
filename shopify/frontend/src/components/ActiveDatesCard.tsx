@@ -1,10 +1,21 @@
-import React, { useCallback, useState } from "react";
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
+import { useCallback, useState } from "react";
 import { ActiveDatesCard as ActiveDates} from "@shopify/discount-app-components";
 
-export function ActiveDatesCard({ onChange, startsAt, endsAt }) {
-  const [startTime, setStartTime] = useState(startsAt);
-  const [endTime, setEndTime] = useState(endsAt);
-  
+export interface ActiveDatesCardProps{
+    onChange: (startsAt: string, endsAt: string) => void
+    startsAt: string
+    endsAt: string
+}
+
+export function ActiveDatesCard(props: ActiveDatesCardProps) {
+  const [startTime, setStartTime] = useState(props.startsAt)
+  const [endTime, setEndTime] = useState(props.endsAt)
+  const onChange = props.onChange
 
   const setStartsAt = useCallback(
     (start: string) => {

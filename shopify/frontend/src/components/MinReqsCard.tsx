@@ -1,9 +1,13 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import { RequirementType, MinimumRequirementsCard, AppliesTo, DiscountMethod } from "@shopify/discount-app-components";
 import { CurrencyCode } from "@shopify/react-i18n";
-import React from "react";
 import { useState } from "react";
 
-export const MinReqsCard = ({appliesTo, type, subTotal, qty, onChange}) => {
+export const MinReqsCard = ({appliesTo = AppliesTo.Products, type = RequirementType.None, subTotal = 0, qty = 0 , onChange = console.log}) => {
     const [requirementType, setRequirementType] = useState(type);
     const [subtotal, setSubtotal] = useState(subTotal);
     const [quantity, setQuantity] = useState(qty);

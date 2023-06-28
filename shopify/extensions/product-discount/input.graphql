@@ -1,4 +1,4 @@
-query Input($selectedCollectionIds: [ID!]){
+query Input($collections: [ID!]){
 
   cart {
     lines {
@@ -8,7 +8,7 @@ query Input($selectedCollectionIds: [ID!]){
         ... on ProductVariant {
           id
           product {
-            inAnyCollection(ids: $selectedCollectionIds)
+            inAnyCollection(ids: $collections)
           }
         }
       }
@@ -33,22 +33,10 @@ query Input($selectedCollectionIds: [ID!]){
     tid: metafield(namespace: "mytiki", key: "tid"){
       value
     }
-    discountType: metafield(namespace: "mytiki", key: "discountType"){
+    discountAmount: metafield(namespace: "mytiki", key: "discountAmount"){
       value
     }
-    discountValue: metafield(namespace: "mytiki", key: "discountValue"){
-      value
-    }
-    minValue: metafield(namespace: "mytiki", key: "minValue"){
-      value
-    }
-    minQty: metafield(namespace: "mytiki", key: "minQty"){
-      value
-    }
-    maxUse: metafield(namespace: "mytiki", key: "maxUse"){
-      value
-    }
-    onePerUser: metafield(namespace: "mytiki", key: "onePerUser"){
+    discountRestrictions: metafield(namespace: "mytiki", key: "discountRestrictions"){
       value
     }
     products: metafield(namespace: "mytiki", key: "products"){

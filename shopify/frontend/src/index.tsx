@@ -1,6 +1,9 @@
-import ReactDOM from 'react-dom'
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
+import ReactDOM from 'react-dom'
 import App from './App'
-import React from 'react'
 
 ReactDOM.render(<App />, document.getElementById('app'))

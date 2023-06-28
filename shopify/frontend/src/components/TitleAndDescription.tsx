@@ -1,11 +1,16 @@
-import { TextField, VerticalStack } from "@shopify/polaris"
-import React, { useState } from "react"
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
 
-export function TitleAndDescription({onChange}){
+import { TextField } from "@shopify/polaris"
+import { useState } from "react"
+
+export function TitleAndDescription({onChange = console.log}){
     const [title, setTitle] = useState('')
     const [description, setDesc] = useState('')
     return (
-        <VerticalStack gap="2">
+        <>
             <TextField
             label='Discount Title'
             autoComplete=''
@@ -28,6 +33,6 @@ export function TitleAndDescription({onChange}){
                         description: value
                     })
                 } } />
-        </VerticalStack>
+        </>
     )
 }

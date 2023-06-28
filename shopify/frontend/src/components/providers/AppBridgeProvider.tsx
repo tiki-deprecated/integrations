@@ -1,15 +1,21 @@
+/*
+ * Copyright (c) TIKI Inc.
+ * MIT license. See LICENSE file in root directory.
+ */
+
 import React, { useMemo, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { To, useLocation, useNavigate } from 'react-router-dom'
 import { Provider } from '@shopify/app-bridge-react'
 import { Banner, Layout, Page } from '@shopify/polaris'
+import { AppConfigV2 } from '@shopify/app-bridge'
 
 // eslint-disable-next-line react/prop-types
-export function AppBridgeProvider ({ children }) {
+export function AppBridgeProvider (props: { children: React.ReactNode }) {
   const location = useLocation()
   const navigate = useNavigate()
   const history = useMemo(
     () => ({
-      replace: (path) => {
+      replace: (path: To) => {
         navigate(path, { replace: true })
       }
     }),
@@ -28,7 +34,7 @@ export function AppBridgeProvider ({ children }) {
       host,
       apiKey,
       forceRedirect: true
-    }
+    } as AppConfigV2
   })
 
   if (!process.env.SHOPIFY_API_KEY || !appBridgeConfig.host) {
@@ -69,7 +75,7 @@ export function AppBridgeProvider ({ children }) {
 
   return (
     <Provider config={appBridgeConfig} router={routerConfig}>
-      {children}
+      {props.children}
     </Provider>
   )
 }
